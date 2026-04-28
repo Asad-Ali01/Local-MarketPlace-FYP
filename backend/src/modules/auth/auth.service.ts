@@ -13,7 +13,7 @@ export const refreshAcessTokenService = async(incomingRefreshToken:string) => {
 
     try {
         const decoded = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRET) as JwtPayload;
-        
+        console.log("Decoded: ",decoded);
         const user = await User.findOne({_id:decoded._id});
         if(!user){
             throw new ApiError(401,"Invalid refresh token");
@@ -21,7 +21,9 @@ export const refreshAcessTokenService = async(incomingRefreshToken:string) => {
         if(!user.refreshToken){
             throw new ApiError(401,"Invalid refresh token");
         }
+        console.log("Incoming refreshToken: ",incomingRefreshToken," User refreshToken: ",user.refreshToken)
         const isTokenValid = await bcrypt.compare(incomingRefreshToken,user.refreshToken);
+        console.log("IStokenValid: ",isTokenValid);
         if(!isTokenValid){
             throw new ApiError(401,"Invalid refresh token");
         }

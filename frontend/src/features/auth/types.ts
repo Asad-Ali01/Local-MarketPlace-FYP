@@ -27,6 +27,11 @@ export interface ILoginUserRequest {
 }
 // LoginUser Response
 export interface ILoginUserResponse  {
-  data:IUser
+  data:{
+    user: IUser;
+    accessToken: string;
+  }
   message:string;
 }
+
+

@@ -40,7 +40,8 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
-  identityCard: IidentityCard;
-  avatar: IAvatar;
-  location: ILocation;
+  role:"client" | "provider" | "admin";
+  identityCard?: IidentityCard;
+  avatar?: IAvatar;
+  location?: ILocation;
 }

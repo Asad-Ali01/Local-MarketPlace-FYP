@@ -7,9 +7,9 @@ cloudinary.config({
     api_secret:process.env.CLOUDINARY_API_SECRET
 })
 
-const uploadToCloudinary = async (file: Express.Multer.File,userId:Types.ObjectId,folder:string) => {
+const uploadToCloudinary = async (file: Express.Multer.File,userId:Types.ObjectId | string,folder:string) => {
     try {
-        if(!file)   return null;
+        if(!file)   return undefined;
         const base64 = file.buffer.toString("base64");
         const dataUri = `data:${file.mimetype};base64,${base64}`;
         const result = await cloudinary.uploader.upload(dataUri,{

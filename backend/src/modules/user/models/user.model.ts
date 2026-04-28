@@ -29,7 +29,7 @@ interface IUser extends Document {
   };
   avatar: IAvatar;
   identityCard: IIdentityCard;
-  status: "pending" | "approved";
+  status: "pending" | "rejected" | "approved" ;
   refreshToken?: string;
 
   // Methods
@@ -97,27 +97,34 @@ const userSchema = new Schema<IUser>(
     },
     avatar: {
       type: avatarSchema,
-      required: true,
+      required: function (this: IUser): boolean {
+        return this.role === "provider";
+      },
     },
     identityCard: {
       type: identityCardSchema,
-      required: true,
+      required: function (this: IUser): boolean {
+        return this.role === "provider";
+      },
     },
     location: {
       type:{
         type:String,
         enum:["Point"],
-        default:"Point",
-      required:true
+      required: function (this: IUser): boolean {
+        return this.role === "provider";
+      }
       },
       coordinates:{
         type:[Number],
-        required:true
+        required: function (this: IUser): boolean {
+          return this.role === "provider";
+        }
       },
     },
     status: {
       type: String,
-      enum: ["pending", "approved"],
+      enum: ["pending", "rejected","approved"],
       default: "pending",
     },
     refreshToken: {
@@ -126,7 +133,17 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true },
 );
-userSchema.index({location:"2dsphere"})
+userSchema.index({createdAt:-1})
+userSchema.index(
+  { location: "2dsphere" },
+  {
+    partialFilterExpression: {
+      role: "provider",
+      "location.coordinates.0": { $exists: true },
+      "location.coordinates.1": { $exists: true },
+    },
+  },
+);
 userSchema.pre<IUser>("save", async function () {
   if (!this.isModified("password")) return;
 

@@ -5,7 +5,7 @@ function UserLoginForm() {
     const [loginUserApi]=useLoginUserApiMutation()
   return (
     <>
-    <LoginForm loginApi={loginUserApi}/>
+    <LoginForm loginApi={loginUserApi} mode="user"/>
     </>
   );
 }

@@ -30,12 +30,11 @@ export const loginUserService = async (data: LoginUserPayload) => {
     }
 
     if(user.role === "admin"){
-        throw new ApiError(400,"This route is not for admin")
+        throw new ApiError(401,"Incorrect email or password");
     }
     const {accessToken,refreshToken} = await generateAccessAndRefreshToken(user._id);
-    
-    user.refreshToken = refreshToken;
-    await user.save();
+        console.log(refreshToken);
+
     const safeUser = await User.findById(user._id).select("-password -refreshToken -status")
     return{user:safeUser, accessToken,refreshToken};
 }

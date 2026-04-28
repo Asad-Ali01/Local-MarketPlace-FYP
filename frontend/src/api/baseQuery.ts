@@ -1,6 +1,6 @@
 import {fetchBaseQuery, type BaseQueryApi, type FetchBaseQueryError} from "@reduxjs/toolkit/query/react"
 import type{ RootState } from "../app/store";
-import type { IUser } from "../features/auth/types";
+import type { IUser } from "@/types/global.types"; 
 import { logoutUser, registerUser } from "../features/auth/authSlice";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
@@ -29,7 +29,7 @@ FetchBaseQueryError
 
         const refreshResult = await rawBaseQuery(
             {
-                url:"/users/refresh-token",
+                url:"/auth/refresh-token",
                 method:"POST"
             },
             api,

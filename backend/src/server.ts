@@ -1,7 +1,6 @@
 import "dotenv/config"
 import { app } from './app';
 import { connectToDb } from './config/db';
-
 connectToDb();
 
 app.listen(3000,() => {

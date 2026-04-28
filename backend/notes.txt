@@ -1,0 +1,3 @@
+groupFormat = "%a";  // Mon, Tue
+groupFormat = "%d %b"; // 01 Apr
+groupFormat = "%b"; // Jan

@@ -1,26 +1,18 @@
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   registerSchema,
   type RegisterSchemaInputType,
   type RegisterSchemaType,
 } from "../schemas/registerSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useRegisterUserApiMutation } from "@/features/auth/authApi";
 import toast from "react-hot-toast";
-// import {Form} from '../../../components/ui/for'
+import ImageDropzone from "@/components/shared/ImageDropZone";
+
 function RegisterForm() {
   const form = useForm<RegisterSchemaInputType, any, RegisterSchemaType>({
     resolver: zodResolver(registerSchema),
@@ -30,240 +22,254 @@ function RegisterForm() {
       password: "",
       confirmPassword: "",
       avatar: undefined,
-      front: undefined,
-      back: undefined,
-      location: {
-        lng: 0,
-        lat: 0,
-      },
-      role: "client",
+      role: "provider",
     },
   });
   const [registerUserApi] = useRegisterUserApiMutation();
-  // Handle register form
+  const role = form.watch("role");
   const handleRegister = async (data: RegisterSchemaType) => {
-    console.log(data);
     const formData = new FormData();
-
-    formData.append("name", data.name);
-    formData.append("email", data.email);
-    formData.append("password", data.password);
-    formData.append("confirmPassword", data.confirmPassword);
-    formData.append("role", data.role);
-    formData.append("location", JSON.stringify(data.location));
-    formData.append("avatar", data.avatar);
-    formData.append("front", data.front);
-    formData.append("back", data.back);
+    Object.entries(data).forEach(([key, value]) => {
+      if (value === undefined || value === null) return;
+      if (key === "location") {
+        formData.append("location", JSON.stringify(value));
+      } else {
+        formData.append(key, value as any);
+      }
+    });
 
     try {
       const res = await registerUserApi(formData).unwrap();
       toast.success(res.message);
-      form.reset()
+      form.reset();
     } catch (error: any) {
-      console.log(error);
-      toast.error(error.data.message);
+      toast.error(error?.data?.message || "Registration failed");
     }
   };
+  // console.log("Here is location",form.watch("location"),form.formState.errors.location.lng);
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Register</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={form.handleSubmit(handleRegister)}>
-          {/* Avatar */}
-          <div>
-            <Label htmlFor="avatar">Avatar</Label>
-            <Input
-              id="avatar"
-              type="file"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  form.setValue("avatar", file, { shouldValidate: true });
-                }
-              }}
-            />
-            {form.formState.errors.avatar && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.avatar.message}
-              </p>
-            )}
-          </div>
-          {/* Identity card */}
-          <h1>Identity Card</h1>
-          <div>
-            {/* Front */}
-            <div>
-              <Label htmlFor="front">Front</Label>
-              <Input
-                id="front"
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    form.setValue("front", file, {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
-              />
-              {form.formState.errors.front && (
-                <p className="text-sm text-red-500">
-                  {form.formState.errors.front.message}
-                </p>
-              )}
-            </div>
-            {/* Back */}
-            <div>
-              <Label htmlFor="back">Back</Label>
-              <Input
-                id="back"
-                type="file"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    form.setValue("back", file, {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
-              />
-              {form.formState.errors.back && (
-                <p className="text-sm text-red-500">
-                  {form.formState.errors.back.message}
-                </p>
-              )}
-            </div>
-          </div>
-          {/* <Controller
-          control={form.control}
-          name='name'
-          render={({field}) => ( */}
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="Enter name"
-              {...form.register("name")}
-            />
-            {form.formState.errors.name && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          {/* )}
-          > */}
-          {/* </Controller> */}
+    <div className="flex justify-center items-center py-10 px-4">
+      <Card className="w-full max-w-2xl shadow-lg">
+        {/* Header */}
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">
+            Create Your Account
+          </CardTitle>
+        </CardHeader>
 
-          {/* Email */}
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" {...form.register("email")} />
-            {form.formState.errors.email && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.email.message}
-              </p>
-            )}
-          </div>
-          {/* Password */}
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              {...form.register("password")}
-            />
-            {form.formState.errors.password && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.password.message}
-              </p>
-            )}
-          </div>
-          {/* Confirm Password */}
-          <div>
-            <Label htmlFor="confirmPassword">Confirm password</Label>
-            <Input
-              type="password"
-              id="confirmPassword"
-              {...form.register("confirmPassword")}
-            />
-            {form.formState.errors.confirmPassword && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-          {/* Location */}
-          <div>
-            <h1 className="text-center text-xl">Location</h1>
-            <div className="flex">
-              {/* Longitude */}
-              <div>
-                <Label htmlFor="lng">Longitude</Label>
-                <Input
-                  type="number"
-                  id="lng"
-                  {...form.register("location.lng")}
-                />
-                {form.formState.errors.location?.lng && (
-                  <p className="text-sm text-red-500">
-                    {form.formState.errors.location.lng.message}
-                  </p>
-                )}
-              </div>
-              {/* Latitude */}
-              <div>
-                <Label htmlFor="lat">Latitude</Label>
-                <Input
-                  type="number"
-                  id="lat"
-                  {...form.register("location.lat")}
-                />
-                {form.formState.errors.location?.lat && (
-                  <p className="text-sm text-red-500">
-                    {form.formState.errors.location.lat.message}
-                  </p>
-                )}
+        <CardContent>
+          <form
+            onSubmit={form.handleSubmit(handleRegister)}
+            className="space-y-6"
+          >
+            {/* ROLE SELECTION (FIRST STEP UX) */}
+            <div>
+              <Label className="mb-2 block">Register As</Label>
+
+              <div className="flex gap-3">
+                {/* CLIENT BUTTON */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    form.reset();
+                    form.setValue("role", "client");
+                  }}
+                  className={`flex-1 border rounded-lg p-3 text-sm font-medium transition ${
+                    form.watch("role") === "client"
+                      ? "bg-purple-700 text-white border-purple-700"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  👤 Client
+                  <p className="text-xs opacity-80">Hire Services</p>
+                </button>
+
+                {/* PROVIDER BUTTON */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    form.reset();
+                    form.setValue("role", "provider");
+                  }}
+                  className={`flex-1 border rounded-lg p-3 text-sm font-medium transition ${
+                    form.watch("role") === "provider"
+                      ? "bg-purple-700 text-white border-purple-700"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  🛠 Provider
+                  <p className="text-xs opacity-80">Offer Services</p>
+                </button>
               </div>
             </div>
-          </div>
-          {/* role */}
-          <div>
-            <Controller
-              name="role"
-              control={form.control}
-              render={({ field }) => (
-                <>
-                  <Label htmlFor="role">Role</Label>
 
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="role">
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Role</SelectLabel>
-                        <SelectItem value="client">client</SelectItem>
-                        <SelectItem value="provider">provider</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  {form.formState.errors.role && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.role.message}
-                    </p>
-                  )}
-                </>
-              )}
-            />
-          </div>
-          <Button >Submit</Button>
-        </form>
-      </CardContent>
-    </Card>
+            {/* AVATAR */}
+            <div>
+              <div className="flex gap-1 ">
+                <Label>Profile Picture</Label>
+                {role === "provider" && <span className="text-red-500">*</span>}
+                {role === "client" && (
+                  <span className="text-sm">(Optional)</span>
+                )}
+              </div>
+             
+              <Controller
+                name="avatar"
+                control={form.control}
+                render={({ field }) => (
+                  <ImageDropzone
+                    label="avatar"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              <Error msg={form.formState.errors.avatar?.message} />
+            </div>
+
+            {/* IDENTITY (ONLY FOR PROVIDER) */}
+            {role === "provider" && (
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-2">
+                  Identity Verification
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex gap-1">
+                      <Label>Front CNIC</Label>
+                      <span className="text-red-500">*</span>
+                    </div>
+                    <Controller
+                      name="front"
+                      control={form.control}
+                      render={({ field }) => (
+                        <ImageDropzone
+                          label="IdentityCard front Side"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+
+                    <Error
+                      msg={(form.formState.errors as any).front?.message}
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex gap-1">
+                      <Label>Back CNIC</Label>
+                      <span className="text-red-500">*</span>
+                    </div>
+                    <Controller
+                      name="back"
+                      control={form.control}
+                      render={({ field }) => (
+                        <ImageDropzone
+                          label="IdentityCard back Side"
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+
+                    <Error msg={(form.formState.errors as any).back?.message} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* BASIC INFO */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <div className="flex gap-1">
+                  <Label>Name</Label>
+                  <span className="text-red-500">*</span>
+                </div>
+                <Input {...form.register("name")} />
+                <Error msg={form.formState.errors.name?.message} />
+              </div>
+
+              <div>
+                <div className="flex gap-1">
+                  <Label>Email</Label>
+                  <span className="text-red-500">*</span>
+                </div>
+                <Input {...form.register("email")} />
+                <Error msg={form.formState.errors.email?.message} />
+              </div>
+
+              <div>
+                <div className="flex gap-1">
+                  <Label>Password</Label>
+                  <span className="text-red-500">*</span>
+                </div>
+                <Input type="password" {...form.register("password")} />
+                <Error msg={form.formState.errors.password?.message} />
+              </div>
+
+              <div>
+                <div className="flex gap-1">
+                  <Label>Confirm Password</Label>
+                  <span className="text-red-500">*</span>
+                </div>
+                <Input type="password" {...form.register("confirmPassword")} />
+                <Error msg={form.formState.errors.confirmPassword?.message} />
+              </div>
+            </div>
+
+            {/* LOCATION (ONLY FOR PROVIDER) */}
+            {role === "provider" && (
+              <div>
+                <h3 className="font-semibold mb-2">
+                  Location <span className="text-red-500">*</span>
+                </h3>
+
+                <Button
+                  type="button"
+                  className="mb-3"
+                  onClick={() => {
+                    navigator.geolocation.getCurrentPosition(
+                      (pos) => {
+                        form.setValue(
+                          "location",
+                          {
+                            lng: pos.coords.longitude,
+                            lat: pos.coords.latitude,
+                          },
+                          {
+                            shouldValidate: true,
+                          },
+                        );
+                        form.clearErrors("location");
+                        toast.success("Location detected");
+                      },
+                      () => {
+                        toast.error("Unable to access location");
+                      },
+                    );
+                  }}
+                >
+                  📍 Use My Location
+                </Button>
+                <Error msg={(form.formState.errors as any).location?.message} />
+              </div>
+            )}
+
+            {/* SUBMIT */}
+            <Button className="w-full bg-purple-700 hover:bg-purple-800">
+              Create Account
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
-
+function Error({ msg }: { msg?: string }) {
+  if (!msg) return null;
+  return <p className="text-sm text-red-500 mt-1">{msg}</p>;
+}
 export default RegisterForm;

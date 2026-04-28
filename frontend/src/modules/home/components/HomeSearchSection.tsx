@@ -1,7 +1,9 @@
+import { Input } from 'antd';
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-function HeroSection() {
+function HeroSearchSection() {
+  const { Search } = Input;
   const items = ["AC Repair,", "Solar installation,", "Home cleaning,"];
   const [index, setIndex] = useState(0);
 
@@ -14,9 +16,9 @@ function HeroSection() {
   }, [items.length])
 
   return (
-    <div className='h-screen bg-linear-to-br from-blue-900 via-blue-900 to-orange-50'>
+    <div id='search-provider' className='h-40'>
         {/* Top heading */}
-      <div className='text-center'>
+      <div  className={`text-center text-2xl font-bold  text-white dark:text-black`}>
         <AnimatePresence mode="popLayout">
           <motion.div
             key={index}
@@ -24,16 +26,25 @@ function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.45, ease: 'easeInOut' }}
-            className="text-3xl font-bold"
           >
             {items[index]}
           </motion.div>
         </AnimatePresence>
-        <h2  className="text-3xl font-bold">Made easy</h2>
+        <h2  >Made easy</h2>
       </div>
 
+      {/* Search bar */}
+      <div  className='mx-auto mt-8 w-full max-w-xl px-4 '>
+        <Search
+          placeholder='Search services'
+          enterButton='Search'
+          size='large'
+          allowClear
+          onSearch={(value) => console.log('Search:', value)}     
+        />
+      </div>
     </div>
   )
 }
 
-export default HeroSection
+export default HeroSearchSection

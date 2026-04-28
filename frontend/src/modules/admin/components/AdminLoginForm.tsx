@@ -1,13 +1,13 @@
 import LoginForm from "@/components/shared/LoginForm";
-import { useLoginUserApiMutation } from "@/features/auth/authApi";
+import { useAdminLoginApiMutation } from "@/features/admin/adminApi";
 
-function UserLoginForm() {
-    const [loginUserApi]=useLoginUserApiMutation()
+function AdminLoginForm() {
+    const [adminLoginApi]= useAdminLoginApiMutation()
   return (
     <>
-    <LoginForm loginApi={loginUserApi}/>
+    <LoginForm loginApi={adminLoginApi} mode="admin"/>
     </>
   );
 }
 
-export default UserLoginForm;
+export default AdminLoginForm;

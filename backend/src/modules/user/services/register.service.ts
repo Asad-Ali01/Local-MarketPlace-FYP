@@ -1,16 +1,22 @@
 import { ApiError } from "../../../utils/ApiError";
 import { User } from "../models/user.model";
-import { ApiResponse } from "../../../utils/ApiRespose";
 import { Types } from "mongoose";
 import { uploadToCloudinary } from "../../../utils/cloudinary";
 export const registerUserService = async (data: any, files: any) => {
   const { name, email, password, confirmPassword, role, location } = data;
-  const allowedRoles = ["client", "provider"];
 
+  const allowedRoles = ["client", "provider"];
+  
+  if (!allowedRoles.includes(role)) {
+    throw new ApiError(400, "Invalid role. Must be 'client' or 'provider'");
+  }
+  
+  const normalizedRole = role;
+  const uploadedFiles = (files || {}) as Record<string, Express.Multer.File[]>;
   if ([name, email, password, confirmPassword].some((field) => !field.trim())) {
     throw new ApiError(400, "All fields are required");
   }
-  if (!location) {
+  if (normalizedRole === "provider" && !location) {
     throw new ApiError(400, "All fields are required");
   }
   if (password !== confirmPassword) {
@@ -22,51 +28,73 @@ export const registerUserService = async (data: any, files: any) => {
     throw new ApiError(400, "User already exists");
   }
 
-  if (!files || !files.avatar || !files.front || !files.back) {
+  if (
+    normalizedRole === "provider" &&
+    (!uploadedFiles.avatar || !uploadedFiles.front || !uploadedFiles.back)
+  ) {
     throw new ApiError(400, "All files are required");
   }
 
   const userId = new Types.ObjectId();
+  let avatarUpload;
+  let frontUpload;
+  let backUpload;
 
-  let avatarUpload = await uploadToCloudinary(
-    files.avatar[0],
-    userId,
-    "avatar",
-  );
-  let frondUpload = await uploadToCloudinary(
-    files.front[0],
-    userId,
-    "identity/front",
-  );
-  let backUpload = await uploadToCloudinary(
-    files.back[0],
-    userId,
-    "identity/back",
-  );
-  if (!avatarUpload || !frondUpload || !backUpload) {
+  if (uploadedFiles.avatar?.[0]) {
+    avatarUpload = await uploadToCloudinary(uploadedFiles.avatar[0], userId, "avatar");
+  }
+
+  if (normalizedRole === "provider") {
+    frontUpload = await uploadToCloudinary(
+      uploadedFiles.front[0],
+      userId,
+      "identityCard/front",
+    );
+    backUpload = await uploadToCloudinary(
+      uploadedFiles.back[0],
+      userId,
+      "identityCard/back",
+    );
+  }
+
+  if (normalizedRole === "provider" && (!avatarUpload || !frontUpload || !backUpload)) {
     throw new ApiError(500, "Failed to get files data");
   }
-  const parsedLocation =
-    typeof location === "string" ? JSON.parse(location) : location;
+
+  let parsedLocation: any;
+  if (normalizedRole === "provider") {
+    try {
+      parsedLocation = typeof location === "string" ? JSON.parse(location) : location;
+    } catch {
+      throw new ApiError(400, "Invalid location format");
+    }
+  }
+  const providerLocation =
+    normalizedRole === "provider"
+      ? {
+          type: "Point",
+          coordinates: [Number(parsedLocation.lng), Number(parsedLocation.lat)]
+        }
+      : undefined;
+
 
   const user = await User.create({
     _id: userId,
     name,
     password,
     email,
-    role: allowedRoles.includes(role) ? role : "client",
-    location: {
-      type: "Point",
-      coordinates: [
-        Number(parsedLocation.coordinates?.[0]),
-        Number(parsedLocation.coordinates?.[1]),
-      ],
-    },
+    role: normalizedRole,
+    ...(providerLocation ? { location: providerLocation } : {}),
     avatar: avatarUpload,
-    identityCard: {
-      front: frondUpload,
-      back: backUpload,
-    },
+    ...(normalizedRole === "provider"
+      ? {
+          identityCard: {
+            front: frontUpload,
+            back: backUpload,
+          },
+        }
+      : {}),
   });
+
   return user;
 };

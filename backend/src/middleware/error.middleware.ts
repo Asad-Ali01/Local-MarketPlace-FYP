@@ -13,6 +13,8 @@ const errorHandler = (
         success:false,
         message:err.message || "Internal Server Error"
     })
+    console.log("Full Error: ",err);
+    console.log(err.stack);;
 }
 
 export {errorHandler};

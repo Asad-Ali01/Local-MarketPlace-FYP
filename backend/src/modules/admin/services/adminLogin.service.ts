@@ -15,7 +15,7 @@ export const adminLoginService = async (data: any) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new ApiError(404, "User not found");
+    throw new ApiError(401, "Email or password is wrong");
   }
   if (user.role !== "admin") {
     throw new ApiError(403, "Only admin can access this route");
@@ -30,8 +30,7 @@ export const adminLoginService = async (data: any) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id,
   );
-  user.refreshToken = refreshToken;
-  await user.save();
+
 
   const safeUser = await User.findById(user._id).select(
     "-password -refreshToken",
