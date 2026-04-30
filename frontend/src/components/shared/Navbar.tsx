@@ -38,6 +38,14 @@ function Navbar() {
           >
             About
           </NavLink>
+           <NavLink
+            to="/contact-us"
+            className={({ isActive }) =>
+              isActive ? "text-purple-700 font-semibold" : "text-gray-600 hover:text-purple-700"
+            }
+          >
+            Contact Us
+          </NavLink>
         </nav>
 
         {/* Desktop Buttons */}

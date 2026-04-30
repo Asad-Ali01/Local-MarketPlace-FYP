@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adminAllUsers, adminDeleteUser, adminEditUser, adminLogin, adminStats, adminUserDetails } from "../controller/admin.controller";
+import { adminAllUsers, adminDeleteUser, adminEditUser, adminLogin, adminLogout, adminStats, adminUserDetails } from "../controller/admin.controller";
 import { verifyJWT } from "../../../middleware/auth.middleware";
 import { authorrizeRoles } from "../../../middleware/role.middleware";
 import { upload } from "../../../middleware/multer.middleware";
@@ -16,4 +16,5 @@ router.route('/allUsers').get(verifyJWT,authorrizeRoles("admin"),adminAllUsers);
 router.route('/delete-user/:userId').delete(verifyJWT,authorrizeRoles("admin"),adminDeleteUser);
 router.route('/get-user/:userId').get(verifyJWT,authorrizeRoles("admin"),adminUserDetails);
 router.route('/edit-user/:userId').patch(verifyJWT,authorrizeRoles("admin"),userUploadedFiles,adminEditUser);
+router.route('/logout').post(verifyJWT,authorrizeRoles("admin"),adminLogout);
 export default router;

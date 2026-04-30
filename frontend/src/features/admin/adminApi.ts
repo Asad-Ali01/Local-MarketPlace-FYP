@@ -71,8 +71,15 @@ export const adminApi = createApi({
                 { type:"Users", id:arg.id},
                 { type:"Users",id:"LIST"}
             ]
+        }),
+        // Admin Logout 
+        adminLogoutApi: builder.mutation<{},null>({
+            query:() => ({
+                url: "/admin/logout",
+                method:"POST"
+            })
         })
     })
 })
 
-export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation} = adminApi;
+export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminLogoutApiMutation} = adminApi;

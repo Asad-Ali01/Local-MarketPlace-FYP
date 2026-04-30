@@ -3,7 +3,7 @@ import UserManagementComponent from '../components/UserManagementComponent'
 
 function AdminUserManagementPage() {
   return (
-    <div className='my-5 w-[80%] mx-auto'>
+    <div className='my-5 '>
         <UserManagementComponent/>
     </div>
   )

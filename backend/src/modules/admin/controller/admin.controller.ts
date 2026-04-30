@@ -8,6 +8,7 @@ import { ApiError } from "../../../utils/ApiError";
 import { adminDeleteUserService } from "../services/adminDeleteUser.service";
 import { adminUserDetailService } from "../services/adminUserDetails.service";
 import { adminEditUserService } from "../services/adminUserEdit";
+import { adminLogoutService } from "../services/adminLogout.service";
 const adminLogin = asyncHandler(async(req,res) => {
     const {safeUser,accessToken,refreshToken} = await adminLoginService(req.body);
 
@@ -64,4 +65,16 @@ const adminEditUser = asyncHandler(async(req,res) => {
  const {user} = await adminEditUserService(userId,req.body,req.files);
  return res.status(200).json( new ApiResponse(200,{user},"User updated successfully"))
 })
-export {adminLogin,adminStats,adminAllUsers,adminDeleteUser,adminUserDetails,adminEditUser};
+
+const adminLogout = asyncHandler(async(req,res) => {
+  const userId = req.user._id;
+  console.log("TYpe of userID: ",typeof userId);
+   if(!userId  || typeof userId !== "object"){
+    throw new ApiError(400,"User id is required to logout ");
+  }
+  await adminLogoutService(userId)
+  res.clearCookie("accessToken",cookieOptions);
+  res.clearCookie("refreshToken",cookieOptions)
+  return res.status(200)
+})
+export {adminLogin,adminStats,adminAllUsers,adminDeleteUser,adminUserDetails,adminEditUser,adminLogout};

@@ -40,7 +40,7 @@ function HomeHeroSection() {
             (tag, i) => (
               <span
                 key={i}
-                className="text-sm bg-gray-900 px-3 py-1 rounded-full cursor-pointer hover:bg-gray-800 transition-all delay-50"
+                className="text-sm bg-blue-800 text-white px-3 py-1 rounded-full cursor-pointer hover:bg-blue-700 transition-all delay-50"
               >
                 {tag}
               </span>

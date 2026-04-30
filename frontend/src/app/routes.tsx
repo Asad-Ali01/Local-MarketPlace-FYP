@@ -13,6 +13,9 @@ import UnAuthorizedPage from '@/components/shared/UnAuthorizedPage'
 import AdminDashboardPage from '@/modules/admin/pages/AdminDashboardPage'
 import AdminUserManagementPage from '@/modules/admin/pages/AdminUserManagementPage'
 import AdminUserEditPage from '@/modules/admin/pages/AdminUserEditPage'
+import AdminLayout from '@/layouts/AdminLayout'
+import ProviderGigPage from '@/modules/provider/pages/ProviderGigPage'
+import ClientPostPage from '@/modules/client/pages/ClientPostPage'
 function AppRoutes() {
 
   return (
@@ -26,22 +29,30 @@ function AppRoutes() {
     }>
         
     <Routes>
-        <Route element={<MainLayout/>}>
+  <Route element={<MainLayout />}>
 
-        <Route path='/' element={<HomePage/>}/>
-        <Route path='/about' element={<AboutPage/>}/>
-        <Route path='/register' element={<RegisterPage/>}/>
-        <Route path='/login' element={<LoginPage/>}/>
-        <Route path='/contact-us' element={<ContactPage/>}/>
-        <Route path='/about-us' element={<AboutPage/>}/>
-        <Route path='/admin' element={<AdminLoginPage/>}/>
-        <Route path='/unauthorized' element={<UnAuthorizedPage/>}/>
-        <Route path='/dashboard' element={<AdminDashboardPage/>}/>
-        <Route path='/user-management' element={<AdminUserManagementPage/>}/>
-        <Route path='/admin-edit-user/:userId' element={<AdminUserEditPage/>}/>
+    <Route path='/' element={<HomePage />} />
+    <Route path='about' element={<AboutPage />} />
+    <Route path='register' element={<RegisterPage />} />
+    <Route path='login' element={<LoginPage />} />
+    <Route path='contact-us' element={<ContactPage />} />
+    <Route path='about-us' element={<AboutPage />} />
+    <Route path='unauthorized' element={<UnAuthorizedPage />} />
+  </Route>
 
-        </Route>
-    </Routes>
+    {/* ADMIN ROUTES */}
+      <Route path='admin/login' element={<AdminLoginPage />} />
+      {/* Admin protected routes */}
+    <Route path='admin' element={<AdminLayout />}>
+      <Route path='dashboard' element={<AdminDashboardPage />} />
+      <Route path='user-management' element={<AdminUserManagementPage />} />
+      <Route path='edit-user/:userId' element={<AdminUserEditPage />} />
+
+    </Route>
+
+    <Route path='provider-gig' element={<ProviderGigPage />} />
+    <Route path='client-post' element={<ClientPostPage />} />
+</Routes>
     </Suspense>
     </>
   )

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"; // ✅ use same UI system
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import type { ILoginUserResponse } from "@/features/auth/types";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
 import { loginUser } from "@/features/auth/authSlice";
 
@@ -27,7 +27,7 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
       password: "",
     },
   });
-
+  const navigate = useNavigate()
   const handleLogin = async (data: loginSchemaType) => {
     try {
       const res = await loginApi(data).unwrap();
@@ -36,7 +36,11 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
           user: res.data.user,
           accessToken: res.data.accessToken,
         })
+       
       );
+       if(mode == "admin"){
+          navigate("/admin/dashboard")
+        }
       toast.success(res.message);
       form.reset();
     } catch (error: any) {

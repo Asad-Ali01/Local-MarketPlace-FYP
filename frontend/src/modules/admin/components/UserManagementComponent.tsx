@@ -103,7 +103,7 @@ function UserManagementComponent() {
       key: "actions",
       render: (_, record) => (
         <>
-          <Button onClick={() => navigate(`/admin-edit-user/${record.key}`)}>
+          <Button onClick={() => navigate(`/admin/edit-user/${record.key}`)}>
             Edit
           </Button>
           <Button onClick={() => handleDelete(record.key)}>Delete</Button>

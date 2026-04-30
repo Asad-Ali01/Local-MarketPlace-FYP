@@ -1,4 +1,4 @@
-import multer, { Multer,FileFilterCallback } from 'multer';
+import multer, { FileFilterCallback } from 'multer';
 import path from 'node:path';
 import { ApiError } from '../utils/ApiError';
 const storage = multer.memoryStorage();
@@ -8,7 +8,7 @@ const allowedExt = [".jpg",".jpeg",".png"]
 
 const fileFilter = (req:Express.Request,file:Express.Multer.File,cb:FileFilterCallback) => {
     const ext = path.extname(file.originalname).toLocaleLowerCase();
-
+    console.log("Here is file: ",file);
     if(
         allowedExt.includes(ext) &&
         allowedTypes.includes(file.mimetype)
