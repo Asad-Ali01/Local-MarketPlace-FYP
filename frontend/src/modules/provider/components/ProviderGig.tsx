@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Form, Input, InputNumber, Button, Checkbox, Card } from "antd";
+import { Form, Input, InputNumber, Button, Card } from "antd";
 
 // ---------------- Schema ----------------
 const gigSchema = z.object({

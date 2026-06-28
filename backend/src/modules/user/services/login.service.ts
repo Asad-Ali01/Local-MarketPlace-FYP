@@ -17,12 +17,12 @@ export const loginUserService = async (data: LoginUserPayload) => {
     const user = await User.findOne({email});
 
     if(!user){
-        throw new ApiError(401,"Incorrect email or password");
+        throw new ApiError(400,"Incorrect email or password");
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
     if(!isPasswordValid){
-        throw new ApiError(401,"Incorrect email or password");
+        throw new ApiError(400,"Incorrect email or password");
     }
 
     if(user.status !== "approved"){

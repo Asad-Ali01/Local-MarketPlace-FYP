@@ -1,38 +1,46 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import React from "react";
 
 function AboutPageComponent() {
-  const cardClass =
-    "bg-gradient-to-br from-pink-950 via-orange-900 to-purple-800 text-gray-300 hover:scale-105 transition duration-300";
+  const cardClass = "z-10 ";
 
   return (
-    <div className="bg-gradient-to-br  text-white py-16 px-6">
-      
-      <div id="about-us" className="max-w-6xl mx-auto">
+    <div className="relative  overflow-hidden bg-black text-white py-16 px-6">
+      {/* Grid Background */}
+      <div
+        className="absolute inset-0
+    bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:80px_80px] bg-repeat "
+      />
 
+      {/* Glow Effect */}
+      <div
+        className="absolute inset-0 
+    bg-[radial-gradient(circle_at_center,rgba(10,60,50,1),transparent_80%)] "
+      />
+     
+      <div id="about-us" className="max-w-6xl mx-auto">
         {/* Heading */}
-        <div className="flex flex-col gap-4 max-w-3xl">
+        <div className="flex flex-col z-10 gap-4 max-w-3xl">
           <h1 className="text-4xl font-bold">About Us</h1>
 
           <p className="text-gray-300 leading-relaxed">
-            We are building a modern, AI-powered local marketplace designed to 
-            connect buyers and sellers in a faster, smarter, and more reliable way.
+            We are building a modern, AI-powered local marketplace designed to
+            connect buyers and sellers in a faster, smarter, and more reliable
+            way.
           </p>
 
           <p className="text-gray-300 leading-relaxed">
-            Our platform simplifies discovery, enables direct communication, 
-            and creates a trusted space for secure transactions.
+            Our platform simplifies discovery, enables direct communication, and
+            creates a trusted space for secure transactions.
           </p>
 
           <p className="text-gray-300 leading-relaxed">
-            Whether you want to buy, sell, or explore, we provide a seamless 
-            and user-friendly experience for everyone.
+            Whether you want to buy, sell, or explore, we provide a seamless and
+            user-friendly experience for everyone.
           </p>
         </div>
 
         {/* Cards */}
         <div className="grid gap-6 mt-12 sm:grid-cols-2 lg:grid-cols-3">
-          
           <Card className={cardClass}>
             <CardHeader>
               <CardTitle>Fast Hiring</CardTitle>
@@ -82,11 +90,8 @@ function AboutPageComponent() {
             <CardHeader>
               <CardTitle>Easy to Use</CardTitle>
             </CardHeader>
-            <CardContent>
-              Clean and simple interface for everyone.
-            </CardContent>
+            <CardContent>Clean and simple interface for everyone.</CardContent>
           </Card>
-
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Model, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../../../utils/ApiError";
@@ -18,15 +18,17 @@ interface IIdentityCard {
   };
 }
 
+export interface ILocation{
+  type:"Point",
+  coordinates:[number,number]
+  }
+
 interface IUser extends Document {
   name: string;
   email: string;
   password: string;
   role: "admin" | "client" | "provider";
-  location: {
-  type:"Point",
-  coordinates:[number,number]
-  };
+  location:ILocation;
   avatar: IAvatar;
   identityCard: IIdentityCard;
   status: "pending" | "rejected" | "approved" ;
@@ -182,4 +184,4 @@ userSchema.methods.generateRefreshToken = function () {
   );
 };
 
-export const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
+export const User = mongoose.model<IUser>("User", userSchema);

@@ -16,7 +16,7 @@ export const adminEditUserService = async (userId: string, body: any, files: any
     throw new ApiError(400, "Nothing to update");
   }
 
-  const updatedData = {};
+
   const user = await User.findById(userId);
   if (!user) {
     throw new ApiError(400, "User id is required");

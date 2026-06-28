@@ -3,7 +3,7 @@ import DashboardComponent from '../components/DashBoardComponent'
 
 function AdminDashboardPage() {
   return (
-    <div>
+    <div >
         <DashboardComponent/>
     </div>
   )

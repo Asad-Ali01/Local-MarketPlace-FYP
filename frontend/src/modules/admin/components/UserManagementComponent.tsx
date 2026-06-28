@@ -102,19 +102,19 @@ function UserManagementComponent() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <>
+        <div className="flex">
           <Button onClick={() => navigate(`/admin/edit-user/${record.key}`)}>
             Edit
           </Button>
           <Button onClick={() => handleDelete(record.key)}>Delete</Button>
-        </>
+        </div>
       ),
     },
   ];
   const { Search } = Input;
   return (
     <div >
-      <div className="mb-5 space-y-2  ">
+      <div className="mb-5 space-y-2 ">
         <div>
           <Select value={filterValue} onValueChange={setFilterValue}>
             <Label className="mb-2">Filter By status</Label>
@@ -143,18 +143,23 @@ function UserManagementComponent() {
           }}
         />
       </div>
+   
+
       <Table
         columns={columns}
         dataSource={dataSource}
-        className="overflow-x-auto"
+        // className="overflow-x-auto"
+          scroll={{ x: true }}
+
         pagination={{
           current: page,
           pageSize: 10,
           total: data?.data.totalUsers,
           onChange: (p) => setPage(p),
         }}
-      />
-    </div>
+        />
+        </div>
+
   );
 }
 

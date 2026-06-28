@@ -20,7 +20,6 @@ function UserEditBYAdminComponent() {
     isEdit,
     setIsEdit,
     register,
-    control,
     handleSubmit,
     formState,
     setAvatarFile,

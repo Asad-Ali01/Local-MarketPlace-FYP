@@ -1,12 +1,10 @@
 import { z } from "zod";
-import { passwordSchema } from "@/types/global.types";
+import { passwordSchema } from "@/types/global.schemas";
+import { fileSchema } from "@/schemas/global.schema";
 // File schema - handles both File and undefined/null
-const fileSchema = z
-  .instanceof(File)
-  .refine((file) => file.size < 5 * 1024 * 1024, "Max 5Mb")
-  .refine((file) => file.type.startsWith("image/"), "Only image allowed");
 
-const optionalFileSchema = z
+
+export const optionalFileSchema = z
   .instanceof(File)
   .refine((file) => file.size < 5 * 1024 * 1024, "Max 5Mb")
   .refine((file) => file.type.startsWith("image/"), "Only image allowed")
@@ -17,7 +15,7 @@ const optionalFileSchema = z
 
 
 // Location schema - for PROVIDER (required)
-const requiredLocationSchema = z.object({
+export const requiredLocationSchema = z.object({
   lng: z.coerce.number()
     .min(-180, "Longitude must be >= -180")
     .max(180, "Longitude must be <= 180"),

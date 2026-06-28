@@ -1,12 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "../../api/baseQuery";
-import type { IAdminAllUsersResponse,  IAdminStatsResponse, IAdminUserResponse  } from "./types";
+import type { IAdminAllUsersResponse,  IAdminStatsResponse, IAdminUserResponse, ICategoryResponse,IGetAllCategories,IGetAllSubCategories,ISubCategoryResponse  } from "./types";
 import type { ILoginUserRequest, ILoginUserResponse } from "../auth/types";
 
 export const adminApi = createApi({
     reducerPath:"adminApi",
     baseQuery:baseQueryWithReauth,
-    tagTypes:["Users"],
+    tagTypes:["Users","Category"],
     endpoints:(builder) => ({
           // Admin Login
         adminLoginApi: builder.mutation<ILoginUserResponse,ILoginUserRequest>({
@@ -28,7 +28,7 @@ export const adminApi = createApi({
         }),
         adminAllUsersApi: builder.query<IAdminAllUsersResponse,{page:number;filterValue:string;search:string;}>({
             query: ({page,filterValue,search}) => ({
-                url:'/admin/allUsers',
+                url:'/admin/users',
                 method:"GET",
                 params:{
                     page,
@@ -45,7 +45,7 @@ export const adminApi = createApi({
         // Delete user
         adminDeleteUser: builder.mutation<{},{id:string}>({
             query:({id}) => ({
-                url:`/admin/delete-user/${id}`,
+                url:`/admin/users/${id}`,
                 method:"DELETE",
             }),
             invalidatesTags:(result,error,arg) => [
@@ -55,14 +55,14 @@ export const adminApi = createApi({
         }),
         adminGetUser: builder.query<IAdminUserResponse,string>({
             query:(userId) => ({
-                url:`/admin/get-user/${userId}`,
+                url:`/admin/users/${userId}`,
                 method:"GET",
             }),
         }),
         // Admin update usere
         adminUpdateUser:builder.mutation<IAdminUserResponse,{id:string,data:FormData}>({
             query:({id,data}) => ({
-                url:`/admin/edit-user/${id}`,
+                url:`/admin/users/${id}`,
                 method:"PATCH",
                 body:data
             }),
@@ -78,8 +78,49 @@ export const adminApi = createApi({
                 url: "/admin/logout",
                 method:"POST"
             })
+        }),
+
+
+        // Create Category
+        adminCreateCategoryApi: builder.mutation<ICategoryResponse,FormData>({
+            query:(data) => ({
+                url:"/admin/category",
+                method:"POST",
+                body:data
+            }),
+            invalidatesTags:[
+               {
+                    type:"Category",
+                    id:"LIST"
+                }
+            ]
+        }),
+        adminCreateSubCategory: builder.mutation<ISubCategoryResponse,{name:string;category:string;}>({
+            query:(data) => ({
+                url:"/admin/sub-category",
+                method:"POST",
+                body:data
+            }),
+        }),
+        adminGetAllCategories:builder.query<IGetAllCategories,void>({
+            query:() => ({
+                url:'/admin/category',
+                method:"GET"
+            }),
+            providesTags:[
+                {
+                    type:"Category",
+                    id:"LIST"
+                }
+            ]
+        }),
+         adminGetAllSubCategories:builder.query<IGetAllSubCategories,void>({
+            query:() => ({
+                url:'/admin/sub-category',
+                method:"GET"
+            })
         })
     })
 })
 
-export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminLogoutApiMutation} = adminApi;
+export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminLogoutApiMutation,useAdminCreateCategoryApiMutation,useAdminCreateSubCategoryMutation,useAdminGetAllCategoriesQuery,useAdminGetAllSubCategoriesQuery} = adminApi;

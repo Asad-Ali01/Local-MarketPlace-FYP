@@ -6,9 +6,9 @@ import { refreshAcessTokenService } from "./auth.service";
 export const refreshAccessToken = asyncHandler(async(req,res) => {
     const refreshtoken = req.cookies.refreshToken;
     console.log("Here is refreshToken: ",refreshtoken);
-    const {accessToken,refreshToken} = await refreshAcessTokenService(refreshtoken);
+    const {user,accessToken,refreshToken} = await refreshAcessTokenService(refreshtoken);
     return res.status(200)
     .cookie("accessToken",accessToken,cookieOptions)
     .cookie("refreshToken",refreshToken,cookieOptions)
-    .json(new ApiResponse(200,{accessToken},"Access token refresh successfully"))
+    .json(new ApiResponse(200,{user,accessToken},"Access token refresh successfully"))
 })

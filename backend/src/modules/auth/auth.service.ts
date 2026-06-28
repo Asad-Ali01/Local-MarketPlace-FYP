@@ -16,10 +16,10 @@ export const refreshAcessTokenService = async(incomingRefreshToken:string) => {
         console.log("Decoded: ",decoded);
         const user = await User.findOne({_id:decoded._id});
         if(!user){
-            throw new ApiError(401,"Invalid refresh token");
+            throw new ApiError(404,"User not found");
         }
         if(!user.refreshToken){
-            throw new ApiError(401,"Invalid refresh token");
+            throw new ApiError(401,"Refresh token not found");
         }
         console.log("Incoming refreshToken: ",incomingRefreshToken," User refreshToken: ",user.refreshToken)
         const isTokenValid = await bcrypt.compare(incomingRefreshToken,user.refreshToken);
@@ -28,8 +28,9 @@ export const refreshAcessTokenService = async(incomingRefreshToken:string) => {
             throw new ApiError(401,"Invalid refresh token");
         }
         const {accessToken,refreshToken} = await generateAccessAndRefreshToken(user._id);
-
-        return {accessToken,refreshToken};
+        const userObj = user.toObject();
+        const {password,refreshToken:storedRefreshToken,...safeUser} = userObj
+        return {user:safeUser,accessToken,refreshToken};
 
     } catch (error) {
            if(error instanceof ApiError){

@@ -4,10 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
+  resolve:{
+    tsconfigPaths:true
+  },
   plugins: [
       tailwindcss(),
-    react(),
-    tsconfigPaths()
+    react()
+    
   ],
  
 })

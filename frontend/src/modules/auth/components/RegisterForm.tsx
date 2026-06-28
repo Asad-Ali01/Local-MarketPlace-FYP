@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { useRegisterUserApiMutation } from "@/features/auth/authApi";
 import toast from "react-hot-toast";
 import ImageDropzone from "@/components/shared/ImageDropZone";
+import IdentityVerificationSection from "./IdentityVerificationSection";
+import { useCurrentLocation } from "../hooks/useCurrentLocation";
+import { useState } from "react";
 
 function RegisterForm() {
   const form = useForm<RegisterSchemaInputType, any, RegisterSchemaType>({
@@ -25,6 +28,7 @@ function RegisterForm() {
       role: "provider",
     },
   });
+  const {getCurrentLocation} = useCurrentLocation();
   const [registerUserApi] = useRegisterUserApiMutation();
   const role = form.watch("role");
   const handleRegister = async (data: RegisterSchemaType) => {
@@ -46,7 +50,24 @@ function RegisterForm() {
       toast.error(error?.data?.message || "Registration failed");
     }
   };
-  // console.log("Here is location",form.watch("location"),form.formState.errors.location.lng);
+  const [locationLoading,setLocationLoading] = useState(false)
+  const handleLocation = async () => {
+  try {
+      setLocationLoading(true)
+      const location = await getCurrentLocation();
+  
+      form.setValue("location",location,{
+        shouldValidate:true
+      })
+      setLocationLoading(false)
+  } catch (error:any) {
+    console.error(error);
+    toast.error(error.message)
+    setLocationLoading(false)
+  }finally{
+    setLocationLoading(false)
+  }
+  }
   return (
     <div className="flex justify-center items-center py-10 px-4">
       <Card className="w-full max-w-2xl shadow-lg">
@@ -130,55 +151,7 @@ function RegisterForm() {
 
             {/* IDENTITY (ONLY FOR PROVIDER) */}
             {role === "provider" && (
-              <div>
-                <h3 className="font-semibold text-gray-800 mb-2">
-                  Identity Verification
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex gap-1">
-                      <Label>Front CNIC</Label>
-                      <span className="text-red-500">*</span>
-                    </div>
-                    <Controller
-                      name="front"
-                      control={form.control}
-                      render={({ field }) => (
-                        <ImageDropzone
-                          label="IdentityCard front Side"
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      )}
-                    />
-
-                    <Error
-                      msg={(form.formState.errors as any).front?.message}
-                    />
-                  </div>
-
-                  <div>
-                    <div className="flex gap-1">
-                      <Label>Back CNIC</Label>
-                      <span className="text-red-500">*</span>
-                    </div>
-                    <Controller
-                      name="back"
-                      control={form.control}
-                      render={({ field }) => (
-                        <ImageDropzone
-                          label="IdentityCard back Side"
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      )}
-                    />
-
-                    <Error msg={(form.formState.errors as any).back?.message} />
-                  </div>
-                </div>
-              </div>
+             <IdentityVerificationSection control={form.control} errors={form.formState.errors}/>
             )}
 
             {/* BASIC INFO */}
@@ -223,37 +196,20 @@ function RegisterForm() {
             {/* LOCATION (ONLY FOR PROVIDER) */}
             {role === "provider" && (
               <div>
-                <h3 className="font-semibold mb-2">
+                <h3 className="font-semibold mb-2" >
                   Location <span className="text-red-500">*</span>
                 </h3>
 
                 <Button
                   type="button"
                   className="mb-3"
-                  onClick={() => {
-                    navigator.geolocation.getCurrentPosition(
-                      (pos) => {
-                        form.setValue(
-                          "location",
-                          {
-                            lng: pos.coords.longitude,
-                            lat: pos.coords.latitude,
-                          },
-                          {
-                            shouldValidate: true,
-                          },
-                        );
-                        form.clearErrors("location");
-                        toast.success("Location detected");
-                      },
-                      () => {
-                        toast.error("Unable to access location");
-                      },
-                    );
-                  }}
+                  onClick={handleLocation}
+                  disabled={locationLoading}
                 >
                   📍 Use My Location
+
                 </Button>
+              
                 <Error msg={(form.formState.errors as any).location?.message} />
               </div>
             )}
@@ -268,7 +224,7 @@ function RegisterForm() {
     </div>
   );
 }
-function Error({ msg }: { msg?: string }) {
+export function Error({ msg }: { msg?: string }) {
   if (!msg) return null;
   return <p className="text-sm text-red-500 mt-1">{msg}</p>;
 }

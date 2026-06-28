@@ -1,5 +1,5 @@
 import { useLocation, Link } from "react-router";
-import { LayoutDashboard, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, LogOut ,Package } from "lucide-react";
 import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
 import { logoutUser } from "@/features/auth/authSlice";
 import { persistor } from "@/app/store";
@@ -14,7 +14,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import ConfirmDialog from "@/components/shared/ConfirmModal";
@@ -31,6 +30,11 @@ const items = [
     icon: Users,
     url: "/admin/user-management",
   },
+    {
+    title: "Categories",
+    icon: Package,
+    url: "/admin/categories",
+  },
 ];
 
 export default function AdminSidebar() {
@@ -39,14 +43,27 @@ export default function AdminSidebar() {
   const [adminLogoutApi] = useAdminLogoutApiMutation();
   const dispatch = useAppDisptach();
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+  try {
+    await adminLogoutApi(null).unwrap();
+    dispatch(logoutUser());
+    await persistor.purge();
+    localStorage.removeItem("persist:auth");
+    navigate("/admin/login");
+  } catch (error: any) {
+  
+    toast.error(error.data.message);
+  }
+};
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
+    <Sidebar collapsible="icon" variant="sidebar" >
       {/* HEADER */}
       <div className="flex items-center  justify-between p-2 border-b">
         {state == "expanded" && <h2 className="font-bold text-lg">Admin</h2>}
 
-        {/* ✅ SHADCN TOGGLE BUTTON */}
-        <SidebarTrigger />
+         {/* SHADCN TOGGLE BUTTON */}
+        {/* <SidebarTrigger /> */}
       </div>
 
       {/* CONTENT */}
@@ -61,10 +78,10 @@ export default function AdminSidebar() {
 
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton className=""  asChild>
                       <Link
                         to={item.url}
-                        className={isActive ? "bg-black text-white" : ""}
+                        className={ isActive ? "bg-black text-white hover:bg-black! hover:text-white!" : "" }
                       >
                         <item.icon />
                         <span>{item.title}</span>
@@ -90,19 +107,7 @@ export default function AdminSidebar() {
             description="You will be logged out of your account."
             confirmText="Logout"
             variant="destructive"
-            onConfirm={async () => {
-              try {
-                console.log("RUns");
-                await adminLogoutApi(null).unwrap();
-                dispatch(logoutUser());
-                await persistor.purge();
-                localStorage.removeItem("persist:auth");
-                navigate("/admin/login");
-              } catch (error: any) {
-                console.log("Error; ", error);
-                toast.error(error.data.message);
-              }
-            }}
+            onConfirm={handleLogout}
           />
         </div>
       </SidebarContent>

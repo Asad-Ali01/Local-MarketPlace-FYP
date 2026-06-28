@@ -13,11 +13,11 @@ export const registerUserService = async (data: any, files: any) => {
   
   const normalizedRole = role;
   const uploadedFiles = (files || {}) as Record<string, Express.Multer.File[]>;
-  if ([name, email, password, confirmPassword].some((field) => !field.trim())) {
+  if ([name, email, password, confirmPassword].some((field) => typeof field === "string" && !field.trim())) {
     throw new ApiError(400, "All fields are required");
   }
   if (normalizedRole === "provider" && !location) {
-    throw new ApiError(400, "All fields are required");
+    throw new ApiError(400, "Location is required");
   }
   if (password !== confirmPassword) {
     throw new ApiError(400, "Password do not match");

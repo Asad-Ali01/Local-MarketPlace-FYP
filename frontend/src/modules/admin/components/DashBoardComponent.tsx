@@ -31,8 +31,8 @@ export default function DashboardComponent() {
   console.log("Here is results: ", data);
   const apiResponse = data?.data;
   return (
-    <div className={`h-300 sm:h-180  lg:h-160`}>
-      <div className="p-6 w-full ">
+    <div className={`h-300 sm:h-180  lg:h-160 `}>
+      <div className="p-6  ">
         <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white shadow rounded-lg p-4">

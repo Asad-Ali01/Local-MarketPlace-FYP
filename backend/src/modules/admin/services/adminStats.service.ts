@@ -4,12 +4,12 @@ export const adminGetStatsService = async (
  range:string
 ) => {
 
-console.log("Range: ",range);
+
 
   let startDate = new Date();
   let unit: "day" | "month" = "day";
 
-  // ⏳ DATE RANGE SETTING
+  //  DATE RANGE SETTING
   if (range === "7d") {
     startDate.setDate(startDate.getDate() - 7);
     unit = "day";
@@ -32,7 +32,7 @@ console.log("Range: ",range);
       },
     },
 
-    // 🔥 GROUP BY TIME + ROLE
+    //  GROUP BY TIME + ROLE
     {
       $group: {
         _id: {
@@ -55,7 +55,7 @@ console.log("Range: ",range);
   ]);
 
 //   
-  // 🔥 FORMAT FOR FRONTEND
+  // FORMAT FOR FRONTEND
   const result: any = {};
 
 //   Total Users

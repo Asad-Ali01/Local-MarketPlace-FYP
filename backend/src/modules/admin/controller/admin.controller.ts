@@ -9,6 +9,9 @@ import { adminDeleteUserService } from "../services/adminDeleteUser.service";
 import { adminUserDetailService } from "../services/adminUserDetails.service";
 import { adminEditUserService } from "../services/adminUserEdit";
 import { adminLogoutService } from "../services/adminLogout.service";
+import { createSubCategoryService } from "../services/createSubCategory";
+import { createCategoryService } from "../services/createCategory";
+import { getAllCategoriesService, getAllSubCategoriesService } from "../services/getAllCategoriesAndSubcategories";
 const adminLogin = asyncHandler(async(req,res) => {
     const {safeUser,accessToken,refreshToken} = await adminLoginService(req.body);
 
@@ -77,4 +80,36 @@ const adminLogout = asyncHandler(async(req,res) => {
   res.clearCookie("refreshToken",cookieOptions)
   return res.status(200)
 })
-export {adminLogin,adminStats,adminAllUsers,adminDeleteUser,adminUserDetails,adminEditUser,adminLogout};
+
+// Categories
+
+const createCategory = asyncHandler(async(req,res) => {
+  const userId = req.user._id.toString();
+  if(!userId){
+    throw new ApiError(401,"Only admin allowed to create category");
+  }
+  console.error("Here is Body: ",req.body);
+  const {category} = await createCategoryService(req.body,userId,req.file);
+
+  return res.status(200).json(new ApiResponse(200,{category},"Category created successfully"));
+})
+
+const createSubCategory = asyncHandler(async(req,res) => {
+  console.log("Here is sub category data: ",req.body);
+ const {subCategory} = await createSubCategoryService(req.body);
+
+ return res.status(200).json(new ApiResponse(200,{subCategory},"Sub category created successfully"));
+})
+
+
+const getAllCategories = asyncHandler(async(req,res) => {
+  const {categories} = await getAllCategoriesService();
+  return res.status(200).json( new ApiResponse(200,categories,"Categories fetched successfully"));
+})
+
+const getAllSubCategories = asyncHandler(async(req,res) => {
+  console.log("All sub categories ");
+  const {subcategories} = await getAllSubCategoriesService();
+  return res.status(200).json( new ApiResponse(200,subcategories,"SubCategories fetched successfully"));
+})
+export {adminLogin,adminStats,adminAllUsers,adminDeleteUser,adminUserDetails,adminEditUser,adminLogout,createCategory,createSubCategory,getAllCategories,getAllSubCategories};

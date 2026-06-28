@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { type loginSchemaType, loginSchema } from "@/schemas/login.schema";
+import { type loginSchemaType, loginSchema } from "@/schemas/global.schema";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input"; // ✅ use same UI system
 import { Button } from "@/components/ui/button";
@@ -10,15 +10,15 @@ import type { ILoginUserResponse } from "@/features/auth/types";
 import { Link, useNavigate } from "react-router";
 import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
 import { loginUser } from "@/features/auth/authSlice";
-
+type LoginMode = "client" | "provider" | "admin";
 type LoginFormProps = {
   loginApi: (data: loginSchemaType) => {
     unwrap: () => Promise<ILoginUserResponse>;
-  },
-  mode:string
+  };
+  mode: LoginMode;
 };
 
-function LoginForm({ loginApi,mode }: LoginFormProps) {
+function LoginForm({ loginApi, mode }: LoginFormProps) {
   const dispatch = useAppDisptach();
   const form = useForm<loginSchemaType>({
     resolver: zodResolver(loginSchema),
@@ -27,7 +27,7 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
       password: "",
     },
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleLogin = async (data: loginSchemaType) => {
     try {
       const res = await loginApi(data).unwrap();
@@ -35,23 +35,25 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
         loginUser({
           user: res.data.user,
           accessToken: res.data.accessToken,
-        })
-       
+        }),
       );
-       if(mode == "admin"){
-          navigate("/admin/dashboard")
-        }
+      console.log("Mode is: ",res.data.user.role);
+      if (mode == "admin") {
+        navigate("/admin/dashboard");
+      }else if(res.data.user.role == "provider"){
+        navigate("/provider")
+      }
+    
       toast.success(res.message);
       form.reset();
     } catch (error: any) {
       toast.error(error?.data?.message || "Login failed");
     }
   };
-  console.log(mode);
+
   return (
     <div className="flex justify-center items-center min-h-[80vh] px-4">
       <Card className="w-full max-w-md shadow-lg">
-        
         {/* Header */}
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
@@ -60,15 +62,12 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
         </CardHeader>
 
         <CardContent>
-          <form
-            onSubmit={form.handleSubmit(handleLogin)}
-            className="space-y-5"
-          >
-            
+          <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-5">
             {/* Email */}
             <div>
-              <Label>Email</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
+              id="email"
                 placeholder="Enter your email"
                 {...form.register("email")}
               />
@@ -77,8 +76,9 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
 
             {/* Password */}
             <div>
-              <Label>Password</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
+              id="password"
                 type="password"
                 placeholder="Enter your password"
                 {...form.register("password")}
@@ -97,24 +97,22 @@ function LoginForm({ loginApi,mode }: LoginFormProps) {
             </div>
 
             {/* Button */}
-            <Button className="w-full bg-purple-700 hover:bg-purple-800">
-              Login
+            <Button disabled={form.formState.isSubmitting} className="w-full bg-purple-700 hover:bg-purple-800">
+              {form.formState.isSubmitting ? "Logging in" : "Login"}
             </Button>
-             {/* Register redirect */}
-            {
-              mode === "user" && 
-            <p className="text-sm text-center text-gray-500">
-              Don’t have an account?
-              <Link
-                to="/register"
-                className="text-purple-700 font-medium hover:underline"
-              >
-                Sign up
-              </Link>
-            </p>
-            }
-            
-
+     
+            {/* Register redirect */}
+            {mode !== "admin" && (
+              <p className="text-sm text-center text-gray-500">
+                Don’t have an account?
+                <Link
+                  to="/register"
+                  className="text-purple-700 font-medium hover:underline"
+                >
+                  Sign up
+                </Link>
+              </p>
+            )}
           </form>
         </CardContent>
       </Card>

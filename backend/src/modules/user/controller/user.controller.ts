@@ -8,7 +8,7 @@ import { cookieOptions } from "../../../utils/cookieOptions";
 
 
 const registerUser = asyncHandler(async(req,res) => {
-    console.log(req.body);
+  
     await registerUserService(req.body,req.files);
     return res
     .status(200)
