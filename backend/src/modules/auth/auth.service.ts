@@ -39,3 +39,17 @@ export const refreshAcessTokenService = async(incomingRefreshToken:string) => {
            throw new ApiError(500,"Server error")
     }
 }
+
+
+// Logout
+
+
+const logoutService = async(userId:object) => {
+   console.log("ASad");
+   const user = await User.findByIdAndUpdate(userId,{
+    $unset: {refreshToken: 1}
+   })
+   return {user}
+}
+
+export {logoutService}

@@ -6,7 +6,7 @@ import type { ILoginUserRequest, ILoginUserResponse } from "../auth/types";
 export const adminApi = createApi({
     reducerPath:"adminApi",
     baseQuery:baseQueryWithReauth,
-    tagTypes:["Users","Category"],
+    tagTypes:["Users","Category","SubCategory"],
     endpoints:(builder) => ({
           // Admin Login
         adminLoginApi: builder.mutation<ILoginUserResponse,ILoginUserRequest>({
@@ -73,12 +73,7 @@ export const adminApi = createApi({
             ]
         }),
         // Admin Logout 
-        adminLogoutApi: builder.mutation<{},null>({
-            query:() => ({
-                url: "/admin/logout",
-                method:"POST"
-            })
-        }),
+
 
 
         // Create Category
@@ -101,6 +96,10 @@ export const adminApi = createApi({
                 method:"POST",
                 body:data
             }),
+            invalidatesTags:[{
+                type:"SubCategory",
+                id:"LIST"
+            }]
         }),
         adminGetAllCategories:builder.query<IGetAllCategories,void>({
             query:() => ({
@@ -118,9 +117,15 @@ export const adminApi = createApi({
             query:() => ({
                 url:'/admin/sub-category',
                 method:"GET"
-            })
+            }),
+             providesTags:[
+                {
+                    type:"SubCategory",
+                    id:"LIST"
+                }
+            ]
         })
     })
 })
 
-export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminLogoutApiMutation,useAdminCreateCategoryApiMutation,useAdminCreateSubCategoryMutation,useAdminGetAllCategoriesQuery,useAdminGetAllSubCategoriesQuery} = adminApi;
+export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminCreateCategoryApiMutation,useAdminCreateSubCategoryMutation,useAdminGetAllCategoriesQuery,useAdminGetAllSubCategoriesQuery} = adminApi;

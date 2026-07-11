@@ -8,7 +8,7 @@ import { ApiError } from "../../../utils/ApiError";
 import { adminDeleteUserService } from "../services/adminDeleteUser.service";
 import { adminUserDetailService } from "../services/adminUserDetails.service";
 import { adminEditUserService } from "../services/adminUserEdit";
-import { adminLogoutService } from "../services/adminLogout.service";
+
 import { createSubCategoryService } from "../services/createSubCategory";
 import { createCategoryService } from "../services/createCategory";
 import { getAllCategoriesService, getAllSubCategoriesService } from "../services/getAllCategoriesAndSubcategories";
@@ -69,17 +69,7 @@ const adminEditUser = asyncHandler(async(req,res) => {
  return res.status(200).json( new ApiResponse(200,{user},"User updated successfully"))
 })
 
-const adminLogout = asyncHandler(async(req,res) => {
-  const userId = req.user._id;
-  console.log("TYpe of userID: ",typeof userId);
-   if(!userId  || typeof userId !== "object"){
-    throw new ApiError(400,"User id is required to logout ");
-  }
-  await adminLogoutService(userId)
-  res.clearCookie("accessToken",cookieOptions);
-  res.clearCookie("refreshToken",cookieOptions)
-  return res.status(200)
-})
+
 
 // Categories
 
@@ -112,4 +102,4 @@ const getAllSubCategories = asyncHandler(async(req,res) => {
   const {subcategories} = await getAllSubCategoriesService();
   return res.status(200).json( new ApiResponse(200,subcategories,"SubCategories fetched successfully"));
 })
-export {adminLogin,adminStats,adminAllUsers,adminDeleteUser,adminUserDetails,adminEditUser,adminLogout,createCategory,createSubCategory,getAllCategories,getAllSubCategories};
+export {adminLogin,adminStats,adminAllUsers,adminDeleteUser,adminUserDetails,adminEditUser,createCategory,createSubCategory,getAllCategories,getAllSubCategories};

@@ -15,6 +15,7 @@ import ImageDropzone from "@/components/shared/ImageDropZone";
 import IdentityVerificationSection from "./IdentityVerificationSection";
 import { useCurrentLocation } from "../hooks/useCurrentLocation";
 import { useState } from "react";
+import { Error } from "@/components/shared/Error";
 
 function RegisterForm() {
   const form = useForm<RegisterSchemaInputType, any, RegisterSchemaType>({
@@ -25,7 +26,7 @@ function RegisterForm() {
       password: "",
       confirmPassword: "",
       avatar: undefined,
-      role: "provider",
+      role: "client",
     },
   });
   const {getCurrentLocation} = useCurrentLocation();
@@ -224,8 +225,5 @@ function RegisterForm() {
     </div>
   );
 }
-export function Error({ msg }: { msg?: string }) {
-  if (!msg) return null;
-  return <p className="text-sm text-red-500 mt-1">{msg}</p>;
-}
+
 export default RegisterForm;

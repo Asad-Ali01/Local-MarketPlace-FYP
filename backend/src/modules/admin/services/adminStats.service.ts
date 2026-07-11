@@ -43,6 +43,7 @@ export const adminGetStatsService = async (
               unit: unit,
             },
           },
+          // count: { $sum: 1 }
         },
         count: { $sum: 1 },
       },
@@ -57,7 +58,7 @@ export const adminGetStatsService = async (
 //   
   // FORMAT FOR FRONTEND
   const result: any = {};
-
+console.log("Here is stats: ",stats);
 //   Total Users
 const totalUsers = await User.countDocuments();
 const pendingApprovals = await User.countDocuments({
@@ -70,8 +71,7 @@ const rejectedUsers = await User.countDocuments({
     status:"rejected"
 })
   stats.forEach((item) => {
-   
-    const key = item._id.period.toISOString().split("T")[0];
+    const key = item._id.period.toISOString().split("T")[0];                                               
     if (!result[key]) {
       result[key] = {
         label: key,
@@ -88,5 +88,6 @@ const rejectedUsers = await User.countDocuments({
       result[key].providers = item.count;
     }
   });
+
   return {results:Object.values(result),totalUsers,pendingApprovals,approvedUsers,rejectedUsers};
 };

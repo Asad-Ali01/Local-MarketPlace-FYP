@@ -12,6 +12,7 @@ export async function geocodeAddress(address:string){
               "User-Agent":"Local Market Place (asadllc255@gmail.com)"
           }
       })
+
      const data = response.data
 
      if(!data.length){

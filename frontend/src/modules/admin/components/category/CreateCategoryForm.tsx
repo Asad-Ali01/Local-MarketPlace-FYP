@@ -15,7 +15,7 @@ import { usePostNewCategory } from "../../hooks/usePostNewCategory";
 import toast from "react-hot-toast";
 import { createSchema, type CreateSchemaType } from "../../schemas/categorySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CategoryForm } from "../../types/CategoryFormType";
+
 
 
 

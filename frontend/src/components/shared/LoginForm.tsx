@@ -10,7 +10,7 @@ import type { ILoginUserResponse } from "@/features/auth/types";
 import { Link, useNavigate } from "react-router";
 import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
 import { loginUser } from "@/features/auth/authSlice";
-type LoginMode = "client" | "provider" | "admin";
+type LoginMode = "user" | "admin";
 type LoginFormProps = {
   loginApi: (data: loginSchemaType) => {
     unwrap: () => Promise<ILoginUserResponse>;
@@ -41,7 +41,8 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
       if (mode == "admin") {
         navigate("/admin/dashboard");
       }else if(res.data.user.role == "provider"){
-        navigate("/provider")
+        console.log("Provider");
+        navigate("/provider/dashboard")
       }
     
       toast.success(res.message);
@@ -52,8 +53,8 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh] px-4">
-      <Card className="w-full max-w-md shadow-lg">
+    <div className="flex justify-center items-center min-h-[80vh]  px-4">
+      <Card className="w-full max-w-md shadow-lg py-10">
         {/* Header */}
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">
@@ -87,7 +88,9 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
             </div>
 
             {/* Extra options */}
-            <div className="flex justify-between items-center text-sm">
+            {
+              mode != "admin"  &&
+               <div className="flex justify-between items-center text-sm">
               <Link
                 to="/forgot-password"
                 className="text-purple-700 hover:underline"
@@ -95,6 +98,8 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
                 Forgot password?
               </Link>
             </div>
+            }
+           
 
             {/* Button */}
             <Button disabled={form.formState.isSubmitting} className="w-full bg-purple-700 hover:bg-purple-800">

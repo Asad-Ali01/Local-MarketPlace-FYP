@@ -148,9 +148,7 @@ function UserManagementComponent() {
       <Table
         columns={columns}
         dataSource={dataSource}
-        // className="overflow-x-auto"
           scroll={{ x: true }}
-
         pagination={{
           current: page,
           pageSize: 10,

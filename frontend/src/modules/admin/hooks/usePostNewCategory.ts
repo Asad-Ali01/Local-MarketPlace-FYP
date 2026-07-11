@@ -2,7 +2,7 @@ import { useAdminCreateCategoryApiMutation } from "@/features/admin/adminApi";
 import type { CreateSchemaType } from "../schemas/categorySchema";
 
 export const usePostNewCategory = () => {
-  const [createCategoryApi, { isLoading, isSuccess, error }] =
+  const [createCategoryApi, { isLoading}] =
     useAdminCreateCategoryApiMutation();
 
   const createCategory = async (data: CreateSchemaType) => {

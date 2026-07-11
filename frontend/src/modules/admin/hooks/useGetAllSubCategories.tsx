@@ -8,7 +8,10 @@ type SubCategoryType = {
 }
 const useGetAllSubCategories = () => {
     const {data} = useAdminGetAllSubCategoriesQuery();
-
+    const subCategoryOptions = data?.data.map((category) => ({
+        value:category._id,
+        name:category.name
+    }))
    const dataSource : SubCategoryType[] = data?.data.map((category) => ({
     _id:category._id,
     categoryname:category.category.name,
@@ -41,7 +44,7 @@ const useGetAllSubCategories = () => {
     }
    ]
 
-  return {dataSource,columns}
+  return {dataSource,columns,subCategoryOptions}
 }
 
 export default useGetAllSubCategories

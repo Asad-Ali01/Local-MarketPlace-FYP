@@ -34,7 +34,8 @@ export default function DashboardComponent() {
     <div className={`h-300 sm:h-180  lg:h-160 `}>
       <div className="p-6  ">
         <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Showing users stats */}
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white shadow rounded-lg p-4">
             <h2 className="text-sm font-medium text-gray-500">Total Users</h2>
             <p className="text-2xl font-bold text-gray-900">
@@ -65,9 +66,9 @@ export default function DashboardComponent() {
               {apiResponse?.rejectedUsers}
             </p>
           </div>
-        </div>
+        </section>
       </div>
-      <div className="w-full   mb-20   p-4 shadow">
+      <section className="w-full   mb-20   p-4 shadow">
         <Button
           className={`${range === "7d" && "bg-blue-900"}`}
           onClick={() => handleRange("7d")}
@@ -86,7 +87,8 @@ export default function DashboardComponent() {
         >
           yearly
         </Button>
-        <div className={`w-full mt-10   h-full sm:flex`}>
+        {/* This is graph data */}
+        <section className={`w-full mt-10   h-full sm:flex`}>
           <div className={`w-full `}>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={apiResponse?.results}>
@@ -131,8 +133,8 @@ export default function DashboardComponent() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
+        </section>
+      </section>
     </div>
   );
 }

@@ -3,8 +3,10 @@ import {z} from "zod";
 export const providerGigSchema = z.object({
     title:z.string().min(3,"Minimum 3 character required").max(30,"Maximum 30 characters allowed"),
     description:z.string().min(200,"Mininum 200 characters requried"),
-    location:requiredLocationSchema,
-      image1:optionalFileSchema,
+    location:z.string().min(5,"Minumum 5 characters required"),
+   category: z.string().min(1, "Category is required"),
+subcategory: z.string().min(1, "Subcategory is required"),
+    image1:optionalFileSchema,
     image2:optionalFileSchema,
     image3:optionalFileSchema,
     status:z.enum(["draft","published"])

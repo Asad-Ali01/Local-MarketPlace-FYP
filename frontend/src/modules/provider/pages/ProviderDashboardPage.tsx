@@ -1,8 +1,11 @@
 import React from 'react'
+import ProviderDashboardTopStats from '../components/dashboard/ProviderDashboardTopStats'
 
 function ProviderDashboardPage() {
   return (
-    <div>asadadaaa</div>
+    <div>
+      <ProviderDashboardTopStats/>
+    </div>
   )
 }
 

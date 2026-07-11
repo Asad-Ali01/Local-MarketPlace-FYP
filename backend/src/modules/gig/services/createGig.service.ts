@@ -3,13 +3,21 @@ import { ApiError } from "../../../utils/ApiError";
 import { uploadToCloudinary } from "../../../utils/cloudinary";
 import { type IImage, Gig } from "../models/gig.model";
 import { geocodeAddress } from "../../../utils/geoCode";
-
+type createGigType = {
+  title:string;
+  description:string;
+  address:string;
+  status:"draft" | "published";
+  targetSlots:[];
+  category:string;
+  subCategory:string;
+}
 export const createGigService = async (
-  data: any,
+  data: createGigType,
   files: Express.Multer.File[],
   userId: Types.ObjectId,
 ) => {
-  let { title, description, address, status, targetSlots } = data;
+  let { title, description, address, status, targetSlots,category,subCategory } = data;
 
   const totalGigs = await Gig.countDocuments({ provider: userId });
   if (totalGigs >= 2) {
@@ -24,12 +32,12 @@ export const createGigService = async (
       ? JSON.parse(targetSlots)
       : targetSlots
     : [];
-
-  const hasValidText = [title, description, status].every(
+  console.log("Here is slotsToassign = :",typeof targetSlots);
+  const hasValidText = [title, description, status,address].every(
     (d) => typeof d === "string" && d.trim().length > 0,
   );
 
-  if (!hasValidText || !address) {
+  if (!hasValidText) {
     throw new ApiError(
       400,
       "All fields (title, description, status, and location) are required",
@@ -39,10 +47,11 @@ export const createGigService = async (
   let location: any;
   try {
     // Getting (lon,lat) from address
-    let loc = await geocodeAddress(address);
+    let latAndLon = await geocodeAddress(address);
+    console.log("Lat and lon: ",latAndLon);
     location = {
       type: "Point" as const,
-      coordinates: [Number(loc.longitude), Number(loc.latitude)],
+      coordinates: [Number(latAndLon.longitude), Number(latAndLon.latitude)],
     };
   } catch (error) {
     if (error instanceof ApiError) {
@@ -52,6 +61,7 @@ export const createGigService = async (
 
   //    Uploaded Images
   let uploadedImages: IImage[] = [];
+  console.log("Here is req.files:",files.length);
   if (files && files.length > 0) {
     const filesUploaded = files.map(async (file, arrayIndex) => {
       const targetSlot = slotsToAssign[arrayIndex];
@@ -75,7 +85,7 @@ export const createGigService = async (
       )
       .sort((a, b) => a.slot - b.slot);
   }
-
+console.log("Here is uploaded Images: ",uploadedImages);
   const gig = await Gig.create({
     provider: userId,
     title,
@@ -83,6 +93,8 @@ export const createGigService = async (
     status,
     location,
     images: uploadedImages,
+    category,
+    subCategory
   });
 
   return { gig };

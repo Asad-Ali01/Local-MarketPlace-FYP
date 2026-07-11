@@ -13,7 +13,7 @@ export default function ImageDropzone({ value, onChange, label }: Props) {
   const handleFile = (file?: File) => {
     if (!file) return;
 
-    // 🔥 validation (client-side quick check)
+    //  validation (client-side quick check)
     if (!file.type.startsWith("image/")) {
       alert("Only image files allowed");
       return;

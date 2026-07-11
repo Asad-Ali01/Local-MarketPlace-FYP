@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "../../../middleware/multer.middleware";
-import {  createGig,  getGigsDetails, updateGig } from "../controller/gig.controller";
+import {  createGig,  getGigsDetails, providerDashBoardStats, updateGig } from "../controllers/gig.controller";
 import { verifyJWT } from "../../../middleware/auth.middleware";
 import { authorrizeRoles } from "../../../middleware/role.middleware";
 
@@ -15,11 +15,13 @@ const gigUploadedFiles = upload.array(
 router.route('/gig').post(verifyJWT,authorrizeRoles("provider","admin"),gigUploadedFiles,createGig);
 
 // update gig
-router.route('/gig').patch(verifyJWT,authorrizeRoles("provider","admin"),gigUploadedFiles,updateGig);
+router.route('/gig/:providerId').patch(verifyJWT,authorrizeRoles("provider","admin"),gigUploadedFiles,updateGig);
 
 // Gigs detailed fetched
 router.route('/gig').get(verifyJWT,getGigsDetails);
 
+// provider dashbaord stats
+router.route('/gig/:providerId').get(verifyJWT,providerDashBoardStats);
 
 
 export default router

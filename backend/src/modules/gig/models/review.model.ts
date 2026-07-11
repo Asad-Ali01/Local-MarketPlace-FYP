@@ -5,7 +5,7 @@ interface IReview extends Document{
     gig:mongoose.Types.ObjectId;
     rating:number;
     comment:string;
-
+    provider:Types.ObjectId
     
 }
 
@@ -15,6 +15,12 @@ const reviewSchema = new mongoose.Schema<IReview>({
         ref:"User",
         required:true
     },
+    provider:{
+            type: Types.ObjectId,
+        ref:"User",
+        required:true
+    },
+    
     gig:{
         type:Types.ObjectId,
         ref:"Provider",

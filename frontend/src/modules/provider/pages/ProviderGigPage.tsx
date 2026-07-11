@@ -1,10 +1,11 @@
 import React from 'react'
 import ProviderGigForm from '../components/ProviderGig'
+import Stepper from '../components/Stepper'
 
 function ProviderGigPage() {
   return (
     <div>
-        <ProviderGigForm/>
+        <Stepper/>
     </div>
   )
 }

@@ -17,10 +17,6 @@ import AdminLayout from "@/layouts/AdminLayout";
 import ProviderGigPage from "@/modules/provider/pages/ProviderGigPage";
 import ClientPostPage from "@/modules/client/pages/ClientPostPage";
 import PageNotFound from "@/components/shared/PageNotFound";
-import ForgertPasswordPage from "@/modules/ForgetPassword.tsx/pages/OtpResetPasswordPage";
-import OtpSend from "@/modules/ForgetPassword.tsx/components/OtpSend";
-import OtpVerify from "@/modules/ForgetPassword.tsx/components/OtpVerify";
-import OtpResetPassword from "@/modules/ForgetPassword.tsx/components/OtpResetPassword";
 import OtpSendPage from "@/modules/ForgetPassword.tsx/pages/OtpSendPage";
 import OtpVerifyPage from "@/modules/ForgetPassword.tsx/pages/OtpVerifyPage";
 import OtpResetPasswordPage from "@/modules/ForgetPassword.tsx/pages/OtpResetPasswordPage";
@@ -74,8 +70,8 @@ function AppRoutes() {
           <Route path="provider" element={<ProviderLayout />}>
             <Route index element={<ProviderLandingPage />} />
             <Route path="dashboard" element={<ProviderDashboardPage />} />
+            <Route path="create-gig" element={<ProviderGigPage />} />
           </Route>
-          <Route path="provider-gig" element={<ProviderGigPage />} />
           <Route path="client-post" element={<ClientPostPage />} />
         </Routes>
       </Suspense>

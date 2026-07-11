@@ -29,7 +29,7 @@ export interface IGig{
     images?:IImage[];
    category:Types.ObjectId,
    subCategory:Types.ObjectId
-   
+
 }
 
 const imagesSchema = new mongoose.Schema<IImage>({
@@ -49,6 +49,7 @@ const gigSchema = new mongoose.Schema<IGig>({
         required:true,
         ref:"User"
     },
+ 
     title:{
         type:String,
         required:true,
@@ -100,8 +101,8 @@ const gigSchema = new mongoose.Schema<IGig>({
         type:Types.ObjectId,
         ref:"SubCategory",
         required:true
-    }
-
+    },
+ 
 },{timestamps:true})
 // For fast sorting
 gigSchema.index({

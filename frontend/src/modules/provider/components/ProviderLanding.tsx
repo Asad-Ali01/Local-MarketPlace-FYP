@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppSelector } from "@/hooks/useAppDispatchSelector";
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 function ProviderLanding() {
   const user = useAppSelector((state) => state.auth.user);
@@ -28,7 +28,7 @@ function ProviderLanding() {
       {/* Main CTA Card */}
       <Card className="border-dashed">
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">
+          <CardTitle onClick={() => navigate('/')} className="text-xl">
             Create your first gig
           </CardTitle>
         </CardHeader>
@@ -39,7 +39,7 @@ function ProviderLanding() {
           </p>
 
           <Button
-            onClick={() => navigate("/provider/gigs/create")}
+            onClick={() => navigate("/provider/create-gig")}
             className="gap-2"
           >
             <Plus size={16} />

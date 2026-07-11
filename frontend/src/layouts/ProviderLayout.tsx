@@ -1,27 +1,72 @@
+import GlobalSidebar from "@/components/shared/GlobalSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useLogoutApiMutation } from "@/features/auth/authApi";
 import { useGetMyGigsApiQuery } from "@/features/gig/gigApi";
-import ProviderDashboardPage from "@/modules/provider/pages/ProviderDashboardPage";
+import { useAppSelector } from "@/hooks/useAppDispatchSelector";
 
-import { Navigate, Outlet, useLocation } from "react-router"
+import ProviderLandingPage from "@/modules/provider/pages/ProviderLandingPage";
+import { Spin } from "antd";
+import { LayoutDashboard, ShoppingBag } from "lucide-react";
 
+import { Navigate, Outlet, useLocation } from "react-router";
 
 function ProviderLayout() {
-
-    const {data,isLoading} = useGetMyGigsApiQuery();
-const location = useLocation();
-
-console.log(location.pathname);
-  console.log(data?.data.hasGigs);
-    if(isLoading){
-      return <div>Loading</div>
-    }
- 
-  if (data?.data?.hasGigs && location.pathname !== "/provider/dashboard") {
-    return <Navigate to="/provider/dashboard" replace />;
+ const { data, isLoading, isFetching } = useGetMyGigsApiQuery(undefined, {
+  refetchOnMountOrArgChange: false,
+  refetchOnFocus: false,
+  refetchOnReconnect: false,
+});
+  const [providerLogoutApi] = useLogoutApiMutation();
+  const location = useLocation();
+const items = [
+  {
+    title: "Dashboard",
+    icon: LayoutDashboard,
+    url: "/provider/dashboard",
+  },
+  {
+    title: "Gigs",
+    icon: ShoppingBag,
+    url: "/provider/gigs",
+  },
+  
+];
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  console.log(location.pathname);
+  console.log("Has gigs", data?.data.hasGigs);
+  const hasGigs = data?.data.hasGigs
+    if (isLoading && !data && isFetching) {
+    return null; // later replace with skeleton/spinner
   }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  if (hasGigs) {
+    return(
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <GlobalSidebar role="Provider" items={items} onLogout={providerLogoutApi}/>
 
+          <section className="flex-1 min-w-0">
+            <header className="h-14 border-b flex items-center px-4">
 
- return <Outlet/>
- 
+            <SidebarTrigger/>
+            </header>
+        <main className="p-4">
+          <Outlet />
+        </main>
+          </section>
+        </div>
+
+     
+      </SidebarProvider>
+    ) 
+  }
+  if(!hasGigs && location.pathname == "/provider/create-gig"){
+    return <Outlet/>
+  }
+  
+  return <ProviderLandingPage/>
 }
-
-export default ProviderLayout
+export default ProviderLayout;
