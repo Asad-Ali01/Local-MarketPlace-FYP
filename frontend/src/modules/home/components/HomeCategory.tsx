@@ -6,41 +6,22 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useGetAllCategoriesForHomePageQuery } from "@/features/home/homeApi";
+import type { IIcon } from "@/features/admin/types";
+import type { ISubCategoryHome } from "@/features/home/types";
+import { useNavigate } from "react-router";
+type Category = {
+  _id: string;
+  name: string;
+  slug: string;
+  icon: IIcon;
+  subCategories: ISubCategoryHome[];
+};
 function HomeCategory() {
-  const categories = [
-    {
-      categoryName: "Cleaners",
-      categoryItems: [
-        {
-          name: "Home Cleaning",
-          image: "HomeCategory/Cleaning/houseCleaning.jfif",
-        },
-        {
-          name: "Carpet Cleaning",
-
-          image: "HomeCategory/Cleaning/carpetCleaning.jfif",
-        },
-      ],
-    },
-    {
-      categoryName: "Movers",
-      categoryItems: [
-        {
-          name: "Packing and Unpacking",
-          image: "HomeCategory/Movers/PackingAndUnpacking.jfif",
-        },
-        {
-          name: "Long Distance Moving",
-          image: "HomeCategory/Movers/LongDistance.jfif",
-        },
-        {
-          name: "Furniture Moving",
-          image: "HomeCategory/Movers/FurnitureMoving.jfif",
-        },
-      ],
-    },
-  ];
-  const [selected, setSelected] = useState(categories[0]);
+  const { data } = useGetAllCategoriesForHomePageQuery();
+  console.log(data);
+  const navigate = useNavigate();
+  const [selected, setSelected] = useState<Category | null>(null);
   return (
     <section className="my-10 grid place-items-center">
       {/* Top Heading */}
@@ -54,43 +35,49 @@ function HomeCategory() {
         </p>
       </div>
       {/* Category name  */}
-      <Carousel>
-        <CarouselContent>
-          {categories.map((cat) => (
-            <CarouselItem
-            key={cat.categoryName}
-              className="basis-1/2 cursor-pointer"
-              onClick={() => setSelected(cat)}
-            >
-              <h2 className=" font-bold bg-purple-600 text-blue-100  w-25  text-center rounded">
-                {cat.categoryName}
-              </h2>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        {/* <CarouselPrevious />
-  <CarouselNext /> */}
-      </Carousel>
-      <div className="flex mt-2 flex-wrap">
 
-      {/* Selected category */}
-      {selected.categoryItems.map((sel) => (
-        <div
-          key={sel.name}
-          className="relative m-3 w-60 overflow-hidden rounded-xl"
-        >
-          <img
-            className="h-40 w-full cursor-pointer   hover:scale-110 transition-all duration-300 object-cover"
-            src={`/${sel.image}`}
-            alt={sel.name}
-          />
-          <div className="absolute inset-x-0 bottom-0 h-10 bg-linear-to-t from-black/80 via-black/30 to-transparent backdrop-blur-sm" />
-          <h1 className="absolute bottom-3 left-3 right-3 text-sm font-bold text-white">
-            {sel.name}
+      <h1 className="bg-linear-to-r from-blue-600 border-b-4 border-blue-700 mb-10 via-orange-600 to-blue-600 text-2xl font-bold bg-clip-text text-transparent ">
+        Categories
+      </h1>
+      <section className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-2  gap-10">
+        {data?.data.map((cat) => {
+          return (
+            <h1
+              key={cat._id}
+              onClick={() => setSelected(cat)}
+              className={`shadow-2xl h-20 grid place-items-center p-5 bg-linear-to-br from-blue-900 via-blue-800 to-blue-300 font-bold text-white cursor-pointer hover:scale-105 transition-all duration-300  ${selected?._id == cat._id && "from-orange-500 via-orange-600 to-orange-700"}`}
+            >
+              {cat.name}
+            </h1>
+          );
+        })}
+      </section>
+      {selected && selected.subCategories.length > 0 ? (
+        <div className="grid place-items-center mt-10">
+          <h1 className=" bg-linear-to-r from-blue-600 border-b-4 border-blue-700 mb-10 via-orange-600 to-blue-600 text-2xl font-bold bg-clip-text text-transparent ">
+            Sub Categories
           </h1>
+
+          <section className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-2  gap-10">
+            {selected.subCategories?.map((sub) => {
+              return (
+                <h1
+                  key={sub._id}
+                  onClick={() => navigate(`/providerslisting/${sub.slug}`)}
+                  className={`shadow-xl font-bold text-white bg-blue-800 cursor-pointer h-20 grid place-items-center p-5  hover:scale-105 transition-transform`}
+                >
+                  {sub.name}
+                </h1>
+              );
+            })}
+          </section>
         </div>
-      ))}
-      </div>
+      ) : 
+        <h1 className="mt-10 bg-linear-to-r from-blue-600 border-b-4 border-blue-700 mb-10 via-orange-600 to-blue-600 text-2xl font-bold bg-clip-text text-transparent ">
+           No Sub Categories Found
+          </h1>
+      }
+      <div className="flex mt-2 flex-wrap">{/* Selected category */}</div>
     </section>
   );
 }

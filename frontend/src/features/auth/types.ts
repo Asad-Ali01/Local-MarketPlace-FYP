@@ -1,6 +1,4 @@
-import type{ IUser } from "@/types/global.types";
-
-
+import type { IUser } from "@/types/global.types";
 
 // Auth state
 export interface IAuth {
@@ -19,19 +17,22 @@ export interface IUpdateUser {
   password?: string;
 }
 
-
 // LoginUser Request
 export interface ILoginUserRequest {
   email: string;
   password: string;
 }
 // LoginUser Response
-export interface ILoginUserResponse  {
-  data:{
+export interface ILoginUserResponse {
+  data: {
     user: IUser;
     accessToken: string;
-  }
-  message:string;
+  };
+  message: string;
 }
 
-
+export interface IResetPassword {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

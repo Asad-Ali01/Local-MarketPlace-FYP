@@ -3,18 +3,20 @@ import { FormProvider, useForm } from "react-hook-form";
 import {
   providerGigSchema,
   type ProviderGigSchemaInputType,
+  type ProviderGigSchemaType,
 } from "../schemas/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field } from "@/components/ui/field";
-import BasicInfoStep from "./formSteps/BasicInfoStep";
-import CategoryStep from "./formSteps/CategoryStep";
+import BasicInfoStep from "./CreateGigformSteps/BasicInfoStep";
+import CategoryStep from "./CreateGigformSteps/CategoryStep";
 import { Button } from "@/components/ui/button";
-import ImagesTakingStep from "./formSteps/ImagesTakingStep";
+import ImagesTakingStep from "./CreateGigformSteps/ImagesTakingStep";
 import { Key } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCreateGigApiMutation } from "@/features/gig/gigApi";
-import ReviewStep from "./formSteps/ReviewStep";
+import ReviewStep from "./CreateGigformSteps/ReviewStep";
 import { useNavigate } from "react-router";
+import PriceAndTagsStep from "./CreateGigformSteps/PriceAndTagsStep";
 
 type StepperProps = {
   currentStep: number;
@@ -23,24 +25,27 @@ type StepperProps = {
   }[];
 };
 
-function Stepper() {
+function CreateGigStepper() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1);
   const [createGigApi] = useCreateGigApiMutation();
-  const methods = useForm<ProviderGigSchemaInputType>({
+  const form = useForm<ProviderGigSchemaType>({
     resolver: zodResolver(providerGigSchema),
   });
   const validateCurrentStep = async () => {
     let valid = false;
 
     if (step == 1) {
-      valid = await methods.trigger(["title", "description", "location"]);
+      valid = await form.trigger(["title", "description", "location"]);
     }
     if (step == 2) {
-      valid = await methods.trigger(["category", "subcategory", "status"]);
+      valid = await form.trigger(["category", "subcategory", "status"]);
     }
     if (step == 3) {
-      valid = await methods.trigger(["image1", "image2", "image3"]);
+      valid = await form.trigger(["image1", "image2", "image3"]);
+    }
+    if(step == 4){
+      valid = await form.trigger(["startingPrice","tags"])
     }
     return valid
   };
@@ -49,10 +54,13 @@ function Stepper() {
     setStep((prev) => prev - 1);
   };
 
-  const onSubmit = async (data: ProviderGigSchemaInputType) => {
+  const onSubmit = async (data: ProviderGigSchemaType) => {
     console.log(data);
     const formData = new FormData();
     // text fields
+    if(data.avatar){
+      formData.append("avatar",data.avatar)
+    }
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("address", data.location);
@@ -80,10 +88,18 @@ function Stepper() {
       formData.append("images", data.image3);
       targetSlots.push(3);
     }
+    if(data.startingPrice){
+      formData.append("startingPrice",JSON.stringify(data.startingPrice))
+    }
+    formData.append("tags",JSON.stringify(data.tags))
     formData.append("targetSlots", JSON.stringify(targetSlots));
     try {
-       await createGigApi(formData).unwrap();
-    } catch (error: any) {
+    await createGigApi(formData).unwrap();
+       
+    form.reset();
+    navigate("/provider/dashboard");
+  }
+     catch (error: any) {
       toast.error("Failed to create gig");
     }
   };
@@ -91,7 +107,8 @@ function Stepper() {
     { id: 1, title: "Basic Info" },
     { id: 2, title: "Category" },
     { id: 3, title: "Images" },
-    { id: 4, title: "Review" },
+    { id: 4, title: "Price & Tags" },
+    { id: 5, title: "Review" },
   ];
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,20 +119,21 @@ function Stepper() {
       }
       return; // block submission unless truly on the last step
     }
-    await methods.handleSubmit(onSubmit)(e);
-    methods.reset()
-    navigate('/provider/dashboard')
+   await form.handleSubmit(onSubmit)(e);
+  
+   
+    
   };
-  console.log("HEre is tep: ", step);
+console.log("Errors: ",form.formState.errors.startingPrice)
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen p-3 flex items-center justify-center ">
 
-    <FormProvider  {...methods}>
+    <FormProvider  {...form}>
       <form
         onSubmit={onFormSubmit}
-        className={`space-y-6 my-7  flex flex-col border-2 shadow-2xl p-6 items-center max-w-3xl w-full rounded  justify-center py-4  `}
+        className={`space-y-6 my-7  flex flex-col border-2 shadow-2xl p-2 sm:p-10 items-center max-w-3xl w-full rounded  justify-center py-4  `}
       >
-          <section className="flex items-center   w-full pl-10   justify-center ">
+          <section className="flex   w-full   overflow-auto ">
             {steps.map((item, index) => (
               <div key={item.id} className="flex flex-1 ">
                 {/* Circle + Title */}
@@ -153,8 +171,9 @@ function Stepper() {
           {step == 1 && <BasicInfoStep />}
           {step == 2 && <CategoryStep />}
           {step == 3 && <ImagesTakingStep />}
-          {step == 4 && <ReviewStep />}
-          <div className="flex gap-3  justify-end">
+          {step == 4 && <PriceAndTagsStep />}
+          {step == 5 && <ReviewStep />}
+          <div className="flex gap-3 mt-4 justify-end">
             {step > 1 && (
               <Button
                 className="justify-self-end"
@@ -167,12 +186,12 @@ function Stepper() {
             )}
 
            
-            {step < 4 && (
+            {step < 5 && (
               <Button type="submit">
                 Next
               </Button>
             )}
-            {step == 4 && <Button type="submit">Submit</Button>}
+            {step == 5   && <Button type="submit">Submit</Button>}
           </div>
         </div>
       </form>
@@ -181,4 +200,4 @@ function Stepper() {
   );
 }
 
-export default Stepper;
+export default CreateGigStepper;

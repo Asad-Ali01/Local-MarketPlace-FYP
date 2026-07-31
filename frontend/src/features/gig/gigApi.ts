@@ -1,6 +1,6 @@
 import { baseQueryWithReauth } from "@/api/baseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import type { ICreateGigResponse, IGetGigDetailsResponse, IProviderDashboardTopCardRequest, IProviderDashboardTopCardResponse } from "./types";
+import type { ICreateGigResponse, IGetGigDetailsResponse, IProviderDashboardTopCardResponse, IProviderGetAllGigsByCategoryResponse } from "./types";
 
 export const gigApi = createApi({
     reducerPath:"gigApi",
@@ -36,9 +36,15 @@ export const gigApi = createApi({
                 method:"GET"
             })
 
+        }),
+        getAllGigsByCategory: builder.query<IProviderGetAllGigsByCategoryResponse,string>({
+            query:(slug) => ({
+                url:`gig/category/${slug}`,
+                method:"GET"
+            })
         })
     })
 })
 
 
-export const {useGetMyGigsApiQuery,useCreateGigApiMutation,useProviderDashboardTopCardQuery} = gigApi;
+export const {useGetMyGigsApiQuery,useCreateGigApiMutation,useProviderDashboardTopCardQuery,useGetAllGigsByCategoryQuery} = gigApi;

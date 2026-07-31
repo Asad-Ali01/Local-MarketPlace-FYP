@@ -10,6 +10,8 @@ import type { ILoginUserResponse } from "@/features/auth/types";
 import { Link, useNavigate } from "react-router";
 import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
 import { loginUser } from "@/features/auth/authSlice";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 type LoginMode = "user" | "admin";
 type LoginFormProps = {
   loginApi: (data: loginSchemaType) => {
@@ -27,6 +29,7 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
       password: "",
     },
   });
+  const [visible,setVisible] = useState(false)
   const navigate = useNavigate();
   const handleLogin = async (data: loginSchemaType) => {
     try {
@@ -78,12 +81,26 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
             {/* Password */}
             <div>
               <Label htmlFor="password">Password</Label>
+              <div className="relative">
+             
               <Input
               id="password"
-                type="password"
-                placeholder="Enter your password"
-                {...form.register("password")}
+              type={visible ? "text" : "password"}
+              placeholder="Enter your password"
+              {...form.register("password")}
               />
+               <button
+      type="button"
+      onClick={() => setVisible(!visible)}
+      className="absolute right-3 top-1/2 -translate-y-1/2"
+    >
+      {visible ? (
+        <Eye size={18} />
+      ) : (
+        <EyeOff size={18} />
+      )}
+    </button>
+              </div>
               <Error msg={form.formState.errors.password?.message} />
             </div>
 

@@ -1,5 +1,5 @@
-import { Category } from "../models/category.model"
-import { SubCategory } from "../models/subCategory.model";
+import { Category } from "../../category/models/category.model"
+import { SubCategory } from "../../category/models/subCategory.model";
 
 export const getAllCategoriesService = async() => {
    const categories = await Category.find().lean();

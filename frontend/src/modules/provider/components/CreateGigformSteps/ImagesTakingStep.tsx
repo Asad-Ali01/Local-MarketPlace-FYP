@@ -8,6 +8,16 @@ function ImagesTakingStep() {
     const form = useFormContext<ProviderGigSchemaInputType>();
   return (
     <div>
+       <Field>
+          <FieldLabel>Profile Picture</FieldLabel>
+          <Controller
+          name='avatar'
+          control={form.control}
+          render={({field}) => (
+              <ImageDropzone label='Profile picture' value={field.value} onChange={field.onChange}/>
+          )}                                          
+          />                
+        </Field>
         <Field>
           <FieldLabel>Image 1</FieldLabel>
           <Controller

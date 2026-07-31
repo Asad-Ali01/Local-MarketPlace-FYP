@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../../../utils/ApiError";
 
-interface IAvatar {
+export interface IAvatar {
   url: string;
   public_id: string;
 }
@@ -157,13 +157,13 @@ userSchema.methods.isPasswordCorrect = async function (password: string) {
 };
 
 userSchema.methods.generateAccessToken = function () {
-  if (!process.env.ACCESS_TOKEN_SECRET)
+  if (!process.env.JWT_ACCESS_SECRET)
     throw new ApiError(500, "Access Token Secret missing");
   return jwt.sign(
     {
       _id: this._id,
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.JWT_ACCESS_SECRET,
     {
       expiresIn: "1h",
     },
@@ -171,13 +171,13 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 userSchema.methods.generateRefreshToken = function () {
-  if (!process.env.REFRESH_TOKEN_SECRET)
+  if (!process.env.JWT_REFRESH_SECRET)
     throw new ApiError(500, "Access Refresh Token missing");
   return jwt.sign(
     {
       _id: this._id,
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.JWT_REFRESH_SECRET,
     {
       expiresIn: "7d",
     },

@@ -1,5 +1,5 @@
 import mongoose, { Types } from "mongoose";
-import { ILocation } from "../../user/models/user.model";
+import { IAvatar, ILocation } from "../../user/models/user.model";
 
 
 export interface IImage{
@@ -18,20 +18,29 @@ interface ISubCategory{
     categort:Types.ObjectId
 }
 export interface IGig{
+    avatar:IAvatar
     provider:Types.ObjectId;
     title:string;
     description:string;
     location:ILocation,
-    status:"draft" | "published",
+    status:"draft" | "published";
     rating:number;
     totalReviews:number;
     totalOrders:number;
     images?:IImage[];
-   category:Types.ObjectId,
-   subCategory:Types.ObjectId
-
+   category:Types.ObjectId;
+   subCategory:Types.ObjectId;
+    startingPrice?:number;
+    tags:[string] 
 }
-
+const gigAvatarSchema = new mongoose.Schema({
+    url:{
+        type:String
+    },
+    public_id:{
+        type:String
+    }
+})
 const imagesSchema = new mongoose.Schema<IImage>({
     url:{
         type:String,
@@ -44,6 +53,7 @@ const imagesSchema = new mongoose.Schema<IImage>({
     }
 })
 const gigSchema = new mongoose.Schema<IGig>({
+    avatar:gigAvatarSchema,
     provider:{
         type:Types.ObjectId,
         required:true,
@@ -54,13 +64,13 @@ const gigSchema = new mongoose.Schema<IGig>({
         type:String,
         required:true,
         min:4,
-        max:20
+        max:80
     },
     description:{
         type:String,
         required:true,
         min:50,
-        max:300
+        max:1000
     },
     images:[imagesSchema],
     location:{
@@ -102,6 +112,17 @@ const gigSchema = new mongoose.Schema<IGig>({
         ref:"SubCategory",
         required:true
     },
+    startingPrice:{
+        type:Number,
+        default:null
+    },
+    tags:[
+        {
+            type:String,
+            trim:true,
+            lowercase:true
+        }
+    ]
  
 },{timestamps:true})
 // For fast sorting

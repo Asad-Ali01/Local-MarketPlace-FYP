@@ -20,7 +20,7 @@ function ReviewStep() {
   const images = [values.image1, values.image2, values.image3].filter(
     (img): img is File => img instanceof File
   );
-
+  const avatar = values.avatar
   return (
     <div className="w-full space-y-6">
       <h3 className="text-lg font-semibold">Review your gig</h3>
@@ -54,7 +54,23 @@ function ReviewStep() {
           <p className="font-medium capitalize">{values.status}</p>
         </div>
       </div>
-
+      {/*Avatar  */}
+      <div className="space-y-2">
+        <p className="text-sm text-gray-500">Profile Picture</p>
+        <div className="flex gap-3">
+         {
+           
+          avatar ?  <img
+              key={"avatar"}
+              src={URL.createObjectURL(avatar)}
+              alt={"Profile picture"}
+              className="h-24 w-24 rounded-md object-cover border"
+            /> :  <p className="text-sm text-gray-400">No profiles picture was added</p>
+         }
+        
+       
+        </div>
+      </div>
       <div className="space-y-2">
         <p className="text-sm text-gray-500">Images</p>
         <div className="flex gap-3">

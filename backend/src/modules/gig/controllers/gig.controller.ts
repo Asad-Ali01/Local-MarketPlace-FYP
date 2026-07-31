@@ -7,13 +7,18 @@ import { createSubCategoryService } from "../../admin/services/createSubCategory
 import { getGigBasicInfoService } from "../services/getGigBasicInfo.service";
 import { updateGigService } from "../services/updateGig.service";
 import { providerDashboardStatsService } from "../services/providerDashboardStats";
+import { getAllGigsByCategoryService } from "../services/getAllGigsByCategory";
+import { Types } from "mongoose";
 
 const createGig = asyncHandler(async(req,res) => {
-    const files = (req.files as Express.Multer.File[]) || [];
+    const files = req.files as {
+      images:Express.Multer.File[],
+      avatar:Express.Multer.File[]
+    };
     const userId = req.user._id;
     console.log("Here is data: ",req.body);
   
-  const {gig} = await createGigService(req.body,files,userId);
+  const {gig} = await createGigService(req.body,files.images,files.avatar,userId);
 
   return res.status(200).json(new ApiResponse(200,gig,"Gig created successfully"));
 })
@@ -61,4 +66,16 @@ const providerDashBoardStats = asyncHandler(async(req,res) => {
 })
 
 
-export {createGig,updateGig,getGigsDetails,providerDashBoardStats};
+const getAllGigsByCategory = asyncHandler(async(req,res) => {
+  const {slug} = req.params
+
+  if(!slug || typeof(slug) !== "string")
+  {
+    throw new ApiError(400,"Category Id is required")
+  }
+  const {gigs,fullAddress,city} = await getAllGigsByCategoryService(slug);
+
+  return res.status(200).json(new ApiResponse(200,{gigs,fullAddress,city},"All gigs fetched successfully"));
+})
+
+export {createGig,updateGig,getGigsDetails,providerDashBoardStats,getAllGigsByCategory};

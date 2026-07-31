@@ -4,7 +4,7 @@ import { ApiError } from "./ApiError";
 export async function geocodeAddress(address:string){
   try {
       const response = await axios.get(`https://nominatim.openstreetmap.org/search`,{
-        params:{
+        params:{                                
             format:"json",
             q:address
         },

@@ -11,13 +11,28 @@ type createGigType = {
   targetSlots:[];
   category:string;
   subCategory:string;
+  startingPrice:string;
+  tags:string
 }
 export const createGigService = async (
   data: createGigType,
-  files: Express.Multer.File[],
+  images: Express.Multer.File[],
+  avatar:Express.Multer.File[],
   userId: Types.ObjectId,
 ) => {
-  let { title, description, address, status, targetSlots,category,subCategory } = data;
+  let { title, description, address, status, targetSlots,category,subCategory,startingPrice,tags } = data;
+  let parsedTags:string[] =[];
+
+  if(tags){
+    parsedTags = JSON.parse(tags)
+  }
+  let price : number | undefined;
+  if(startingPrice != undefined){
+    if(Number(startingPrice) <= 0){
+      throw new ApiError(400,"Starting price must be greater than 0")
+    }
+    price = Number(startingPrice)
+  }
 
   const totalGigs = await Gig.countDocuments({ provider: userId });
   if (totalGigs >= 2) {
@@ -32,7 +47,7 @@ export const createGigService = async (
       ? JSON.parse(targetSlots)
       : targetSlots
     : [];
-  console.log("Here is slotsToassign = :",typeof targetSlots);
+ 
   const hasValidText = [title, description, status,address].every(
     (d) => typeof d === "string" && d.trim().length > 0,
   );
@@ -40,7 +55,7 @@ export const createGigService = async (
   if (!hasValidText) {
     throw new ApiError(
       400,
-      "All fields (title, description, status, and location) are required",
+      "All fields (title, description, status,starting price and location) are required",
     );
   }
   //Setting location
@@ -60,10 +75,10 @@ export const createGigService = async (
   }
 
   //    Uploaded Images
-  let uploadedImages: IImage[] = [];
-  console.log("Here is req.files:",files.length);
-  if (files && files.length > 0) {
-    const filesUploaded = files.map(async (file, arrayIndex) => {
+  let uploadedImagesToCloudinary: IImage[] = [];
+
+  if (images && images.length > 0) {
+    const uploadedImagesPromises = images.map(async (file, arrayIndex) => {
       const targetSlot = slotsToAssign[arrayIndex];
       if (targetSlot == undefined) {
         throw new ApiError(
@@ -78,23 +93,37 @@ export const createGigService = async (
         slot: targetSlot,
       };
     });
-    uploadedImages = (await Promise.all(filesUploaded))
+    uploadedImagesToCloudinary = (await Promise.all(uploadedImagesPromises))
       .filter(
         (img): img is IImage =>
           img.url !== undefined && img.public_id !== undefined,
       )
       .sort((a, b) => a.slot - b.slot);
   }
-console.log("Here is uploaded Images: ",uploadedImages);
+
+
+   let avatarUpload;
+
+if (avatar && avatar.length > 0) {
+    avatarUpload = await uploadToCloudinary(
+        avatar[0],
+        userId,
+        "gig/avatar"
+    );
+}
+
   const gig = await Gig.create({
+    avatar:avatarUpload,
     provider: userId,
     title,
     description,
     status,
     location,
-    images: uploadedImages,
+    images: uploadedImagesToCloudinary,
     category,
-    subCategory
+    subCategory,
+    tags:parsedTags,
+    startingPrice:price
   });
 
   return { gig };

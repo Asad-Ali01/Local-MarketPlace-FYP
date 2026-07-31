@@ -7,7 +7,10 @@ export interface ILocation{
   type:"Point",
   coordinates:[number,number]
 }
-
+interface IAvatar{
+    url:string;
+    public_id:string; 
+}
 export interface IGig{
     provider:{
         name:string
@@ -23,12 +26,21 @@ export interface IGig{
 }
 
 export interface ICreateGigResponse{
-    provider: string,
+    _id:string;
+    provider: {name:String},
     title:string;
     description:string;
-    status:"draft" | "published"
-    location:ILocation
-    image:IImage[]
+    status:"draft" | "published";
+    location:ILocation;
+    image:IImage[];
+    avatar:IAvatar;
+    category:string;
+    subCategory:string;
+    tags:[string];
+    startingPrice: number | null;
+    totalOrders:number
+totalReviews:number;
+rating:number;
 }
 export interface ICreateRequest{
     title:string;
@@ -51,7 +63,7 @@ export interface IProviderDashboardTopCardRequest{
 }
 
 export interface IProviderDashboardTopCardResponse{
-    data:{
+    data:{ 
           totalGigs:number
         activeOrders:number
         completedOrders:number
@@ -59,4 +71,13 @@ export interface IProviderDashboardTopCardResponse{
         averageRating:number
         unreadMessages:number
     }
+}
+
+
+export interface IProviderGetAllGigsByCategoryResponse{
+   data:{
+  gigs:[ICreateGigResponse],
+  city:string;
+  fullAddress:string;
+}
 }

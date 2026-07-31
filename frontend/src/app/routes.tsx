@@ -24,6 +24,8 @@ import ProviderLayout from "@/layouts/ProviderLayout";
 import ProviderLandingPage from "@/modules/provider/pages/ProviderLandingPage";
 import ProviderDashboardPage from "@/modules/provider/pages/ProviderDashboardPage";
 import CategoryManagement from "@/modules/admin/pages/CategoryManagement";
+import ProviderListing from "@/modules/providerListing/components/ProvoiderListing";
+import ProviderListingPage from "@/modules/providerListing/pages/providerListingPage";
 function AppRoutes() {
   return (
     <>
@@ -52,6 +54,7 @@ function AppRoutes() {
               path="otp/reset-password"
               element={<OtpResetPasswordPage />}
             />
+            <Route path="providerslisting/:slug" element={<ProviderListingPage />} />
           </Route>
 
           {/* ADMIN ROUTES */}

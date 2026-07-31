@@ -5,14 +5,16 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 const verifyJWT = asyncHandler(async(req,_,next) => {
     const token = req.cookies.accessToken || req.header("Authorization")?.replace("Bearer","").trim();
     console.log("Here is token: ",token);
+    console.log("verifyJWT running:", req.originalUrl);
+console.trace();
     if(!token){
         throw new ApiError(401,"Unauthorized request");
     }
-     if(!process.env.ACCESS_TOKEN_SECRET){
+     if(!process.env.JWT_ACCESS_SECRET){
         throw new ApiError(500,"Access token secret is undefined");
     }
    try {
-     const decodedToken = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET) as JwtPayload;
+     const decodedToken = jwt.verify(token,process.env.JWT_ACCESS_SECRET) as JwtPayload;
      if(!decodedToken){
          throw new ApiError(401,"Invalid access token");
      }

@@ -4,6 +4,7 @@ import { loginUserService } from "../services/login.service";
 import { registerUserService } from "../services/register.service";
 
 import { cookieOptions } from "../../../utils/cookieOptions";
+import { getAllCategoriesForHomePageService } from "../services/getAllCategoriesForHomePage.service";
 
 
 
@@ -26,4 +27,9 @@ const loginUser = asyncHandler(async(req,res) => {
 
 })
 
-export {registerUser,loginUser}
+const getAllCategories = asyncHandler(async(_,res) => {
+    const {allCategories} = await getAllCategoriesForHomePageService();
+    return res.status(200).json(new ApiResponse(200,allCategories,"All Categories fetched successfully"))
+})
+
+export {registerUser,loginUser,getAllCategories}

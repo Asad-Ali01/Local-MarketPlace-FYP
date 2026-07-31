@@ -1,11 +1,11 @@
 import { ApiError } from "../../../utils/ApiError";
-import { Category } from "../models/category.model";
-import { SubCategory } from "../models/subCategory.model";
+import { Category } from "../../category/models/category.model";
+import { SubCategory } from "../../category/models/subCategory.model";
 
 const createSubCategoryService = async(data:{name:string,category:string}) => {
     const {name,category} = data;
     if(!name || !category){
-        throw new ApiError(400,"Name and category are required");
+        throw new ApiError(400,"Category and subcategory both are required");
     }
 
     // Check category exists

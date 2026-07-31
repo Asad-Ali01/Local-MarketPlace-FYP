@@ -21,6 +21,7 @@ export const generateAccessAndRefreshToken = async(userId: string | Types.Object
         if (error instanceof ApiError) {
             throw error;
         }
+        console.log("Here is error: ",error)
         throw new ApiError(500,"Something went wrong while generating access and refresh token");
     }
 }

@@ -1,5 +1,5 @@
 import type { IUser } from "@/types/global.types";
-import type { IImage } from "../gig/types";
+
 // Admin stats filter Response
 export interface IAdminStatsResponse {
   statusCode: number;

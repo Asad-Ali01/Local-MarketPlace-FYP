@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppSelector } from "@/hooks/useAppDispatchSelector";
 import { Plus } from "lucide-react";
-import { Navigate, useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 
 function ProviderLanding() {
   const user = useAppSelector((state) => state.auth.user);
@@ -15,7 +15,7 @@ function ProviderLanding() {
       <div className="space-y-3 text-center">
         <h1 className="text-4xl font-semibold">
           Welcome{" "}
-          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
             {user?.name}
           </span>
         </h1>

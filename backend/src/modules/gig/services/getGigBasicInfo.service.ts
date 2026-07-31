@@ -2,6 +2,7 @@ import { Types } from "mongoose"
 import { Gig } from "../models/gig.model"
 
 export const getGigBasicInfoService = async(providerId:Types.ObjectId) => {
+    console.log("Here is providerId: ",providerId )
     const totalGigs = await Gig.countDocuments({
         provider:providerId
     });

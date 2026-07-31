@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { passwordSchema } from "@/types/global.schemas";
-import { fileSchema } from "@/schemas/global.schema";
+
+import { fileSchema, passwordSchema } from "@/schemas/global.schema";
 // File schema - handles both File and undefined/null
 
 

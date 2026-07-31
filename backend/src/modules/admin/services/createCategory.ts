@@ -1,6 +1,6 @@
 import { ApiError } from "../../../utils/ApiError";
 import { uploadToCloudinary } from "../../../utils/cloudinary";
-import { Category } from "../models/category.model";
+import { Category } from "../../category/models/category.model";
 
 const createCategoryService = async(data:{name:string},userId:string,file:any) => {
     const {name} = data;

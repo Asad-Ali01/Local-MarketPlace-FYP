@@ -1,9 +1,10 @@
 import { useOtpPasswordResetApiMutation } from '@/features/otp/otpApi'
+import { passwordSchema } from '@/schemas/global.schema'
 import { Button, Input, type InputRef } from 'antd'
 import React, { useRef } from 'react'
 import toast from 'react-hot-toast'
 import { useLocation, useNavigate } from 'react-router'
-import { passwordSchema } from '@/types/global.schemas'
+
 function OtpResetPassword() {
     const newPasswordRef = useRef<InputRef>(null)
     const confirmNewPasswordRef = useRef<InputRef>(null)
