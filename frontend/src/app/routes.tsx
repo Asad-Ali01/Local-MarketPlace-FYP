@@ -1,31 +1,40 @@
 import { Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
-const HomePage = lazy(() => import("../modules/home/pages/HomePage"));
+const HomePage = lazy(() => import("../pages/home/HomePage"));
 const MainLayout = lazy(() => import("../layouts/MainLayout"));
-const AboutPage = lazy(() => import("../modules/about/pages/AboutPage"));
+const AboutPage = lazy(() => import("../pages/about/AboutPage"));
 import { Spin } from "antd";
-import RegisterPage from "../modules/auth/pages/RegisterPage";
+import RegisterPage from "../pages/auth/RegisterPage";
 import { GlobalLoader } from "@/components/shared/GlobalLoader";
-import LoginPage from "@/modules/auth/pages/LoginPage";
-import ContactPage from "@/modules/contact/pages/ContactPage";
-import AdminLoginPage from "@/modules/admin/pages/AdminLoginPage";
+import LoginPage from "@/pages/auth/LoginPage";
+import ContactPage from "@/pages/contact/ContactPage";
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import UnAuthorizedPage from "@/components/shared/UnAuthorizedPage";
-import AdminDashboardPage from "@/modules/admin/pages/AdminDashboardPage";
-import AdminUserManagementPage from "@/modules/admin/pages/AdminUserManagementPage";
-import AdminUserEditPage from "@/modules/admin/pages/AdminUserEditPage";
+import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
+import AdminUserManagementPage from "@/pages/admin/AdminUserManagementPage";
+import AdminUserEditPage from "@/pages/admin/AdminUserEditPage";
 import AdminLayout from "@/layouts/AdminLayout";
-import ProviderGigPage from "@/modules/provider/pages/ProviderGigPage";
-import ClientPostPage from "@/modules/client/pages/ClientPostPage";
+import ProviderGigPage from "@/pages/gig/ProviderGigPage";
 import PageNotFound from "@/components/shared/PageNotFound";
-import OtpSendPage from "@/modules/ForgetPassword.tsx/pages/OtpSendPage";
-import OtpVerifyPage from "@/modules/ForgetPassword.tsx/pages/OtpVerifyPage";
-import OtpResetPasswordPage from "@/modules/ForgetPassword.tsx/pages/OtpResetPasswordPage";
+import OtpSendPage from "@/pages/otp/OtpSendPage";
+import OtpVerifyPage from "@/pages/otp/OtpVerifyPage";
+import OtpResetPasswordPage from "@/pages/otp/OtpResetPasswordPage";
 import ProviderLayout from "@/layouts/ProviderLayout";
-import ProviderLandingPage from "@/modules/provider/pages/ProviderLandingPage";
-import ProviderDashboardPage from "@/modules/provider/pages/ProviderDashboardPage";
-import CategoryManagement from "@/modules/admin/pages/CategoryManagement";
-import ProviderListing from "@/modules/providerListing/components/ProvoiderListing";
-import ProviderListingPage from "@/modules/providerListing/pages/providerListingPage";
+import ProviderLandingPage from "@/pages/gig/ProviderLandingPage";
+import ProviderDashboardPage from "@/pages/gig/ProviderDashboardPage";
+import CategoryManagement from "@/pages/admin/CategoryManagement";
+import ProviderListing from "@/components/giglisting/ProvoiderListing";
+import ProviderListingPage from "@/pages/providerlisting/providerListingPage";
+import GetMyAllGigs from "@/components/gig/GetMyAllGigs";
+import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
+import ViewGigDetailsById from "@/components/gig/ViewGigDetailsById";
+import GigDetailsViewPage from "@/pages/gig/GigDetailsViewPage";
+import ClientLayout from "@/layouts/ClientLayout";
+import ClientDashboard from "@/components/client/ClientDashboard";
+import LoginReminder from "@/components/shared/LoginReminder";
+import GigListings from "@/components/giglisting/ProvoiderListing";
+import HomeCategory from "@/components/home/HomeCategory";
+import ChatPage from "@/pages/chat/ChatPage";
 function AppRoutes() {
   return (
     <>
@@ -50,11 +59,22 @@ function AppRoutes() {
             <Route path="forgot-password" element={<OtpSendPage />} />
             <Route path="otp/send" element={<OtpSendPage />} />
             <Route path="otp/verify" element={<OtpVerifyPage />} />
+            <Route path="gig/details/:gigId" element={<GigDetailsViewPage />} />
             <Route
               path="otp/reset-password"
               element={<OtpResetPasswordPage />}
             />
-            <Route path="providerslisting/:slug" element={<ProviderListingPage />} />
+            <Route
+              path="giglistings/:slug"
+              element={
+                <ErrorBoundary
+                  fallback={<div className="h-80">Provider Listing failed</div>}
+                >
+                  <ProviderListingPage />{" "}
+                </ErrorBoundary>
+              }
+            />
+            <Route path="login/reminder" element={<LoginReminder />} />
           </Route>
 
           {/* ADMIN ROUTES */}
@@ -72,10 +92,51 @@ function AppRoutes() {
           {/* Provider  */}
           <Route path="provider" element={<ProviderLayout />}>
             <Route index element={<ProviderLandingPage />} />
+
             <Route path="dashboard" element={<ProviderDashboardPage />} />
             <Route path="create-gig" element={<ProviderGigPage />} />
+            <Route path="gigs" element={<GetMyAllGigs />} />
+            <Route path="gig/details/:gigId" element={<GigDetailsViewPage />} />
+              <Route
+              path="messages/:conversationId?"
+              element={
+                <ErrorBoundary
+                  fallback={<div className="h-80">Chat loading failed</div>}
+                >
+                  <ChatPage />
+                </ErrorBoundary>
+              }
+            />
           </Route>
-          <Route path="client-post" element={<ClientPostPage />} />
+
+          {/* CLient */}
+          <Route path="client" element={<ClientLayout />}>
+            <Route index element={<ClientDashboard />} />
+            <Route
+              path="messages/:conversationId?"
+              element={
+                <ErrorBoundary
+                  fallback={<div className="h-80">Chat loading failed</div>}
+                >
+                  <ChatPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="categories"
+              element={<HomeCategory isClientLogin={true} />}
+            />
+            <Route
+              path="giglistings/:slug"
+              element={
+                <ErrorBoundary
+                  fallback={<div className="h-80">Provider Listing failed</div>}
+                >
+                  <GigListings />{" "}
+                </ErrorBoundary>
+              }
+            />
+          </Route>
         </Routes>
       </Suspense>
     </>

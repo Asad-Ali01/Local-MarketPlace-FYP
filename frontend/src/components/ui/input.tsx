@@ -1,20 +1,75 @@
-import * as React from "react"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-const Input = React.forwardRef<HTMLInputElement,React.ComponentProps<"input">>(({ className, type, ...props },ref) => {
-  return (
-    <input
-      type={type}
-      ref={ref}
-      data-slot="input"
-      className={cn(
-        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
-        className
-      )}
-      {...props}
-    />
-  )
-})
+const inputVariants = cva(
+  [
+    "flex w-full rounded-md border bg-background text-sm",
+    "px-3 py-2",
+    "transition-all duration-200",
+    "placeholder:text-muted-foreground",
 
-export { Input }
+    // Default border
+    "border-gray-300",
+
+    // Hover
+    "hover:border-blue-500",
+
+    // Focus (Ant Design style)
+    "focus-visible:outline-none",
+    "focus-visible:border-blue-500",
+    "focus-visible:ring-2",
+    "focus-visible:ring-blue-500/20",
+
+    // Disabled
+    "disabled:cursor-not-allowed",
+    "disabled:bg-muted",
+    "disabled:opacity-60",
+
+    // File input
+    "file:border-0",
+    "file:bg-transparent",
+    "file:text-sm",
+    "file:font-medium",
+  ],
+  {
+    variants: {
+      variant: {
+        default: "",
+        error:
+          "border-red-500 hover:border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20",
+      },
+      inputSize: {
+        sm: "h-9 text-sm",
+        default: "h-10 text-sm",
+        lg: "h-11 text-base",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      inputSize: "default",
+    },
+  }
+);
+
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement>,
+    VariantProps<typeof inputVariants> {}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, variant, inputSize, type, ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        type={type}
+        className={cn(inputVariants({ variant, inputSize }), className)}
+        {...props}
+      />
+    );
+  }
+);
+
+Input.displayName = "Input";
+
+export { Input };

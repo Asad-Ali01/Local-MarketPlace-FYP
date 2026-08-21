@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit'
-import type { IAuth, IUpdateUser } from './types'
+import type { IAuth, IUpdateUser } from '../../types/auth.types'
 import type{ IUser } from '@/types/global.types'
 
 const initialState:IAuth = {

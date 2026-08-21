@@ -14,7 +14,7 @@ const errorHandler = (
         message:err.message || "Internal Server Error"
     })
     console.log("Full Error: ",err);
-    console.log(err.stack);;
+    console.log(err.stack);
 }
 
 export {errorHandler};

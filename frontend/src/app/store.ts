@@ -6,6 +6,7 @@ import { adminApi } from "@/features/admin/adminApi";
 import { otpApi } from "@/features/otp/otpApi";
 import { gigApi } from "@/features/gig/gigApi";
 import { homeApi } from "@/features/home/homeApi";
+import { chatApi } from "@/features/chat/chatApi";
 const storage = {
   getItem:(key:string) => {
     return Promise.resolve(localStorage.getItem(key))
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
     [adminApi.reducerPath]:adminApi.reducer,
     [otpApi.reducerPath]:otpApi.reducer,
     [gigApi.reducerPath]:gigApi.reducer,
-    [homeApi.reducerPath]:homeApi.reducer
+    [homeApi.reducerPath]:homeApi.reducer,
+    [chatApi.reducerPath]:chatApi.reducer
 })
 
 export const store = configureStore({
@@ -39,7 +41,7 @@ export const store = configureStore({
         serializableCheck:{
             ignoredActions:[FLUSH,REHYDRATE,PAUSE,PERSIST,PURGE,REGISTER]
         }
-    }).concat(authApi.middleware).concat(adminApi.middleware).concat(otpApi.middleware).concat(gigApi.middleware).concat(homeApi.middleware)
+    }).concat(authApi.middleware).concat(adminApi.middleware).concat(otpApi.middleware).concat(gigApi.middleware).concat(homeApi.middleware).concat(chatApi.middleware)
 })
 
 

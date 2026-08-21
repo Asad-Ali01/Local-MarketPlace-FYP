@@ -14,7 +14,7 @@ export async function geocodeAddress(address:string){
       })
 
      const data = response.data
-
+      console.log("Here is data: ",data);
      if(!data.length){
         throw new ApiError(400,"Address not found");
      }

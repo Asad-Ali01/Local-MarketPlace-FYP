@@ -1,7 +1,6 @@
 import { baseQueryWithReauth } from "@/api/baseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import type { IGetAllCategories } from "../admin/types";
-import type { IGetAllCategoriesHome } from "./types";
+import type { IGetAllCategoriesHome } from "../../types/home.types";
 
 export const homeApi = createApi({
     reducerPath:"homeapi",

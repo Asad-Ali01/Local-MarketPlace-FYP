@@ -1,6 +1,6 @@
 import { baseQueryWithReauth } from "@/api/baseQuery";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import type { IOtpPasswordResetRequest, IOtpVerifyRequest, IOtpVerifyResponse } from "./types";
+import type { IOtpPasswordResetRequest, IOtpVerifyRequest, IOtpVerifyResponse } from "../../types/otp.types";
 
 
 export const otpApi = createApi({

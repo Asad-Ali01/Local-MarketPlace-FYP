@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type loginSchemaType, loginSchema } from "@/schemas/global.schema";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input"; // ✅ use same UI system
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
-import type { ILoginUserResponse } from "@/features/auth/types";
-import { Link, useNavigate } from "react-router";
+import type { ILoginUserResponse } from "@/types/auth.types";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
 import { loginUser } from "@/features/auth/authSlice";
 import { useState } from "react";
@@ -29,8 +29,11 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
       password: "",
     },
   });
-  const [visible,setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+     const from = location?.state?.from;
+      console.log("From: ",from);
   const handleLogin = async (data: loginSchemaType) => {
     try {
       const res = await loginApi(data).unwrap();
@@ -40,14 +43,19 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
           accessToken: res.data.accessToken,
         }),
       );
-      console.log("Mode is: ",res.data.user.role);
-      if (mode == "admin") {
+      const role = res.data.user.role;
+      console.log("Role is: ", role);
+   
+      if (from) {
+        navigate(from);
+      } else if (role === "admin") {
         navigate("/admin/dashboard");
-      }else if(res.data.user.role == "provider"){
-        console.log("Provider");
-        navigate("/provider/dashboard")
+      } else if (role === "provider") {
+        navigate("/provider/dashboard");
+      } else if (role === "client") {
+        navigate("/client");
       }
-    
+
       toast.success(res.message);
       form.reset();
     } catch (error: any) {
@@ -68,10 +76,10 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
         <CardContent>
           <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-5">
             {/* Email */}
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
-              id="email"
+                id="email"
                 placeholder="Enter your email"
                 {...form.register("email")}
               />
@@ -79,50 +87,46 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
             </div>
 
             {/* Password */}
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-             
-              <Input
-              id="password"
-              type={visible ? "text" : "password"}
-              placeholder="Enter your password"
-              {...form.register("password")}
-              />
-               <button
-      type="button"
-      onClick={() => setVisible(!visible)}
-      className="absolute right-3 top-1/2 -translate-y-1/2"
-    >
-      {visible ? (
-        <Eye size={18} />
-      ) : (
-        <EyeOff size={18} />
-      )}
-    </button>
+              <div className="relative ">
+                <Input
+                  id="password"
+                  type={visible ? "text" : "password"}
+                  placeholder="Enter your password"
+                  {...form.register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisible(!visible)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                >
+                  {visible ? <Eye size={18} /> : <EyeOff size={18} />}
+                </button>
               </div>
               <Error msg={form.formState.errors.password?.message} />
             </div>
 
             {/* Extra options */}
-            {
-              mode != "admin"  &&
-               <div className="flex justify-between items-center text-sm">
-              <Link
-                to="/forgot-password"
-                className="text-purple-700 hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            }
-           
+            {mode != "admin" && (
+              <div className="flex justify-between items-center text-sm">
+                <Link
+                  to="/forgot-password"
+                  className="text-purple-700 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+            )}
 
             {/* Button */}
-            <Button disabled={form.formState.isSubmitting} className="w-full bg-purple-700 hover:bg-purple-800">
+            <Button
+              disabled={form.formState.isSubmitting}
+              className="w-full bg-purple-700 hover:bg-purple-800"
+            >
               {form.formState.isSubmitting ? "Logging in" : "Login"}
             </Button>
-     
+
             {/* Register redirect */}
             {mode !== "admin" && (
               <p className="text-sm text-center text-gray-500">

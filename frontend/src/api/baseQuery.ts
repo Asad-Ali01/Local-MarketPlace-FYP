@@ -50,7 +50,6 @@ FetchBaseQueryError
             result = await rawBaseQuery(args,api,extraOptions)
         }else{
         api.dispatch(logoutUser());
-        // api.dispatch(authApi)
     }
 
     }

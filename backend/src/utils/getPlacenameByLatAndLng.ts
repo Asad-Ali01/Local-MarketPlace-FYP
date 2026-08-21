@@ -3,7 +3,7 @@ export async function getPlaceName(lat: number, lon: number) {
     `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=en`,
     {
       headers: {
-        "User-Agent": "LocalMarketplace/1.0 (your@email.com)",
+        "User-Agent": "LocalMarketplace/1.0 (asadllc255@gmail.com)",
         Accept: "application/json",
       },
     }

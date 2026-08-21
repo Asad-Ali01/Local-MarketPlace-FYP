@@ -13,11 +13,12 @@ const uploadToCloudinary = async (file: Express.Multer.File,userId:Types.ObjectI
         const base64 = file.buffer.toString("base64");
         const dataUri = `data:${file.mimetype};base64,${base64}`;
         const result = await cloudinary.uploader.upload(dataUri,{
-            folder:`users/${userId}/${folder}`,
+            folder:`${folder}/${userId}`,
             resource_type:"image"
         }) 
         return {
             url:result.secure_url,
+              use_asset_folder_as_public_id_prefix: true,
             public_id:result.public_id
         };
     } catch (error) {

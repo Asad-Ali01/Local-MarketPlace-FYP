@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "../../api/baseQuery";
-import type { IAdminAllUsersResponse,  IAdminStatsResponse, IAdminUserResponse, ICategoryResponse,IGetAllCategories,IGetAllSubCategories,ISubCategoryResponse  } from "./types";
-import type { ILoginUserRequest, ILoginUserResponse } from "../auth/types";
+import type { IAdminAllUsersResponse,  IAdminStatsResponse, IAdminUserResponse, ICategoryResponse,IGetAllCategories,IGetAllSubCategories,ISubCategoryResponse  } from "../../types/admin.types";
+import type { ILoginUserRequest, ILoginUserResponse } from "../../types/auth.types";
 
 export const adminApi = createApi({
     reducerPath:"adminApi",
@@ -26,15 +26,15 @@ export const adminApi = createApi({
             }),
 
         }),
-        adminAllUsersApi: builder.query<IAdminAllUsersResponse,{page:number;filterValue:string;search:string;}>({
-            query: ({page,filterValue,search}) => ({
+        adminAllUsersApi: builder.query<IAdminAllUsersResponse,{page:number;filterStatus:string;searchUser:string;}>({
+            query: ({page,filterStatus,searchUser}) => ({
                 url:'/admin/users',
                 method:"GET",
                 params:{
                     page,
                     limit:10,
-                    filterValue,
-                    search
+                    filterStatus,
+                    searchUser
                 },
             }),
             providesTags:(result) => result ? [...result?.data.users.map((user) => ({
@@ -124,8 +124,36 @@ export const adminApi = createApi({
                     id:"LIST"
                 }
             ]
-        })
+        }),
+        adminDeleteCategory: builder.mutation<void,string>({
+            query:(categoryId) => ({
+                url:`/admin/category/${categoryId}`,
+                method:"DELETE"
+            }),
+            invalidatesTags:[
+                {
+                    type:"Category",
+                    id:"LIST"
+                },
+                {
+                    type:"SubCategory",
+                    id:"LIST"
+                }
+            ]
+        }),
+        adminDeleteSubCategory: builder.mutation<void,string>({
+            query:(subCategoryId) => ({
+                url:`/admin/sub-category/${subCategoryId}`,
+                method:"DELETE"
+            }),
+             invalidatesTags:[
+                {
+                    type:"SubCategory",
+                    id:"LIST"
+                }
+            ]
+        }),
     })
 })
 
-export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminCreateCategoryApiMutation,useAdminCreateSubCategoryMutation,useAdminGetAllCategoriesQuery,useAdminGetAllSubCategoriesQuery} = adminApi;
+export const {useAdminGetStatsApiMutation,useAdminAllUsersApiQuery,useAdminLoginApiMutation,useAdminDeleteUserMutation,useAdminGetUserQuery,useAdminUpdateUserMutation,useAdminCreateCategoryApiMutation,useAdminCreateSubCategoryMutation,useAdminGetAllCategoriesQuery,useAdminGetAllSubCategoriesQuery,useAdminDeleteCategoryMutation,useAdminDeleteSubCategoryMutation} = adminApi;

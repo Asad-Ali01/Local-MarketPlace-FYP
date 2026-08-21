@@ -1,0 +1,35 @@
+interface GigInfoProps {
+  conversation?: any;
+}
+
+function GigInfo({
+  conversation,
+}: GigInfoProps) {
+
+  if (!conversation?.gig) {
+    return null;
+  }
+
+  return (
+    <div className="border-b bg-gray-50 p-4">
+      <div className="rounded-lg border bg-white p-4">
+
+        <p className="text-xs font-medium uppercase text-gray-500">
+          Discussing this gig
+        </p>
+
+        <h3 className="mt-1 font-semibold">
+          {conversation.gig.title}
+        </h3>
+
+        <p className="mt-1 text-sm text-gray-500">
+          Starting from{" "}
+          {conversation.gig.startingPrice} PKR
+        </p>
+
+      </div>
+    </div>
+  );
+}
+
+export default GigInfo;

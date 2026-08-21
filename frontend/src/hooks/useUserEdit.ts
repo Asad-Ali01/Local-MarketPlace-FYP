@@ -6,7 +6,7 @@ import {
 import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import { editUserSchema } from "@/modules/admin/schemas/editUserSchema";
+import { editUserSchema } from "@/schemas/editUserSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 function useUserEdit() {
   const { userId } = useParams();
