@@ -7,6 +7,7 @@ import { otpApi } from "@/features/otp/otpApi";
 import { gigApi } from "@/features/gig/gigApi";
 import { homeApi } from "@/features/home/homeApi";
 import { chatApi } from "@/features/chat/chatApi";
+import chatReducer from "@/features/chat/chatSlice";
 const storage = {
   getItem:(key:string) => {
     return Promise.resolve(localStorage.getItem(key))
@@ -27,6 +28,7 @@ const authPersistantConfig = {
 }
 const rootReducer = combineReducers({
     auth: persistReducer(authPersistantConfig,authReducer),
+    chat:chatReducer,
     [authApi.reducerPath]:authApi.reducer,
     [adminApi.reducerPath]:adminApi.reducer,
     [otpApi.reducerPath]:otpApi.reducer,

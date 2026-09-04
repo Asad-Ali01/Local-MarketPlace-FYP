@@ -13,7 +13,6 @@ function ClientLayout() {
 
   const [clientLogoutApi] = useLogoutApiMutation();
   const location = useLocation();
-  console.log("Location: ",location);
   const items = [
     {
       title: "Dashboard",

@@ -6,7 +6,6 @@ import { useLocation, useNavigate } from "react-router";
 function LoginReminder() {
   const navigate = useNavigate();
     const location = useLocation();
-    console.log("State: ",location.state);
   return (
     <div className="flex min-h-[400px] flex-col items-center justify-center gap-4">
       <h2 className="text-xl font-semibold">

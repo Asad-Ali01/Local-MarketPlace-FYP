@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 import type { ILoginUserResponse } from "@/types/auth.types";
 import { Link, useLocation, useNavigate } from "react-router";
-import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
+import { useAppDispatch } from "@/hooks/useAppDispatchSelector";
 import { loginUser } from "@/features/auth/authSlice";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -21,7 +21,7 @@ type LoginFormProps = {
 };
 
 function LoginForm({ loginApi, mode }: LoginFormProps) {
-  const dispatch = useAppDisptach();
+  const dispatch = useAppDispatch();
   const form = useForm<loginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {

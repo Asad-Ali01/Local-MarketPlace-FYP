@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -12,6 +12,6 @@
     "types": ["node"],
     "typeRoots": ["node_modules/@types","./src/types"]
   },
-  "include": ["src/types/**/*.d.ts", "src"],
+  "include": ["src/types/**/*.d.ts", "src","migrations"],
   "exclude": ["node_modules"]
 }

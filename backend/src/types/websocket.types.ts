@@ -2,7 +2,7 @@ import { IUser } from "../models/user.model";
 import WebSocket from "ws";
 export interface AuthenticatedWebSocket extends WebSocket{
     user:IUser
-}
+} 
 export type ClientMessage =
   | {
       type: "SEND_MESSAGE";

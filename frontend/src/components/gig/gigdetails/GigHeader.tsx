@@ -15,12 +15,15 @@ type GigHeaderProps = {
 export default function GigHeader({ gig }:GigHeaderProps) {
   const [createConversationApi] = useCreateConversationApiMutation();
   const createConversation = async() => {
-    const data = {
-      providerId:gig.provider._id,
-      gigId:gig._id
-    }
-   const conversation =  await  createConversationApi(data).unwrap()
-    navigate(`/client/messages/${conversation.data._id}`)
+    // const data = {
+    //   providerId:gig.provider._id,
+    //   gigId:gig._id
+    // }
+    const providerId = gig.provider._id;
+    const gigId = gig._id;
+  //  const conversation =  await  createConversationApi(data).unwrap()
+    // navigate(`/client/messages/${conversation.data._id}`)
+    navigate(`/client/messages/new?providerId=${providerId}&gigId=${gigId}`);
   }
   const navigate = useNavigate();
   return (

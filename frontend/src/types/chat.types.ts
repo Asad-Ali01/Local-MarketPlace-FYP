@@ -1,18 +1,17 @@
-import type { IAvatar, IGig } from "./gig.types";
-
-export interface IConversation {
-  _id: string;
-  members: [
-    {
-      _id: string;
-      avatar?: {
-        url: string;
-        public_id: string;
-      };
+import type { IAvatar, IGig, IProvider } from "./gig.types";
+export interface IConversationMember{
+  user:{
+    _id: string;
+      avatar?: IAvatar;
       name: string;
       role: "provider" | "client";
-    },
-  ];
+  };
+  lastReadMessage?:string;
+  lastReadAt?:Date;
+}
+export interface IConversation {
+  _id: string;
+  members: IConversationMember[];
 
   gig?: {
     startingPrice?: number;
@@ -23,6 +22,34 @@ export interface IConversation {
   lastMessage: string;
   lastMessageAt?: Date;
 }
+export interface INewConversation {
+  provider?: {
+      _id:string;
+      name:string;
+      avatar:IAvatar
+    };
+  gig?: {
+      _id:string;
+      title:string;
+      startingPrice:number | null;
+    };
+}
+export interface IConversationContext{
+  data:{
+    conversation?:IConversation;
+     provider?: {
+      _id:string;
+      name:string;
+      avatar:IAvatar
+    };
+  gig?: {
+      _id:string;
+      title:string;
+      startingPrice:number | null;
+    };
+  }
+}
+
 export interface ICreateConversation {
   data: IConversation;
 }
@@ -45,32 +72,11 @@ export interface IMessage {
   
 }
 export interface IMessages {
-  data: {
-    _id:string;
-    conversation: string;
-    sender: {
-      _id:string;
-      name: string;
-      avatar: IAvatar;
-    };
-    receiver: string;
-    content: string;
-    isRead: boolean;
-    createdAt:Date;
-  }[];
+  data: IMessage[];
 }
 
 
-export interface ConversationMember {
-  _id: string;
-  name: string;
-  role: "client" | "provider";
-  avatar?: {
-    url: string;
-    public_id: string;
 
-  };
-}
 
 
 export type ClientMessage =

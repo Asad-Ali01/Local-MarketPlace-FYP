@@ -1,8 +1,13 @@
 import mongoose, { Schema, Types } from "mongoose";
 
+interface IConversationMember{
+  user:Types.ObjectId;
+  lastReadMessage?:Types.ObjectId;
+  lastReadAt?:Date;
+}
 export interface IConversation {
   _id:Types.ObjectId
-  members: Types.ObjectId[];          // usually buyer and provider
+  members: IConversationMember[];          // usually client and provider
   gig?: Types.ObjectId;               // optional: chat related to a gig
   order?: Types.ObjectId;             // optional: chat related to an order
   lastMessage: string;
@@ -12,15 +17,26 @@ export interface IConversation {
 const conversationSchema = new Schema<IConversation>(
   {
     members: [
-      {
-        type: Schema.Types.ObjectId,
+     {
+      user:{
+        type: Types.ObjectId,
         ref: "User",
         required: true
+      },
+      lastReadMessage:{
+        type:Types.ObjectId, 
+        ref:"Message",
+        default:null
+      },
+      lastReadAt:{
+        type:Date,
+        default:null
       }
+    }
     ],
 
     gig: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "Gig",
       default: null
     },

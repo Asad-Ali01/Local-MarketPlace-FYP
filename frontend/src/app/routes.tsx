@@ -78,9 +78,9 @@ function AppRoutes() {
           </Route>
 
           {/* ADMIN ROUTES */}
-          <Route path="admin/login" element={<AdminLoginPage />} />
           {/* Admin protected routes */}
           <Route path="admin" element={<AdminLayout />}>
+            <Route path="login" element={<AdminLoginPage />} />
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route
               path="user-management"
@@ -97,7 +97,7 @@ function AppRoutes() {
             <Route path="create-gig" element={<ProviderGigPage />} />
             <Route path="gigs" element={<GetMyAllGigs />} />
             <Route path="gig/details/:gigId" element={<GigDetailsViewPage />} />
-              <Route
+            <Route
               path="messages/:conversationId?"
               element={
                 <ErrorBoundary
@@ -112,16 +112,40 @@ function AppRoutes() {
           {/* CLient */}
           <Route path="client" element={<ClientLayout />}>
             <Route index element={<ClientDashboard />} />
-            <Route
-              path="messages/:conversationId?"
-              element={
-                <ErrorBoundary
-                  fallback={<div className="h-80">Chat loading failed</div>}
-                >
-                  <ChatPage />
-                </ErrorBoundary>
-              }
-            />
+            <Route path="messages">
+              <Route
+                index
+                element={
+                  <ErrorBoundary
+                    fallback={<div className="h-80">Chat loading failed</div>}
+                  >
+                    <ChatPage />
+                  </ErrorBoundary>
+                }
+              />
+
+              <Route
+                path="new"
+                element={
+                  <ErrorBoundary
+                    fallback={<div className="h-80">Chat loading failed</div>}
+                  >
+                    <ChatPage />
+                  </ErrorBoundary>
+                }
+              />
+
+              <Route
+                path=":conversationId"
+                element={
+                  <ErrorBoundary
+                    fallback={<div className="h-80">Chat loading failed</div>}
+                  >
+                    <ChatPage />
+                  </ErrorBoundary>
+                }
+              />
+            </Route>
             <Route
               path="categories"
               element={<HomeCategory isClientLogin={true} />}

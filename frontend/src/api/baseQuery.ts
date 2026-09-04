@@ -2,8 +2,7 @@ import {fetchBaseQuery, type BaseQueryApi, type FetchBaseQueryError} from "@redu
 import type{ RootState } from "../app/store";
 import type { IUser } from "@/types/global.types"; 
 import { logoutUser, registerUser } from "../features/auth/authSlice";
-
-const baseURL = import.meta.env.VITE_BASE_URL;
+import { baseURL } from "@/config/env";
 const rawBaseQuery = fetchBaseQuery({
     baseUrl:baseURL,
     credentials:"include",

@@ -7,8 +7,11 @@ import {
 } from "../types/websocket.types";
 import { Conversation } from "../models/conversation.model";
 import { Message } from "../models/message.model";
-import { addUser, getUserSockets, removeUser } from "./websocket.manager";
-
+import { addUser, getUserSockets, notifyUserPresence, removeUser, sendInitialPresence } from "./websocket.manager";
+const WS_CLOSE_CODES = {
+  UNAUTHORIZED: 1008,
+  TOKEN_EXPIRED: 4001,
+} as const;
 const getAccessTokenFromCookie = (request: IncomingMessage) => {
   const cookieHeader = request.headers.cookie;
   if (!cookieHeader) {
@@ -39,17 +42,22 @@ export const initializeWebSocket = (server: Server) => {
     console.log("=================================");
     try {
       const token = getAccessTokenFromCookie(request);
-      console.log("Here is token: ", token);
       if (!token) {
         console.log("No token. Closing connection.");
-        socket.close(1008, "Unauthorized");
+        socket.close(WS_CLOSE_CODES.UNAUTHORIZED, "Unauthorized");
         return;
       }
 
       const user = await verifyAccessToken(token);
       const authenticatedSocket = socket as AuthenticatedWebSocket;
       authenticatedSocket.user = user;
-      addUser(user._id.toString(), authenticatedSocket);
+      const becameOnline = addUser(user._id.toString(), authenticatedSocket);
+      // Send already connected userIds to user that is connected right now.
+      await sendInitialPresence(user._id.toString(),authenticatedSocket);
+      // Sending online status to frontend
+      if (becameOnline) {
+       notifyUserPresence(user._id.toString(),"USER_ONLINE")
+      }
       console.log("WebSocket authenticated: ", user._id.toString());
       console.log("Websocket client successfully");
 
@@ -59,20 +67,22 @@ export const initializeWebSocket = (server: Server) => {
         const senderId = authenticatedSocket.user._id;
         const conversation = await Conversation.findOne({
           _id: conversationId,
-          members: senderId,
+          "members.user": senderId,
         });
 
         if (!conversation) {
           console.log("Conversation not found or user is not a member");
           return;
         }
-        const receiverId = conversation.members.find(
-          (member) => member.toString() !== senderId.toString(),
+        const receiverMember = conversation.members.find(
+          (member) => member.user.toString() !== senderId.toString(),
         );
+        const receiverId = receiverMember?.user;
         if (!receiverId) {
           return;
         }
         const receiverSockets = getUserSockets(receiverId.toString());
+      //  notifyUserPresence(user._id.toString(),"USER_ONLINE")
 
         switch (message.type) {
           case "TYPING":
@@ -205,13 +215,21 @@ export const initializeWebSocket = (server: Server) => {
         }
       });
 
-      authenticatedSocket.on("close", () => {
-        
+      authenticatedSocket.on("close", async (code,reason) => {
         console.log("Websocket client disconnected");
-        removeUser(user._id.toString(),authenticatedSocket);
+        console.log("Reason: ",reason.toString());
+        console.log("Code: ",code);
+        const becomeOffline = removeUser(
+          user._id.toString(),
+          authenticatedSocket,
+        );
+        if (becomeOffline) {
+       notifyUserPresence(user._id.toString(),"USER_OFFLINE")
+
+        }
       });
     } catch (error) {
-      console.log("WebSocket authentication failed");
+      console.log("WebSocket authentication failed",error);
       socket.close(1008, "Unauthorized");
     }
   });

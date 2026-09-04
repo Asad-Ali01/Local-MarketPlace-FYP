@@ -38,7 +38,6 @@ export default function ViewGigDetailsById() {
   }
 
   const gig = data.data;
-console.log(gig);
   return (
     <main className="bg-slate-50 min-h-screen">
 

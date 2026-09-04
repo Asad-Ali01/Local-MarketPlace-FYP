@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router";
 import { ChevronsUpDown, LogOut, type LucideIcon } from "lucide-react";
-import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
+import { useAppDispatch } from "@/hooks/useAppDispatchSelector";
 import { useAppSelector } from "@/hooks/useAppDispatchSelector";
 import { logoutUser } from "@/features/auth/authSlice";
 import { persistor } from "@/app/store";
@@ -53,7 +53,7 @@ export default function GlobalSidebar({
   const { state, isMobile } = useSidebar();
   const user = useAppSelector((currentState) => currentState.auth.user);
   
-  const dispatch = useAppDisptach();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const username = user?.name
     ?.split(" ")

@@ -1,5 +1,5 @@
 import { baseQueryWithReauth } from "@/api/baseQuery";
-import type { IConversation, ICreateConversation, IGetAllCoversations, IMessages } from "@/types/chat.types";
+import type { IConversation, IConversationContext, ICreateConversation, IGetAllCoversations, IMessages } from "@/types/chat.types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const chatApi = createApi({
@@ -27,8 +27,14 @@ export const chatApi = createApi({
                 url:`/chats/${conversationId}/messages`,
                 method:"GET"
             })
+        }),
+        getConversationContext:builder.query<IConversationContext | null,{providerId:string,gigId:string;}>({
+            query:({providerId,gigId}) => ({
+                url:`/chats/conversations/context?providerId=${providerId}&gigId=${gigId}`,
+                method:"GET"
+            })
         })
     })
 })
 
-export const {useCreateConversationApiMutation,useGetAllConversationApiQuery,useGetAllMessagesByConversationIdQuery} = chatApi
+export const {useCreateConversationApiMutation,useGetAllConversationApiQuery,useGetAllMessagesByConversationIdQuery,useGetConversationContextQuery} = chatApi

@@ -3,7 +3,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import type { ConversationMember, IConversation } from "@/types/chat.types";
+import { useAppSelector } from "@/hooks/useAppDispatchSelector";
+import type { IConversationMember, IConversation } from "@/types/chat.types";
 
 interface ChatHeaderProps {
   conversation?: IConversation;
@@ -14,12 +15,41 @@ function ChatHeader({
   conversation,
   currentUserId
 }: ChatHeaderProps) {
-
+    // const [isOnline,setIsOnline] = useState(false);
+    console.log("Conversation: ",conversation);
    const otherUser =
     conversation?.members.find(
-      (member: ConversationMember) => member._id !== currentUserId
-    );
+      (member: IConversationMember) => member.user._id !== currentUserId
+    )?.user;
+    console.log("Other user: ",otherUser," Current User: ",currentUserId);
+    const isOnline = useAppSelector(state => {
+      console.log("State: ",state.chat.onlineUsersIds);
+   return  otherUser  ? state.chat.onlineUsersIds.includes(otherUser._id) : false
+    })
+    console.log("ISONLINE",isOnline)
+    // useEffect(() => {
+    //   console.log("Asas");
+    //   const unsubscribe = subscribeToWebSocket((incoming) => {
+    //       console.log("InComing Type: ",incoming);
 
+    //     switch(incoming.type){
+    //       case "USER_ONLINE":
+    //         if(incoming.payload.userId === otherUser?._id){
+    //           setIsOnline(true);
+    //           console.log('currentID online: ',currentUserId);
+    //         }
+    //         break;
+    //       case "USER_OFFLINE":
+    //          if(incoming.payload.userId === otherUser?._id){
+    //           setIsOnline(false);
+    //           console.log('currentID offline: ',currentUserId);
+
+    //         }
+    //         break;
+    //     }
+    //   })
+    //   return unsubscribe;
+    // },[otherUser?._id])
   return (
     <header className="flex items-center gap-3 border-b p-4">
 
@@ -46,7 +76,7 @@ function ChatHeader({
             </h2>
 
             <p className="text-sm text-green-600">
-              ● Online
+              ● {isOnline ? "Online" : "Offline"}
             </p>
           </div>
         </>

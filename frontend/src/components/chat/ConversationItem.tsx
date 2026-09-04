@@ -3,7 +3,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
-import type { ConversationMember, IConversation } from "@/types/chat.types";
+import type {  IConversation, IConversationMember } from "@/types/chat.types";
+import React from "react";
 
 interface ConversationItemProps {
   conversation: IConversation;
@@ -12,16 +13,15 @@ interface ConversationItemProps {
 }
 
 
-function ConversationItem({ 
+export default React.memo(function ConversationItem({ 
   conversation,
   isSelected,
   currentUserId
 }: ConversationItemProps) {
-
   const otherUser =
     conversation.members.find(
-      (member: ConversationMember) => member._id !== currentUserId
-    );
+      (member: IConversationMember) => member.user._id !== currentUserId
+    )?.user;
 
   return (
     <button
@@ -77,4 +77,5 @@ function ConversationItem({
   );
 }
 
-export default ConversationItem;
+)
+// export default ConversationItem;

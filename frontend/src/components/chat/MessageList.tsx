@@ -2,31 +2,30 @@ import { useGetAllMessagesByConversationIdQuery } from "@/features/chat/chatApi"
 
 import MessageBubble from "./MessageBubble";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import type { IMessage } from "@/types/chat.types";
-import { subscribeToWebSocket } from "@/services/websocket/websocket";
+import {
+  sendWebSocketMessage,
+  subscribeToWebSocket,
+} from "@/services/websocket/websocket";
+import { useAppDispatch } from "@/hooks/useAppDispatchSelector";
+import { setOnlineUsers, userOffline, userOnline } from "@/features/chat/chatSlice";
 
 interface MessageListProps {
   conversationId?: string;
-  socketRef: {
-    current: WebSocket | null;
-  };
+
   receiverName?: string;
 }
 
-function MessageList({
-  conversationId,
-  socketRef,
-  receiverName,
-}: MessageListProps) {
+function MessageList({ conversationId, receiverName }: MessageListProps) {
+  const dispatch = useAppDispatch();
   const { data } = useGetAllMessagesByConversationIdQuery(conversationId!, {
     skip: !conversationId,
   });
   const [visibilityState, setVisibilityState] = useState(
     document.visibilityState === "visible",
   );
-  console.log("DOcumenet visble: ", visibilityState);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isTyping, setIsTyping] = useState(false);
@@ -50,29 +49,32 @@ function MessageList({
     }
   }, [data]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     bottomRef.current?.scrollIntoView({
-      behavior: "smooth",
+      behavior: "instant",
     });
   }, [messages]);
 
-  console.log("ConversationID: ", conversationId);
   useEffect(() => {
-   
-    console.log("Use");
-    const socket = socketRef.current;
-    if (!socket) {
-      return;
-    }
     const unsubscribe = subscribeToWebSocket((incoming) => {
+      console.log("Incoming : ",incoming);
       switch (incoming.type) {
+        // case "USER_ONLINE":
+        //   const onlineUserId = incoming.payload.userId;
+        //   dispatch(userOnline(onlineUserId))
+        //   break;
+      
+        // case "USER_OFFLINE":
+        //   const offlineUserId = incoming.payload.userId;
+        //   dispatch(userOffline(offlineUserId));
+        //   break;
         case "USER_TYPING":
           setIsTyping(true);
           break;
         case "USER_STOP_TYPING":
           setIsTyping(false);
           break;
-        case "MESSAGES_READ":
+        case "MESSAGES_READ": 
           if (incoming.payload.conversationId !== conversationId) {
             return;
           }
@@ -87,30 +89,39 @@ function MessageList({
           const newMessage = incoming.payload;
 
           const messageConversationId = newMessage.conversation;
-
+          if(!conversationId){
+            return;
+          }
           if (messageConversationId !== conversationId) {
             return;
           }
-          if (visibilityState && socket.readyState === WebSocket.OPEN) {
-            console.log("It run");
-            socket.send(
-              JSON.stringify({
-                type: "MARK_MESSAGES_READ",
-                payload: {
-                  conversationId,
-                },
-              }),
-            );
+          if (visibilityState) {
+            sendWebSocketMessage({
+              type: "MARK_MESSAGES_READ",
+              payload: {
+                conversationId,
+              },
+            });
           }
 
           setMessages((previousMessages) => [...previousMessages, newMessage]);
           break;
       }
     });
-    return unsubscribe;
-   
-  }, [conversationId, visibilityState]);
 
+    return unsubscribe;
+  }, [conversationId, visibilityState]);
+  useEffect(() => {
+    if (!conversationId) {
+      return;
+    }
+    sendWebSocketMessage({
+      type: "MARK_MESSAGES_READ",
+      payload: {
+        conversationId,
+      },
+    });
+  }, [conversationId, visibilityState]);
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">
       {messages.map((message) => (

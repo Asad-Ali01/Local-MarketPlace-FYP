@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm, type UseFormRegister } from "react-hook-form";
 import { FieldError } from "../ui/field";
 import { Error } from "./Error";
-import { useAppDisptach } from "@/hooks/useAppDispatchSelector";
+import { useAppDispatch } from "@/hooks/useAppDispatchSelector";
 import { logoutUser } from "@/features/auth/authSlice";
 
 type ChangePasswordDialogProps = {
@@ -27,7 +27,7 @@ export default function ChangePasswordDialog({
     resolver:zodResolver(resetPasswordSchema)
   });
     const [resetPasswordApi] = useResetPasswordApiMutation();
-    const dispatch = useAppDisptach();
+    const dispatch = useAppDispatch();
   const submitHandler = async (e:resetPasswordType) => {
     const values = getValues();
     
