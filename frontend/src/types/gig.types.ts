@@ -10,10 +10,10 @@ export interface IImage {
   slot: number;
 }
 export interface ILocation {
-  type: "Point";
+  type: 'Point';
   coordinates: [number, number];
-  locationName:string;
-  city:string;
+  locationName: string;
+  city: string;
 }
 export interface IAvatar {
   url: string;
@@ -21,24 +21,24 @@ export interface IAvatar {
 }
 export interface IProvider {
   name: string;
-  _id:string;
+  _id: string;
 }
 export interface IGig {
   _id: string;
   provider: IProvider;
   title: string;
   description: string;
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   location: ILocation;
   images: IImage[];
   avatar: IAvatar;
   category: {
-    _id:string;
-    name:string;
+    _id: string;
+    name: string;
   };
   subCategory: {
-    _id:string;
-    name:string;
+    _id: string;
+    name: string;
   };
   tags: string[];
   startingPrice: number | null;
@@ -51,7 +51,7 @@ export interface ICreateGigResponse extends IGig {}
 export interface ICreateRequest {
   title: string;
   description: string;
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   location: string;
   category: string;
   subcategory: string;
@@ -79,12 +79,10 @@ export interface IProviderDashboardTopCardResponse {
 }
 
 export interface IProviderGetAllGigsByCategoryResponse {
-
-    data: ICreateGigResponse[];
-
+  data: ICreateGigResponse[];
 }
 
-interface IGetAllMyGigs extends Omit<IGig, "provider"> {
+interface IGetAllMyGigs extends Omit<IGig, 'provider'> {
   provider: string;
 }
 
@@ -98,10 +96,10 @@ export interface IGetLocationSuggestionsResponse {
     displayName: string;
     latitude: number;
     longitude: number;
-    city:string;
+    city: string;
   }[];
 }
 
-export interface IGetGigDetailsById extends IGig{
-  data:IGig
+export interface IGetGigDetailsById extends IGig {
+  data: IGig;
 }

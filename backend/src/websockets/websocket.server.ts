@@ -64,10 +64,10 @@ export const initializeWebSocket = (server: Server) => {
       authenticatedSocket.on("message", async (data) => {
         const message: ClientMessage = JSON.parse(data.toString());
         const { conversationId } = message.payload;
-        const senderId = authenticatedSocket.user._id;
+        const currentUserId = authenticatedSocket.user._id;
         const conversation = await Conversation.findOne({
           _id: conversationId,
-          "members.user": senderId,
+          "members.user": currentUserId,
         });
 
         if (!conversation) {
@@ -75,7 +75,7 @@ export const initializeWebSocket = (server: Server) => {
           return;
         }
         const receiverMember = conversation.members.find(
-          (member) => member.user.toString() !== senderId.toString(),
+          (member) => member.user.toString() !== currentUserId.toString(),
         );
         const receiverId = receiverMember?.user;
         if (!receiverId) {
@@ -129,12 +129,12 @@ export const initializeWebSocket = (server: Server) => {
             break;
           // Mark read messages
           case "MARK_MESSAGES_READ":
+            console.log("MARK_MESSAGE_READ: ",conversationId," currentUser: ",currentUserId," RecieverID: ",receiverId);
             // update isRead to true if current user read the messages
-            console.log("MEssage read");
             const updatedRead = await Message.updateMany(
               {
                 conversation: conversationId,
-                receiver: senderId,
+                receiver: currentUserId,
                 isRead: false,
               },
               {
@@ -143,7 +143,37 @@ export const initializeWebSocket = (server: Server) => {
                 },
               },
             );
+            const lastMessage = await Message.findOne({
+              conversation:conversationId,
+              receiver:currentUserId,
+              isRead:true
+            }).sort({createdAt: -1}).select("_id createdAt").lean();
+            if(lastMessage){
+
+              await Conversation.findOneAndUpdate(
+                {
+                  _id:conversationId,
+                  "members.user":currentUserId
+                },
+                {
+                  $set:{
+                    "members.$.lastReadMessage":lastMessage._id,
+                    "members.$.lastReadAt":lastMessage.createdAt
+                }
+              }
+            )
+          }
             if (updatedRead.modifiedCount > 0) {
+            //     if (authenticatedSocket.readyState === WebSocket.OPEN) {
+            //   authenticatedSocket.send(
+            //     JSON.stringify({
+            //       type: "MESSAGES_READ",
+            //       payload: {
+            //         conversationId
+            //       },
+            //     }),
+            //   );
+            // }
               receiverSockets?.forEach((receiverSocket) => {
                 if (
                   receiverSocket &&
@@ -178,12 +208,25 @@ export const initializeWebSocket = (server: Server) => {
 
             const savedMessage = await Message.create({
               conversation: conversationId,
-              sender: senderId,
+              sender: currentUserId,
               receiver: receiverId,
               content: text.trim(),
             });
 
             await savedMessage.populate("sender", "avatar name");
+            // Sending the Incremenr unread messaeg event
+            receiverSockets?.forEach((receiverSocket) => {
+              if(receiverSocket &&
+                receiverSocket.readyState === WebSocket.OPEN
+              ){
+                receiverSocket.send(
+                  JSON.stringify({
+                    type:"INCREMENT_UNREAD_COUNT",
+                    payload: conversationId
+                  })
+                )
+              }
+            })
             receiverSockets?.forEach((receiverSocket) => {
               if (
                 receiverSocket &&

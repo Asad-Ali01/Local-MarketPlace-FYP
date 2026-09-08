@@ -1,12 +1,12 @@
-import React from 'react'
-import UserEditBYAdminComponent from '../../components/admin/UserEditBYAdminComponent'
+import React from 'react';
+import UserEditBYAdminComponent from '../../components/admin/UserEditBYAdminComponent';
 
 function AdminUserEditPage() {
   return (
     <div>
-        <UserEditBYAdminComponent/>
+      <UserEditBYAdminComponent />
     </div>
-  )
+  );
 }
 
-export default AdminUserEditPage
+export default AdminUserEditPage;

@@ -1,25 +1,25 @@
 export type ClientMessage =
   | {
-      type: "SEND_MESSAGE";
+      type: 'SEND_MESSAGE';
       payload: {
         conversationId: string;
         text: string;
       };
     }
   | {
-      type: "TYPING";
+      type: 'TYPING';
       payload: {
         conversationId: string;
       };
     }
   | {
-      type: "STOP_TYPING";
+      type: 'STOP_TYPING';
       payload: {
         conversationId: string;
       };
     }
   | {
-      type: "MARK_MESSAGES_READ";
+      type: 'MARK_MESSAGES_READ';
       payload: {
         conversationId: string;
       };
@@ -27,44 +27,42 @@ export type ClientMessage =
 
 export type ServerWebSocketEvent =
   | {
-      type: "NEW_MESSAGE";
+      type: 'NEW_MESSAGE';
       payload: {
         conversationId: string;
         message: string;
       };
     }
   | {
-      type: "LAST_MESSAGE_UPDATE";
+      type: 'LAST_MESSAGE_UPDATE';
       payload: {
         conversationId: string;
         lastMessage: string;
-        lastMessageAt:Date
+        lastMessageAt: Date;
       };
     }
   | {
-      type: "MESSAGES_READ";
+      type: 'MESSAGES_READ';
       payload: {
         conversationId: string;
         userId: string;
       };
     }
   | {
-      type: "USER_TYPING";
+      type: 'USER_TYPING';
       payload: {
         conversationId: string;
       };
     }
   | {
-      type: "USER_STOP_TYPING";
+      type: 'USER_STOP_TYPING';
       payload: {
         conversationId: string;
       };
     }
-    | {
-        type:"LAST_MESSAGE_UPDATED";
-        payload:{
-            conversationId:string;
-        }
-    }
-    
-
+  | {
+      type: 'LAST_MESSAGE_UPDATED';
+      payload: {
+        conversationId: string;
+      };
+    };

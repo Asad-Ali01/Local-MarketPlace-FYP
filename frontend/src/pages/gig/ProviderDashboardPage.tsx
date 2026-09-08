@@ -1,12 +1,12 @@
-import React from 'react'
-import ProviderDashboardTopStats from '../../components/gig/dashboard/ProviderDashboardTopStats'
+import React from 'react';
+import ProviderDashboardTopStats from '../../components/gig/dashboard/ProviderDashboardTopStats';
 
 function ProviderDashboardPage() {
   return (
     <div>
-      <ProviderDashboardTopStats/>
+      <ProviderDashboardTopStats />
     </div>
-  )
+  );
 }
 
-export default ProviderDashboardPage
+export default ProviderDashboardPage;

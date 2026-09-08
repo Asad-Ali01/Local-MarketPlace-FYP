@@ -1,8 +1,8 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import useUserEdit from "@/hooks/useUserEdit";
-import FileUploadField from "@/components/shared/FileUploadField";
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import useUserEdit from '@/hooks/useUserEdit';
+import FileUploadField from '@/components/shared/FileUploadField';
 
 function UserEditBYAdminComponent() {
   const {
@@ -59,7 +59,7 @@ function UserEditBYAdminComponent() {
           error={formState.errors.front}
           type="front"
           isEdit={isEdit}
-            size={120}
+          size={120}
           onFileChange={handleFileChange}
           setPreviewImage={setPreviewImage}
         />
@@ -72,25 +72,18 @@ function UserEditBYAdminComponent() {
           error={formState.errors.back}
           type="back"
           isEdit={isEdit}
-            size={120}
+          size={120}
           onFileChange={handleFileChange}
           setPreviewImage={setPreviewImage}
         />
       </div>
       {/*  FORM */}
       <div className="bg-white shadow rounded-xl p-6">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-1  md:grid-cols-2  gap-4"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1  md:grid-cols-2  gap-4">
           {/* Name */}
           <div className="w-full ">
             <Label>Name</Label>
-            <Input
-              className="w-full"
-              {...register("name")}
-              disabled={!isEdit}
-            />
+            <Input className="w-full" {...register('name')} disabled={!isEdit} />
             {formState.errors.name && (
               <p className="text-red-800">{formState.errors.name.message}</p>
             )}
@@ -99,11 +92,7 @@ function UserEditBYAdminComponent() {
           <div className="w-full ">
             <Label>Email</Label>
 
-            <Input
-              className="w-full"
-              {...register("email")}
-              disabled={!isEdit}
-            />
+            <Input className="w-full" {...register('email')} disabled={!isEdit} />
             {formState.errors.email && (
               <p className="text-red-800">{formState.errors.email.message}</p>
             )}
@@ -113,7 +102,7 @@ function UserEditBYAdminComponent() {
             <Label>Role</Label>
 
             <select
-              {...register("role")}
+              {...register('role')}
               disabled={!isEdit}
               className="border rounded px-3 py-2 w-full"
             >
@@ -127,7 +116,7 @@ function UserEditBYAdminComponent() {
             <Label>Status</Label>
 
             <select
-              {...register("status")}
+              {...register('status')}
               disabled={!isEdit}
               className="border rounded px-3 py-2 w-full"
             >
@@ -140,11 +129,7 @@ function UserEditBYAdminComponent() {
           {/* BUTTONS */}
           <div className="sm:col-span-2  flex justify-end gap-3 mt-4">
             {!isEdit ? (
-              <Button
-                className="w-full"
-                type="button"
-                onClick={() => setIsEdit(true)}
-              >
+              <Button className="w-full" type="button" onClick={() => setIsEdit(true)}>
                 Edit
               </Button>
             ) : (
@@ -154,7 +139,7 @@ function UserEditBYAdminComponent() {
                 </Button>
 
                 <Button type="submit" disabled={isUpdating}>
-                  {isUpdating ? "Saving..." : "Save"}
+                  {isUpdating ? 'Saving...' : 'Save'}
                 </Button>
               </>
             )}

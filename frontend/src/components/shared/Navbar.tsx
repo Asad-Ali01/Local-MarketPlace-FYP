@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetClose,
@@ -6,14 +6,13 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { Link, NavLink } from "react-router";
+} from '@/components/ui/sheet';
+import { Link, NavLink } from 'react-router';
 
 function Navbar() {
   return (
     <header className="w-full border-b bg-white">
       <div className="flex items-center justify-between px-4 sm:px-8 lg:px-16 py-3">
-        
         {/* Logo */}
         <Link to="/" className="text-xl font-bold text-purple-700">
           HunarHub
@@ -24,7 +23,7 @@ function Navbar() {
           <NavLink
             to="/"
             className={({ isActive }) =>
-              isActive ? "text-purple-700 font-semibold" : "text-gray-600 hover:text-purple-700"
+              isActive ? 'text-purple-700 font-semibold' : 'text-gray-600 hover:text-purple-700'
             }
           >
             Home
@@ -33,15 +32,15 @@ function Navbar() {
           <NavLink
             to="/about-us"
             className={({ isActive }) =>
-              isActive ? "text-purple-700 font-semibold" : "text-gray-600 hover:text-purple-700"
+              isActive ? 'text-purple-700 font-semibold' : 'text-gray-600 hover:text-purple-700'
             }
           >
             About
           </NavLink>
-           <NavLink
+          <NavLink
             to="/contact-us"
             className={({ isActive }) =>
-              isActive ? "text-purple-700 font-semibold" : "text-gray-600 hover:text-purple-700"
+              isActive ? 'text-purple-700 font-semibold' : 'text-gray-600 hover:text-purple-700'
             }
           >
             Contact Us
@@ -55,9 +54,7 @@ function Navbar() {
           </NavLink>
 
           <NavLink to="/register">
-            <Button className="bg-purple-700 hover:bg-purple-800 text-white">
-              Sign up
-            </Button>
+            <Button className="bg-purple-700 hover:bg-purple-800 text-white">Sign up</Button>
           </NavLink>
         </div>
 
@@ -68,13 +65,10 @@ function Navbar() {
 
             <SheetContent side="left" className="w-70 bg-white">
               <SheetHeader>
-                <SheetTitle className="text-xl font-bold text-purple-700">
-                  HunarHub
-                </SheetTitle>
+                <SheetTitle className="text-xl font-bold text-purple-700">HunarHub</SheetTitle>
               </SheetHeader>
 
               <nav className="flex flex-col  justify-between h-full py-6">
-                
                 {/* Links */}
                 <div className="flex flex-col pl-5  gap-5 text-lg">
                   <SheetClose asChild>
@@ -112,7 +106,6 @@ function Navbar() {
             </SheetContent>
           </Sheet>
         </div>
-
       </div>
     </header>
   );

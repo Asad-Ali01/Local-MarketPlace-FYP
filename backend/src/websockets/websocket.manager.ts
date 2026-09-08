@@ -1,4 +1,5 @@
 import { Conversation } from "../models/conversation.model";
+import { Message } from "../models/message.model";
 import { AuthenticatedWebSocket } from "../types/websocket.types";
 
 const users = new Map<string, Set<AuthenticatedWebSocket>>();
@@ -46,15 +47,10 @@ export const notifyUserPresence = async (
     const otherUserId = conversation.members.find(
       (member) => member.user.toString() !== userId,
     );
-    if(otherUserId){
-
-      console.log("Here is otherUserId: ", otherUserId.user);
-      console.log("Here is otherUserIds: ", otherUserId.user._id);
-    }
+ 
     if (!otherUserId) {
       continue;
     }
-    console.log("String: ", otherUserId.user._id.toString());
     const otherUserSockets = getUserSockets(otherUserId.user.toString());
 
     if (!otherUserSockets || otherUserSockets.size === 0) {
@@ -82,25 +78,36 @@ export const sendInitialPresence = async (userId:string,socket:AuthenticatedWebS
   const conversations = await Conversation.find({"members.user":userId}).lean();
   // Set to store already login users id realted to login user
   const onlineUserIds = new Set<string>();
-
+  const unreadCounts = new Map<string,number>();
   for(const conversation of conversations){
     for(const member of conversation.members){
       const memberId = member.user.toString();
       // If the memberId is equal to current connected user then skip becuase we want the perosn who is talking to it 
       if(memberId === userId)  continue;
-
       const sockets = getUserSockets(memberId);
+      const unreadCount = await Message.countDocuments({
+        conversation:conversation._id,
+        receiver:userId,
+        isRead:false
+      })
+      unreadCounts.set(String(conversation._id),unreadCount);
       if(sockets && sockets.size > 0){
         onlineUserIds.add(memberId);
       }
     }
   } 
   console.log("Online suer ids ",onlineUserIds);
+/*
+JavaScript Set objects cannot be directly serialized by JSON.stringify() (it will serialize a Set into an empty object {}).
+
+Converting the Set into an Array using the spread operator ([...onlineUserIds]) solves this because JSON.stringify() serializes arrays properly.
+*/ 
   socket.send(
     JSON.stringify({
       type:"INITIAL_PRESENCE",
       payload:{
-        userIds:[...onlineUserIds]
+        userIds:[...onlineUserIds],
+        unreadCounts:Object.fromEntries(unreadCounts)
       }
     })
   )

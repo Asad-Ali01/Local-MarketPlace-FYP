@@ -1,22 +1,21 @@
 function Testimonials() {
   const reviews = [
     {
-      name: "Ali Khan",
-      role: "Student",
-      review:
-        "Amazing service! Found a web developer in minutes. Highly recommended.",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      name: 'Ali Khan',
+      role: 'Student',
+      review: 'Amazing service! Found a web developer in minutes. Highly recommended.',
+      image: 'https://randomuser.me/api/portraits/men/32.jpg',
     },
     {
-      name: "Sara Ahmed",
-      role: "Business Owner",
-      review: "Very professional platform. Helped me hire skilled freelancers",
+      name: 'Sara Ahmed',
+      role: 'Business Owner',
+      review: 'Very professional platform. Helped me hire skilled freelancers',
     },
     {
-      name: "Usman Tariq",
-      role: "Startup Founder",
-      review: "Great experience. Fast, reliable, and affordable services.",
-      image: "https://randomuser.me/api/portraits/men/65.jpg",
+      name: 'Usman Tariq',
+      role: 'Startup Founder',
+      review: 'Great experience. Fast, reliable, and affordable services.',
+      image: 'https://randomuser.me/api/portraits/men/65.jpg',
     },
   ];
 
@@ -24,9 +23,7 @@ function Testimonials() {
     <section className="w-full py-16 px-4 ">
       {/* Heading */}
       <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-          What Our Customers Say
-        </h2>
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">What Our Customers Say</h2>
         <p className="text-gray-500 mt-2">Real feedback from our happy users</p>
       </div>
 
@@ -52,9 +49,7 @@ function Testimonials() {
             </div>
 
             {/* Review */}
-            <p className="text-gray-600 text-sm leading-relaxed">
-              “{item.review}”
-            </p>
+            <p className="text-gray-600 text-sm leading-relaxed">“{item.review}”</p>
 
             {/* Stars */}
             <div className="flex mt-4 text-yellow-400">⭐⭐⭐⭐⭐</div>

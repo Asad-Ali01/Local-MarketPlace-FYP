@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from 'react-router';
 
 function Footer() {
   return (
@@ -8,8 +8,8 @@ function Footer() {
         <div>
           <h2 className="text-xl font-bold mb-3">Our Platform</h2>
           <p className="text-sm text-gray-200">
-            AI-powered local marketplace connecting buyers and sellers with
-            smart search, trusted profiles, and direct communication.
+            AI-powered local marketplace connecting buyers and sellers with smart search, trusted
+            profiles, and direct communication.
           </p>
         </div>
 

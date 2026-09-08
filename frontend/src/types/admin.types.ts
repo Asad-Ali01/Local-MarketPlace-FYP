@@ -1,4 +1,4 @@
-import type { IUser } from "@/types/global.types";
+import type { IUser } from '@/types/global.types';
 
 // Admin stats filter Response
 export interface IAdminStatsResponse {
@@ -20,7 +20,7 @@ export interface IAdminStatsRequest {
   range: string;
 }
 export interface IAdminResponseDataExtendUser extends IUser {
-  status: "pending" | "rejected" | "approved";
+  status: 'pending' | 'rejected' | 'approved';
   createdAt: string;
 }
 // Admin all users response
@@ -63,10 +63,7 @@ export interface ISubCategoryResponse {
   };
 }
 
-export interface ISubCategoryWithCategory extends Omit<
-  ISubCategoryResponse,
-  "category"
-> {
+export interface ISubCategoryWithCategory extends Omit<ISubCategoryResponse, 'category'> {
   category: {
     _id: string;
     name: string;

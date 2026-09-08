@@ -1,12 +1,12 @@
-import React from 'react'
-import ViewGigDetailsById from '../../components/gig/ViewGigDetailsById'
+import React from 'react';
+import ViewGigDetailsById from '../../components/gig/ViewGigDetailsById';
 
 function GigDetailsViewPage() {
   return (
     <div>
-        <ViewGigDetailsById/>
+      <ViewGigDetailsById />
     </div>
-  )
+  );
 }
 
-export default GigDetailsViewPage
+export default GigDetailsViewPage;

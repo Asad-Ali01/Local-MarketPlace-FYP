@@ -1,12 +1,11 @@
-
-import ProviderLanding from '../../components/gig/ProviderLanding'
+import ProviderLanding from '../../components/gig/ProviderLanding';
 
 function ProviderLandingPage() {
   return (
     <div>
-        <ProviderLanding/>
+      <ProviderLanding />
     </div>
-  )
+  );
 }
 
-export default ProviderLandingPage
+export default ProviderLandingPage;

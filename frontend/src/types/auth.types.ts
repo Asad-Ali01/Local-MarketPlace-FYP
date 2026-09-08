@@ -1,4 +1,4 @@
-import type { IUser } from "@/types/global.types";
+import type { IUser } from '@/types/global.types';
 
 // Auth state
 export interface IAuth {

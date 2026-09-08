@@ -1,16 +1,15 @@
-import { useGetAllMessagesByConversationIdQuery } from "@/features/chat/chatApi";
+import { useGetAllMessagesByConversationIdQuery } from '@/features/chat/chatApi';
 
-import MessageBubble from "./MessageBubble";
+import MessageBubble from './MessageBubble';
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import type { IMessage } from "@/types/chat.types";
+import type { IMessage } from '@/types/chat.types';
+import { sendWebSocketMessage, subscribeToWebSocket } from '@/services/websocket/websocket';
+import { useAppDispatch } from '@/hooks/useAppDispatchSelector';
 import {
-  sendWebSocketMessage,
-  subscribeToWebSocket,
-} from "@/services/websocket/websocket";
-import { useAppDispatch } from "@/hooks/useAppDispatchSelector";
-import { setOnlineUsers, userOffline, userOnline } from "@/features/chat/chatSlice";
+  clearUnreadCount,
+} from '@/features/chat/chatSlice';
 
 interface MessageListProps {
   conversationId?: string;
@@ -23,8 +22,8 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
   const { data } = useGetAllMessagesByConversationIdQuery(conversationId!, {
     skip: !conversationId,
   });
-  const [visibilityState, setVisibilityState] = useState(
-    document.visibilityState === "visible",
+  const [isActive, setIsActive] = useState(
+    () => document.visibilityState === 'visible' && document.hasFocus(),
   );
   const [messages, setMessages] = useState<IMessage[]>([]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -33,16 +32,20 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
   // Initial messages from HTTP
   // -----------------------------
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      setVisibilityState(document.visibilityState === "visible");
+    const handleActiveState = () => {
+      const isVisible = document.visibilityState === 'visible' && document.hasFocus();
+      setIsActive(isVisible);
+  
     };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
+    document.addEventListener('visibilitychange', handleActiveState);
+    window.addEventListener('focus', handleActiveState);
+    window.addEventListener('blur', handleActiveState);
     return () => {
-      console.log("state: ", visibilityState);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener('visibilitychange', handleActiveState);
+      window.removeEventListener('focus', handleActiveState);
+      window.removeEventListener('blur', handleActiveState);
     };
-  }, []);
+  }, [conversationId]);
   useEffect(() => {
     if (data?.data) {
       setMessages(data.data);
@@ -51,33 +54,24 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
 
   useLayoutEffect(() => {
     bottomRef.current?.scrollIntoView({
-      behavior: "instant",
+      behavior: 'instant',
     });
   }, [messages]);
 
   useEffect(() => {
     const unsubscribe = subscribeToWebSocket((incoming) => {
-      console.log("Incoming : ",incoming);
       switch (incoming.type) {
-        // case "USER_ONLINE":
-        //   const onlineUserId = incoming.payload.userId;
-        //   dispatch(userOnline(onlineUserId))
-        //   break;
-      
-        // case "USER_OFFLINE":
-        //   const offlineUserId = incoming.payload.userId;
-        //   dispatch(userOffline(offlineUserId));
-        //   break;
-        case "USER_TYPING":
+        case 'USER_TYPING':
           setIsTyping(true);
           break;
-        case "USER_STOP_TYPING":
+        case 'USER_STOP_TYPING':
           setIsTyping(false);
           break;
-        case "MESSAGES_READ": 
+        case 'MESSAGES_READ':
           if (incoming.payload.conversationId !== conversationId) {
             return;
           }
+
           setMessages((previousMessages) =>
             previousMessages.map((message) => ({
               ...message,
@@ -85,24 +79,17 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
             })),
           );
           break;
-        case "NEW_MESSAGE":
+        case 'NEW_MESSAGE':
           const newMessage = incoming.payload;
 
           const messageConversationId = newMessage.conversation;
-          if(!conversationId){
+          if (!conversationId) {
             return;
           }
           if (messageConversationId !== conversationId) {
             return;
           }
-          if (visibilityState) {
-            sendWebSocketMessage({
-              type: "MARK_MESSAGES_READ",
-              payload: {
-                conversationId,
-              },
-            });
-          }
+         
 
           setMessages((previousMessages) => [...previousMessages, newMessage]);
           break;
@@ -110,29 +97,30 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
     });
 
     return unsubscribe;
-  }, [conversationId, visibilityState]);
+  }, [conversationId]);
   useEffect(() => {
-    if (!conversationId) {
+    if (!conversationId || !isActive) {
       return;
     }
     sendWebSocketMessage({
-      type: "MARK_MESSAGES_READ",
+      type: 'MARK_MESSAGES_READ',
       payload: {
         conversationId,
       },
     });
-  }, [conversationId, visibilityState]);
+      dispatch(clearUnreadCount(conversationId));
+  }, [conversationId,isActive  ]);
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">
       {messages.map((message) => (
         <div key={message._id}>
           <MessageBubble
             senderId={message.sender._id}
-            type={message.isRead ? "received" : "sent"}
+            type={message.isRead ? 'received' : 'sent'}
             content={message.content}
             time={new Date(message.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
+              hour: '2-digit',
+              minute: '2-digit',
             })}
             avatarUrl={message.sender?.avatar?.url}
             senderName={message.sender.name}
@@ -140,9 +128,7 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
         </div>
       ))}
 
-      {isTyping && (
-        <div className="text-sm text-gray-500">{receiverName} is typing...</div>
-      )}
+      {isTyping && <div className="text-sm text-gray-500">{receiverName} is typing...</div>}
       <div ref={bottomRef} />
     </div>
   );

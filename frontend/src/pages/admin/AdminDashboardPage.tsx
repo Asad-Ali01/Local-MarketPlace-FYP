@@ -1,12 +1,11 @@
-
-import DashboardComponent from '../../components/admin/DashBoardComponent'
+import DashboardComponent from '../../components/admin/DashBoardComponent';
 
 function AdminDashboardPage() {
   return (
-    <div >
-        <DashboardComponent/>
+    <div>
+      <DashboardComponent />
     </div>
-  )
+  );
 }
 
-export default AdminDashboardPage
+export default AdminDashboardPage;

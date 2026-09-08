@@ -1,11 +1,11 @@
-import LoginForm from "@/components/shared/LoginForm";
-import { useAdminLoginApiMutation } from "@/features/admin/adminApi";
+import LoginForm from '@/components/shared/LoginForm';
+import { useAdminLoginApiMutation } from '@/features/admin/adminApi';
 
 function AdminLoginForm() {
-    const [adminLoginApi]= useAdminLoginApiMutation()
+  const [adminLoginApi] = useAdminLoginApiMutation();
   return (
-    <div className="grid border-2 h-screen">
-    <LoginForm loginApi={adminLoginApi} mode="admin"/>
+    <div className="grid  h-screen">
+      <LoginForm loginApi={adminLoginApi} mode="admin" />
     </div>
   );
 }

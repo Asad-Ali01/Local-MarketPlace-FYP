@@ -1,11 +1,11 @@
-import OtpVerify from '../../components/otp/OtpVerify'
+import OtpVerify from '../../components/otp/OtpVerify';
 
 function OtpVerifyPage() {
   return (
-    <div className='h-[80vh] mt-3'>
-        <OtpVerify/>
+    <div className="h-[80vh] mt-3">
+      <OtpVerify />
     </div>
-  )
+  );
 }
 
-export default OtpVerifyPage
+export default OtpVerifyPage;

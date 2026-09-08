@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState } from 'react';
 
 type Props = {
   value?: File | null;
@@ -14,13 +14,13 @@ export default function ImageDropzone({ value, onChange, label }: Props) {
     if (!file) return;
 
     //  validation (client-side quick check)
-    if (!file.type.startsWith("image/")) {
-      alert("Only image files allowed");
+    if (!file.type.startsWith('image/')) {
+      alert('Only image files allowed');
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert("Max size 2MB");
+      alert('Max size 2MB');
       return;
     }
 
@@ -30,9 +30,9 @@ export default function ImageDropzone({ value, onChange, label }: Props) {
   return (
     <div
       className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition ${
-        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"
+        isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
       }`}
-      
+
       onClick={() => inputRef.current?.click()}
       onDragOver={(e) => {
         e.preventDefault();
@@ -48,7 +48,7 @@ export default function ImageDropzone({ value, onChange, label }: Props) {
       <input
         type="file"
         hidden
-         accept="image/png, image/jpeg, image/jpg"
+        accept="image/png, image/jpeg, image/jpg"
         ref={inputRef}
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
@@ -56,14 +56,10 @@ export default function ImageDropzone({ value, onChange, label }: Props) {
       <p className="text-sm text-gray-600">{label}</p>
 
       {!value ? (
-        <p className="text-xs text-gray-400 mt-1">
-          Drag & drop or click to upload
-        </p>
+        <p className="text-xs text-gray-400 mt-1">Drag & drop or click to upload</p>
       ) : (
         <div className="mt-2 space-y-1">
-          <p className="text-sm font-medium text-green-600">
-            ✅ File selected
-          </p>
+          <p className="text-sm font-medium text-green-600">✅ File selected</p>
           <p className="text-xs text-gray-500">
             {value.name} ({(value.size / 1024).toFixed(1)} KB)
           </p>

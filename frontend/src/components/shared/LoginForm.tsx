@@ -1,18 +1,18 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { type loginSchemaType, loginSchema } from "@/schemas/global.schema";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import type { ILoginUserResponse } from "@/types/auth.types";
-import { Link, useLocation, useNavigate } from "react-router";
-import { useAppDispatch } from "@/hooks/useAppDispatchSelector";
-import { loginUser } from "@/features/auth/authSlice";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-type LoginMode = "user" | "admin";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { type loginSchemaType, loginSchema } from '@/schemas/global.schema';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import toast from 'react-hot-toast';
+import type { ILoginUserResponse } from '@/types/auth.types';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { useAppDispatch } from '@/hooks/useAppDispatchSelector';
+import { loginUser } from '@/features/auth/authSlice';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+type LoginMode = 'user' | 'admin';
 type LoginFormProps = {
   loginApi: (data: loginSchemaType) => {
     unwrap: () => Promise<ILoginUserResponse>;
@@ -25,15 +25,15 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
   const form = useForm<loginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-     const from = location?.state?.from;
-      console.log("From: ",from);
+  const from = location?.state?.from;
+  console.log('From: ', from);
   const handleLogin = async (data: loginSchemaType) => {
     try {
       const res = await loginApi(data).unwrap();
@@ -44,22 +44,22 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
         }),
       );
       const role = res.data.user.role;
-      console.log("Role is: ", role);
-   
+      console.log('Role is: ', role);
+
       if (from) {
         navigate(from);
-      } else if (role === "admin") {
-        navigate("/admin/dashboard");
-      } else if (role === "provider") {
-        navigate("/provider/dashboard");
-      } else if (role === "client") {
-        navigate("/client");
+      } else if (role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (role === 'provider') {
+        navigate('/provider/dashboard');
+      } else if (role === 'client') {
+        navigate('/client');
       }
 
       toast.success(res.message);
       form.reset();
     } catch (error: any) {
-      toast.error(error?.data?.message || "Login failed");
+      toast.error(error?.data?.message || 'Login failed');
     }
   };
 
@@ -68,9 +68,7 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
       <Card className="w-full max-w-md shadow-lg py-10">
         {/* Header */}
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            Welcome Back 👋
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Welcome Back 👋</CardTitle>
         </CardHeader>
 
         <CardContent>
@@ -78,11 +76,7 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
             {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                placeholder="Enter your email"
-                {...form.register("email")}
-              />
+              <Input id="email" placeholder="Enter your email" {...form.register('email')} />
               <Error msg={form.formState.errors.email?.message} />
             </div>
 
@@ -92,9 +86,9 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
               <div className="relative ">
                 <Input
                   id="password"
-                  type={visible ? "text" : "password"}
+                  type={visible ? 'text' : 'password'}
                   placeholder="Enter your password"
-                  {...form.register("password")}
+                  {...form.register('password')}
                 />
                 <button
                   type="button"
@@ -108,12 +102,9 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
             </div>
 
             {/* Extra options */}
-            {mode != "admin" && (
+            {mode != 'admin' && (
               <div className="flex justify-between items-center text-sm">
-                <Link
-                  to="/forgot-password"
-                  className="text-purple-700 hover:underline"
-                >
+                <Link to="/forgot-password" className="text-purple-700 hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -124,17 +115,14 @@ function LoginForm({ loginApi, mode }: LoginFormProps) {
               disabled={form.formState.isSubmitting}
               className="w-full bg-purple-700 hover:bg-purple-800"
             >
-              {form.formState.isSubmitting ? "Logging in" : "Login"}
+              {form.formState.isSubmitting ? 'Logging in' : 'Login'}
             </Button>
 
             {/* Register redirect */}
-            {mode !== "admin" && (
+            {mode !== 'admin' && (
               <p className="text-sm text-center text-gray-500">
                 Don’t have an account?
-                <Link
-                  to="/register"
-                  className="text-purple-700 font-medium hover:underline"
-                >
+                <Link to="/register" className="text-purple-700 font-medium hover:underline">
                   Sign up
                 </Link>
               </p>

@@ -1,13 +1,10 @@
-import {
-  useAdminAllUsersApiQuery,
-  useAdminDeleteUserMutation,
-} from "@/features/admin/adminApi";
-import { Table, Modal, message } from "antd";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import type { ColumnsType } from "antd/es/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useNavigate } from "react-router";
+import { useAdminAllUsersApiQuery, useAdminDeleteUserMutation } from '@/features/admin/adminApi';
+import { Table, Modal, message } from 'antd';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import type { ColumnsType } from 'antd/es/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useNavigate } from 'react-router';
 import {
   Select,
   SelectContent,
@@ -16,33 +13,33 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Input } from "antd";
-import useDebounce from "@/hooks/useDebounce";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Input } from 'antd';
+import useDebounce from '@/hooks/useDebounce';
 function UserManagementComponent() {
   const [page, setPage] = useState(1);
-  const [search,setSearch] = useState("");
-  const debounceValue = useDebounce<string>(search,500);
-  const [filterStatus, setFilterStatus] = useState<string>("");
-  const { data } = useAdminAllUsersApiQuery({ page, filterStatus,searchUser:debounceValue });
+  const [search, setSearch] = useState('');
+  const debounceValue = useDebounce<string>(search, 500);
+  const [filterStatus, setFilterStatus] = useState<string>('');
+  const { data } = useAdminAllUsersApiQuery({ page, filterStatus, searchUser: debounceValue });
   const [deleteUser] = useAdminDeleteUserMutation();
   const navigate = useNavigate();
   const { confirm } = Modal;
   const handleDelete = (userId: string) => {
     confirm({
-      title: "Are you sure you want to delete this user?",
-      content: "This action cannot be undone",
-      okText: "Yes, Delete",
-      okType: "danger",
-      cancelText: "Cancel",
+      title: 'Are you sure you want to delete this user?',
+      content: 'This action cannot be undone',
+      okText: 'Yes, Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
 
       onOk: async () => {
         try {
-          await deleteUser({id:userId}).unwrap(); // call your API
-          message.success("User deleted successfully");
+          await deleteUser({ id: userId }).unwrap(); // call your API
+          message.success('User deleted successfully');
         } catch (error) {
-          message.error("Delete failed");
+          message.error('Delete failed');
         }
       },
     });
@@ -55,57 +52,53 @@ function UserManagementComponent() {
       email: user.email,
       role: user.role,
       status: user.status,
-      createdAt: user.createdAt.split("T")[0],
+      createdAt: user.createdAt.split('T')[0],
     })) || [];
   const columns: ColumnsType<any> = [
     {
-      title: "Avatar",
-      dataIndex: "avatar",
-      key: "avatar",
+      title: 'Avatar',
+      dataIndex: 'avatar',
+      key: 'avatar',
       render: (avatarUrl, record) => {
         return (
           <Avatar>
             <AvatarImage src={avatarUrl} />
-            <AvatarFallback>
-              {record.name.slice(0, 1).toUpperCase()}
-            </AvatarFallback>
+            <AvatarFallback>{record.name.slice(0, 1).toUpperCase()}</AvatarFallback>
           </Avatar>
         );
       },
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
-      title: "CreatedAt",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      title: 'CreatedAt',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
     },
     {
-      title: "Actions",
-      key: "actions",
+      title: 'Actions',
+      key: 'actions',
       render: (_, record) => (
         <div className="flex">
-          <Button onClick={() => navigate(`/admin/edit-user/${record.key}`)}>
-            Edit
-          </Button>
+          <Button onClick={() => navigate(`/admin/edit-user/${record.key}`)}>Edit</Button>
           <Button onClick={() => handleDelete(record.key)}>Delete</Button>
         </div>
       ),
@@ -113,7 +106,7 @@ function UserManagementComponent() {
   ];
   const { Search } = Input;
   return (
-    <div >
+    <div>
       <div className="mb-5 space-y-2 ">
         <div>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
@@ -139,25 +132,23 @@ function UserManagementComponent() {
           size="large"
           allowClear
           onChange={(e) => {
-            setSearch(e.target.value)
+            setSearch(e.target.value);
           }}
         />
       </div>
-   
 
       <Table
         columns={columns}
         dataSource={dataSource}
-          scroll={{ x: true }}
+        scroll={{ x: true }}
         pagination={{
           current: page,
           pageSize: 10,
           total: data?.data.totalUsers,
           onChange: (p) => setPage(p),
         }}
-        />
-        </div>
-
+      />
+    </div>
   );
 }
 

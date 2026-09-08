@@ -1,12 +1,11 @@
-import CreateGigStepper from "../../components/gig/CreaterGigStepper"
-
+import CreateGigStepper from '../../components/gig/CreaterGigStepper';
 
 function ProviderGigPage() {
   return (
     <div>
-        <CreateGigStepper/>
+      <CreateGigStepper />
     </div>
-  )
+  );
 }
 
-export default ProviderGigPage
+export default ProviderGigPage;

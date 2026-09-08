@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   FolderTree,
   FolderOpen,
@@ -8,23 +8,18 @@ import {
   ShoppingBag,
   MessageSquare,
   Tags,
-} from "lucide-react";
-import type { IGig } from "@/types/gig.types";
-
+} from 'lucide-react';
+import type { IGig } from '@/types/gig.types';
 
 type GigInformationProps = {
   gig: IGig;
 };
 
-export default function GigInformation({
-  gig,
-}: GigInformationProps) {
+export default function GigInformation({ gig }: GigInformationProps) {
   return (
     <Card className="w-full">
       <CardContent className="p-4 sm:p-6">
-        <h2 className="mb-5 text-xl font-bold sm:mb-6 sm:text-2xl">
-          Gig Information
-        </h2>
+        <h2 className="mb-5 text-xl font-bold sm:mb-6 sm:text-2xl">Gig Information</h2>
 
         <div className="divide-y rounded-lg border">
           {/* Starting Price */}
@@ -35,9 +30,7 @@ export default function GigInformation({
             </div>
 
             <div className="break-words text-sm sm:text-right sm:text-base">
-              {gig.startingPrice
-                ? `PKR ${gig.startingPrice.toLocaleString()}`
-                : "Contact Provider"}
+              {gig.startingPrice ? `PKR ${gig.startingPrice.toLocaleString()}` : 'Contact Provider'}
             </div>
           </div>
 
@@ -72,9 +65,7 @@ export default function GigInformation({
               <span>Rating</span>
             </div>
 
-            <span className="text-sm sm:text-base">
-              ⭐ {gig.rating.toFixed(1)}
-            </span>
+            <span className="text-sm sm:text-base">⭐ {gig.rating.toFixed(1)}</span>
           </div>
 
           {/* Reviews */}
@@ -84,9 +75,7 @@ export default function GigInformation({
               <span>Reviews</span>
             </div>
 
-            <span className="text-sm sm:text-base">
-              {gig.totalReviews}
-            </span>
+            <span className="text-sm sm:text-base">{gig.totalReviews}</span>
           </div>
 
           {/* Orders */}
@@ -96,9 +85,7 @@ export default function GigInformation({
               <span>Orders</span>
             </div>
 
-            <span className="text-sm sm:text-base">
-              {gig.totalOrders}
-            </span>
+            <span className="text-sm sm:text-base">{gig.totalOrders}</span>
           </div>
 
           {/* Tags */}

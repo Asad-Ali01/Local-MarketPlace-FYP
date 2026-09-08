@@ -1,5 +1,3 @@
-
-
 // IdentityCard interface
 interface IidentityCard {
   front: {
@@ -20,7 +18,7 @@ interface IAvatar {
 
 // location interface
 interface ILocation {
-  type: "Point";
+  type: 'Point';
   coordinates: [number, number];
 }
 
@@ -29,7 +27,7 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
-  role:"client" | "provider" | "admin";
+  role: 'client' | 'provider' | 'admin';
   identityCard?: IidentityCard;
   avatar?: IAvatar;
   location?: ILocation;

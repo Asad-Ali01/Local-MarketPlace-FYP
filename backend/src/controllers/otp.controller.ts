@@ -70,12 +70,12 @@ const otpVerify = asyncHandler(async(req,res) => {
     if(record.expiresAt.getTime() < Date.now()){
         throw new ApiError(400,"OTP is expired");
     }
-    if(!process.env.ACCESS_TOKEN_SECRET){
+    if(!process.env.JWT_ACCESS_SECRET){
         throw new ApiError(500,"ACCESS_TOKEN_SECRET is not defined");
     }
     const resetToken = jwt.sign(
         {email},
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.JWT_ACCESS_SECRET,
         {expiresIn:"5m"}
     )
     return res.status(200).json(new ApiResponse(200,{resetToken},"OTP verified successfully"));
@@ -87,7 +87,7 @@ const resetPassword = asyncHandler(async(req,res) => {
     if(!token){
         throw new ApiError(400,"Token is missing")
     }
-    if(!process.env.ACCESS_TOKEN_SECRET){
+    if(!process.env.JWT_ACCESS_SECRET){
         throw new ApiError(500,"ACCESS_TOKEN_SECRET is not defined");
     }
     if(!newPassword || !confirmPassword){
@@ -96,7 +96,7 @@ const resetPassword = asyncHandler(async(req,res) => {
     if(newPassword !== confirmPassword){
         throw new ApiError(400,"New password and confirm password do not match");
     }
-    const decoded = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET) as OtpTokenPayload;
+    const decoded = jwt.verify(token,process.env.JWT_ACCESS_SECRET) as OtpTokenPayload;
 
     const email = decoded.email;
 

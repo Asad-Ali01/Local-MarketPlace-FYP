@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { useAdminGetStatsApiMutation } from "@/features/admin/adminApi";
-import { useEffect, useState } from "react";
+import { Button } from '@/components/ui/button';
+import { useAdminGetStatsApiMutation } from '@/features/admin/adminApi';
+import { useEffect, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -12,13 +12,13 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
-} from "recharts";
+} from 'recharts';
 
 export default function DashboardComponent() {
-  const [range, setRange] = useState("7d");
+  const [range, setRange] = useState('7d');
   const [adminGetStats, { data }] = useAdminGetStatsApiMutation();
   useEffect(() => {
-    handleRange("7d");
+    handleRange('7d');
   }, []);
   const handleRange = async (value: string) => {
     try {
@@ -28,7 +28,7 @@ export default function DashboardComponent() {
       console.log(error);
     }
   };
-  console.log("Here is results: ", data);
+  console.log('Here is results: ', data);
   const apiResponse = data?.data;
   return (
     <div className={`h-300 sm:h-180  lg:h-160 `}>
@@ -38,52 +38,35 @@ export default function DashboardComponent() {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white shadow rounded-lg p-4">
             <h2 className="text-sm font-medium text-gray-500">Total Users</h2>
-            <p className="text-2xl font-bold text-gray-900">
-              {apiResponse?.totalUsers}
-            </p>
+            <p className="text-2xl font-bold text-gray-900">{apiResponse?.totalUsers}</p>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-sm font-medium text-gray-500">
-              Pending Approvals
-            </h2>
-            <p className="text-2xl font-bold text-gray-900">
-              {apiResponse?.pendingApprovals}
-            </p>
+            <h2 className="text-sm font-medium text-gray-500">Pending Approvals</h2>
+            <p className="text-2xl font-bold text-gray-900">{apiResponse?.pendingApprovals}</p>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-sm font-medium text-gray-500">
-              Approved Users
-            </h2>
-            <p className="text-2xl font-bold text-gray-900">
-              {apiResponse?.approvedUsers}
-            </p>
+            <h2 className="text-sm font-medium text-gray-500">Approved Users</h2>
+            <p className="text-2xl font-bold text-gray-900">{apiResponse?.approvedUsers}</p>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
-            <h2 className="text-sm font-medium text-gray-500">
-              Rejected Users
-            </h2>
-            <p className="text-2xl font-bold text-gray-900">
-              {apiResponse?.rejectedUsers}
-            </p>
+            <h2 className="text-sm font-medium text-gray-500">Rejected Users</h2>
+            <p className="text-2xl font-bold text-gray-900">{apiResponse?.rejectedUsers}</p>
           </div>
         </section>
       </div>
       <section className="w-full   mb-20   p-4 shadow">
-        <Button
-          className={`${range === "7d" && "bg-blue-900"}`}
-          onClick={() => handleRange("7d")}
-        >
+        <Button className={`${range === '7d' && 'bg-blue-900'}`} onClick={() => handleRange('7d')}>
           7d
         </Button>
         <Button
-          className={`${range === "30d" && "bg-blue-900"}`}
-          onClick={() => handleRange("30d")}
+          className={`${range === '30d' && 'bg-blue-900'}`}
+          onClick={() => handleRange('30d')}
         >
           30d
         </Button>
         <Button
-          className={`${range === "yearly" && "bg-blue-900"}`}
-          onClick={() => handleRange("yearly")}
+          className={`${range === 'yearly' && 'bg-blue-900'}`}
+          onClick={() => handleRange('yearly')}
         >
           yearly
         </Button>

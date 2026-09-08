@@ -1,11 +1,11 @@
-import LoginForm from "@/components/shared/LoginForm";
-import { useLoginUserApiMutation } from "@/features/auth/authApi";
+import LoginForm from '@/components/shared/LoginForm';
+import { useLoginUserApiMutation } from '@/features/auth/authApi';
 
 function UserLoginForm() {
-    const [loginUserApi]=useLoginUserApiMutation()
+  const [loginUserApi] = useLoginUserApiMutation();
   return (
     <>
-    <LoginForm loginApi={loginUserApi} mode="user"/>
+      <LoginForm loginApi={loginUserApi} mode="user" />
     </>
   );
 }

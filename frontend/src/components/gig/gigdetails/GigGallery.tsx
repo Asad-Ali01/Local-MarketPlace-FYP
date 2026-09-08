@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Image } from "antd";
-import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { GigGalleryProps } from "../../../types/gig.types";
-
+import { useState } from 'react';
+import { Image } from 'antd';
+import { ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import type { GigGalleryProps } from '../../../types/gig.types';
 
 export default function GigGallery({ images }: GigGalleryProps) {
   const [selected, setSelected] = useState(0);
@@ -21,15 +20,11 @@ export default function GigGallery({ images }: GigGalleryProps) {
   }
 
   const previous = () => {
-    setSelected((prev) =>
-      prev === 0 ? images.length - 1 : prev - 1
-    );
+    setSelected((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const next = () => {
-    setSelected((prev) =>
-      prev === images.length - 1 ? 0 : prev + 1
-    );
+    setSelected((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -38,13 +33,7 @@ export default function GigGallery({ images }: GigGalleryProps) {
         {/* Main Image */}
 
         <div className="relative overflow-hidden rounded-2xl border bg-white shadow-sm">
-          <Image
-            src={images[selected].url}
-            alt="Gig Image"
-            preview={false}
-           
-           
-          />
+          <Image src={images[selected].url} alt="Gig Image" preview={false} />
 
           {images.length > 1 && (
             <>
@@ -78,9 +67,7 @@ export default function GigGallery({ images }: GigGalleryProps) {
                 key={index}
                 onClick={() => setSelected(index)}
                 className={`overflow-hidden rounded-xl border-2 transition-all ${
-                  selected === index
-                    ? "border-primary"
-                    : "border-transparent"
+                  selected === index ? 'border-primary' : 'border-transparent'
                 }`}
               >
                 <img

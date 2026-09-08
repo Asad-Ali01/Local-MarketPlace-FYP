@@ -1,24 +1,24 @@
 import { Input } from 'antd';
-import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 function HeroSearchSection() {
   const { Search } = Input;
-  const items = ["AC Repair,", "Solar installation,", "Home cleaning,"];
+  const items = ['AC Repair,', 'Solar installation,', 'Home cleaning,'];
   const [index, setIndex] = useState(0);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
+  useEffect(() => {
+    const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % items.length);
-    }, 2500)
+    }, 2500);
 
     return () => clearInterval(interval);
-  }, [items.length])
+  }, [items.length]);
 
   return (
-    <div id='search-provider' className='h-40'>
-        {/* Top heading */}
-      <div  className={`text-center text-2xl font-bold  text-white dark:text-black`}>
+    <div id="search-provider" className="h-40">
+      {/* Top heading */}
+      <div className={`text-center text-2xl font-bold  text-white dark:text-black`}>
         <AnimatePresence mode="popLayout">
           <motion.div
             key={index}
@@ -30,21 +30,21 @@ function HeroSearchSection() {
             {items[index]}
           </motion.div>
         </AnimatePresence>
-        <h2  >Made easy</h2>
+        <h2>Made easy</h2>
       </div>
 
       {/* Search bar */}
-      <div  className='mx-auto mt-8 w-full max-w-xl px-4 '>
+      <div className="mx-auto mt-8 w-full max-w-xl px-4 ">
         <Search
-          placeholder='Search services'
-          enterButton='Search'
-          size='large'
+          placeholder="Search services"
+          enterButton="Search"
+          size="large"
           allowClear
-          onSearch={(value) => console.log('Search:', value)}     
+          onSearch={(value) => console.log('Search:', value)}
         />
       </div>
     </div>
-  )
+  );
 }
 
-export default HeroSearchSection
+export default HeroSearchSection;

@@ -5,70 +5,61 @@ import {
   MessageSquareMore,
   Star,
   WalletCards,
-} from "lucide-react";
-import { skipToken } from "@reduxjs/toolkit/query";
+} from 'lucide-react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
-import { useProviderDashboardTopCardQuery } from "@/features/gig/gigApi";
-import { useAppSelector } from "@/hooks/useAppDispatchSelector";
+import { useProviderDashboardTopCardQuery } from '@/features/gig/gigApi';
+import { useAppSelector } from '@/hooks/useAppDispatchSelector';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 function ProviderDashboardTopStats() {
   const providerId = useAppSelector((state) => state.auth.user?._id);
 
   const { data, isLoading, isFetching } = useProviderDashboardTopCardQuery(
-    providerId ?  providerId  : skipToken
+    providerId ? providerId : skipToken,
   );
 
   const stats = data?.data;
 
   const cards = [
     {
-      title: "Total Gigs",
+      title: 'Total Gigs',
       value: stats?.totalGigs ?? 0,
-      description: "Published service listings",
+      description: 'Published service listings',
       icon: BriefcaseBusiness,
     },
     {
-      title: "Active Orders",
+      title: 'Active Orders',
       value: stats?.activeOrders ?? 0,
-      description: "Orders currently in progress",
+      description: 'Orders currently in progress',
       icon: Clock3,
     },
     {
-      title: "Completed Orders",
+      title: 'Completed Orders',
       value: stats?.completedOrders ?? 0,
-      description: "Successfully delivered work",
+      description: 'Successfully delivered work',
       icon: CheckCircle2,
     },
     {
-      title: "Unread Messages",
+      title: 'Unread Messages',
       value: stats?.unreadMessages ?? 0,
-      description: "Conversations waiting for your reply",
+      description: 'Conversations waiting for your reply',
       icon: MessageSquareMore,
     },
     {
-      title: "Average Rating",
-      value:
-        typeof stats?.averageRating === "number"
-          ? stats.averageRating.toFixed(1)
-          : "0.0",
-      description: "Your current public rating",
+      title: 'Average Rating',
+      value: typeof stats?.averageRating === 'number' ? stats.averageRating.toFixed(1) : '0.0',
+      description: 'Your current public rating',
       icon: Star,
     },
     {
-      title: "Total Earnings",
+      title: 'Total Earnings',
       value:
-        typeof stats?.totalEarnings === "number"
+        typeof stats?.totalEarnings === 'number'
           ? `Rs ${stats.totalEarnings.toLocaleString()}`
-          : "Rs 0",
-      description: "Lifetime earnings from completed orders",
+          : 'Rs 0',
+      description: 'Lifetime earnings from completed orders',
       icon: WalletCards,
     },
   ];
@@ -83,10 +74,7 @@ function ProviderDashboardTopStats() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Card
-              key={i}
-              className="h-40 border-border/60 bg-card/60 animate-pulse"
-            />
+            <Card key={i} className="h-40 border-border/60 bg-card/60 animate-pulse" />
           ))}
         </div>
       </section>
@@ -143,12 +131,8 @@ function ProviderDashboardTopStats() {
               </CardHeader>
 
               <CardContent className="pt-0">
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {card.description}
-                </p>
+                <p className="text-sm leading-6 text-muted-foreground">{card.description}</p>
               </CardContent>
-            
-
             </Card>
           );
         })}

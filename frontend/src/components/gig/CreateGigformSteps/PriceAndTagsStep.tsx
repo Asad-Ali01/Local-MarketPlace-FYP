@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 
-import type { ProviderGigSchemaInputType } from "../../../schemas/gig";
+import type { ProviderGigSchemaInputType } from '../../../schemas/gig';
 
-import { Input } from "@/components/ui/input";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { X } from "lucide-react";
-import { Button } from "antd";
+import { Input } from '@/components/ui/input';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
+import { X } from 'lucide-react';
+import { Button } from 'antd';
 
 function PriceAndTagsStep() {
   const form = useFormContext<ProviderGigSchemaInputType>();
 
-  const [tagInput, setTagInput] = useState("");
+  const [tagInput, setTagInput] = useState('');
 
-  const tags = form.watch("tags") || [];
+  const tags = form.watch('tags') || [];
 
   const addTag = () => {
     const value = tagInput.trim();
@@ -22,40 +22,39 @@ function PriceAndTagsStep() {
     if (tags.includes(value)) return;
     if (tags.length >= 10) return;
 
-    form.setValue("tags", [...tags, value], {
+    form.setValue('tags', [...tags, value], {
       shouldValidate: true,
     });
 
-    setTagInput("");
+    setTagInput('');
   };
 
   const removeTag = (tag: string) => {
     form.setValue(
-      "tags",
+      'tags',
       tags.filter((t) => t !== tag),
       {
         shouldValidate: true,
-      }
+      },
     );
   };
 
   return (
     <div className="space-y-6">
-
       {/* Starting Price */}
 
       <Field>
         <FieldLabel>Starting Price (Optional)</FieldLabel>
 
-     <Input
-  type="number"
-  placeholder="e.g.5000"
-  {...form.register("startingPrice", {
-    setValueAs: (v) => {
-      return v === "" ? undefined : Number(v);
-    },
-  })}
-/>
+        <Input
+          type="number"
+          placeholder="e.g.5000"
+          {...form.register('startingPrice', {
+            setValueAs: (v) => {
+              return v === '' ? undefined : Number(v);
+            },
+          })}
+        />
 
         <p className="text-sm text-muted-foreground mt-1">
           Leave empty to display <strong>Price on Request</strong>.
@@ -71,12 +70,12 @@ function PriceAndTagsStep() {
 
         <div className="flex ">
           <Input
-          className="rounded-r-none flex-1"
+            className="rounded-r-none flex-1"
             placeholder="React"
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 addTag();
               }
@@ -84,7 +83,7 @@ function PriceAndTagsStep() {
           />
 
           <Button
-          className="p-[19px]!  border-l-0 flex-none  rounded-l-none!"
+            className="p-[19px]!  border-l-0 flex-none  rounded-l-none!"
             type="primary"
             onClick={addTag}
           >
@@ -92,9 +91,7 @@ function PriceAndTagsStep() {
           </Button>
         </div>
 
-        <p className="text-sm text-muted-foreground mt-2">
-          Add up to 10 tags.
-        </p>
+        <p className="text-sm text-muted-foreground mt-2">Add up to 10 tags.</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
           {tags.map((tag) => (
@@ -104,10 +101,7 @@ function PriceAndTagsStep() {
             >
               {tag}
 
-              <button
-                type="button"
-                onClick={() => removeTag(tag)}
-              >
+              <button type="button" onClick={() => removeTag(tag)}>
                 <X size={14} />
               </button>
             </div>
@@ -116,7 +110,6 @@ function PriceAndTagsStep() {
 
         <FieldError errors={[form.formState.errors.tags]} />
       </Field>
-
     </div>
   );
 }

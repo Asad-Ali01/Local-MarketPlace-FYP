@@ -1,34 +1,25 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table } from "antd";
-import useGetAllCategories from "../../hooks/useGetAllCategories";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table } from 'antd';
+import useGetAllCategories from '../../hooks/useGetAllCategories';
 
 export default function CategoryTable() {
-
- const {columns,dataSource} = useGetAllCategories();
+  const { columns, dataSource } = useGetAllCategories();
 
   return (
     <Card>
-
       <CardHeader>
-
-        <CardTitle>
-          Categories
-        </CardTitle>
-
+        <CardTitle>Categories</CardTitle>
       </CardHeader>
 
       <CardContent>
-
         <Table
           rowKey="_id"
           columns={columns}
           dataSource={dataSource}
           pagination={false}
-          scroll={{x:"max-content"}}
+          scroll={{ x: 'max-content' }}
         />
-
       </CardContent>
-
     </Card>
   );
 }

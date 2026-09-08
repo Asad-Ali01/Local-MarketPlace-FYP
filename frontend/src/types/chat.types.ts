@@ -1,13 +1,13 @@
-import type { IAvatar, IGig, IProvider } from "./gig.types";
-export interface IConversationMember{
-  user:{
+import type { IAvatar, IGig, IProvider } from './gig.types';
+export interface IConversationMember {
+  user: {
     _id: string;
-      avatar?: IAvatar;
-      name: string;
-      role: "provider" | "client";
+    avatar?: IAvatar;
+    name: string;
+    role: 'provider' | 'client';
   };
-  lastReadMessage?:string;
-  lastReadAt?:Date;
+  lastReadMessage?: string;
+  lastReadAt?: Date;
 }
 export interface IConversation {
   _id: string;
@@ -24,30 +24,30 @@ export interface IConversation {
 }
 export interface INewConversation {
   provider?: {
-      _id:string;
-      name:string;
-      avatar:IAvatar
-    };
+    _id: string;
+    name: string;
+    avatar: IAvatar;
+  };
   gig?: {
-      _id:string;
-      title:string;
-      startingPrice:number | null;
-    };
+    _id: string;
+    title: string;
+    startingPrice: number | null;
+  };
 }
-export interface IConversationContext{
-  data:{
-    conversation?:IConversation;
-     provider?: {
-      _id:string;
-      name:string;
-      avatar:IAvatar
+export interface IConversationContext {
+  data: {
+    conversation?: IConversation;
+    provider?: {
+      _id: string;
+      name: string;
+      avatar: IAvatar;
     };
-  gig?: {
-      _id:string;
-      title:string;
-      startingPrice:number | null;
+    gig?: {
+      _id: string;
+      title: string;
+      startingPrice: number | null;
     };
-  }
+  };
 }
 
 export interface ICreateConversation {
@@ -57,43 +57,37 @@ export interface IGetAllCoversations {
   data: IConversation[];
 }
 export interface IMessage {
-   
-    _id:string;
-    conversation: string;
-    sender: {
-      _id:string;
-      name: string;
-      avatar: IAvatar;
-    };
-    receiver: string;
-    content: string;
-    isRead: boolean;
-    createdAt:Date;
-  
+  _id: string;
+  conversation: string;
+  sender: {
+    _id: string;
+    name: string;
+    avatar: IAvatar;
+  };
+  receiver: string;
+  content: string;
+  isRead: boolean;
+  createdAt: Date;
 }
 export interface IMessages {
   data: IMessage[];
 }
 
-
-
-
-
 export type ClientMessage =
   | {
-      type: "TYPING";
+      type: 'TYPING';
       payload: {
         conversationId: string;
       };
     }
   | {
-      type: "STOP_TYPING";
+      type: 'STOP_TYPING';
       payload: {
         conversationId: string;
       };
     }
   | {
-      type: "SEND_MESSAGE";
+      type: 'SEND_MESSAGE';
       payload: {
         conversationId: string;
         text: string;

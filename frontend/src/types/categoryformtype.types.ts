@@ -1,4 +1,4 @@
 export type CategoryForm = {
-   name:string;
-   icon:FileList
-}
+  name: string;
+  icon: FileList;
+};

@@ -1,10 +1,9 @@
-import AboutPageComponent from "../../components/about/AboutPageComponent";
+import AboutPageComponent from '../../components/about/AboutPageComponent';
 
 function AboutPage() {
   return (
     <div className="">
-
-    <AboutPageComponent/>
+      <AboutPageComponent />
     </div>
   );
 }

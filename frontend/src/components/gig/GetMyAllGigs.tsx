@@ -1,15 +1,4 @@
-import {
-  Button,
-  Card,
-  Col,
-  Empty,
-  Row,
-  Space,
-  Tag,
-  Typography,
-  Image,
-  Tooltip,
-} from "antd";
+import { Button, Card, Col, Empty, Row, Space, Tag, Typography, Image, Tooltip } from 'antd';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -18,22 +7,19 @@ import {
   ShoppingCartOutlined,
   MessageOutlined,
   PlusOutlined,
-} from "@ant-design/icons";
-import { useAppSelector } from "@/hooks/useAppDispatchSelector";
-import {
-  useDeleteGigMutation,
-  useGetAllMyGigsQuery,
-} from "@/features/gig/gigApi";
-import { useNavigate } from "react-router";
-import confirm from "antd/es/modal/confirm";
-import toast from "react-hot-toast";
+} from '@ant-design/icons';
+import { useAppSelector } from '@/hooks/useAppDispatchSelector';
+import { useDeleteGigMutation, useGetAllMyGigsQuery } from '@/features/gig/gigApi';
+import { useNavigate } from 'react-router';
+import confirm from 'antd/es/modal/confirm';
+import toast from 'react-hot-toast';
 
 const { Title, Text, Paragraph } = Typography;
 
 function GetMyAllGigs() {
   const providerId = useAppSelector((state) => state.auth.user?._id);
 
-  const { data, isLoading } = useGetAllMyGigsQuery(providerId ?? "", {
+  const { data, isLoading } = useGetAllMyGigsQuery(providerId ?? '', {
     skip: !providerId,
   });
 
@@ -45,20 +31,20 @@ function GetMyAllGigs() {
 
   const handleDeleteGig = (id: string) => {
     confirm({
-      title: "Delete Gig",
-      content: "Are you sure you want to delete this Gig?",
-      okText: "Delete",
-      cancelText: "Cancel",
+      title: 'Delete Gig',
+      content: 'Are you sure you want to delete this Gig?',
+      okText: 'Delete',
+      cancelText: 'Cancel',
       okCancel: true,
-      okType: "danger",
+      okType: 'danger',
       centered: true,
 
       async onOk() {
         try {
           await deleteGigApi(id).unwrap();
-          toast.success("Gig deleted successfully");
+          toast.success('Gig deleted successfully');
         } catch (error: any) {
-          toast.error("Failed to delete gig");
+          toast.error('Failed to delete gig');
         }
       },
     });
@@ -80,14 +66,14 @@ function GetMyAllGigs() {
           <Text type="secondary">Manage, edit and monitor all your gigs.</Text>
         </div>
 
-        <Tooltip title={gigs.length >= 2 ? "Maximum 2 gigs are allowed" : null}>
+        <Tooltip title={gigs.length >= 2 ? 'Maximum 2 gigs are allowed' : null}>
           <span>
             <Button
               type="primary"
               size="large"
               disabled={gigs.length >= 2}
               icon={<PlusOutlined />}
-              onClick={() => navigate("/provider/create-gig")}
+              onClick={() => navigate('/provider/create-gig')}
               className="w-full sm:w-auto"
             >
               Create Gig
@@ -131,29 +117,21 @@ function GetMyAllGigs() {
                     {/* Title + Status */}
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                       <div className="min-w-0">
-                        <Title
-                          level={4}
-                          ellipsis={{ rows: 2 }}
-                          style={{ marginBottom: 5 }}
-                        >
+                        <Title level={4} ellipsis={{ rows: 2 }} style={{ marginBottom: 5 }}>
                           {gig.title}
                         </Title>
 
                         <Text strong style={{ fontSize: 16 }}>
-                          {gig.startingPrice
-                            ? `${gig.startingPrice} PKR`
-                            : "Contact for Price"}
+                          {gig.startingPrice ? `${gig.startingPrice} PKR` : 'Contact for Price'}
                         </Text>
                       </div>
 
                       <Tag
-                        color={
-                          gig.status === "published" ? "success" : "warning"
-                        }
+                        color={gig.status === 'published' ? 'success' : 'warning'}
                         style={{
-                          padding: "5px 14px",
+                          padding: '5px 14px',
                           fontSize: 14,
-                          width: "fit-content",
+                          width: 'fit-content',
                         }}
                       >
                         {gig.status.toUpperCase()}
@@ -176,7 +154,7 @@ function GetMyAllGigs() {
                       <Text>
                         <StarFilled
                           style={{
-                            color: "#faad14",
+                            color: '#faad14',
                             marginRight: 5,
                           }}
                         />
@@ -198,19 +176,13 @@ function GetMyAllGigs() {
                     <div className="flex flex-col sm:flex-row sm:justify-end gap-2 mt-auto">
                       <Button
                         icon={<EyeOutlined />}
-                        onClick={() =>
-                          navigate(`/provider/gig/details/${gig._id}`)
-                        }
+                        onClick={() => navigate(`/provider/gig/details/${gig._id}`)}
                         className="w-full sm:w-auto"
                       >
                         View
                       </Button>
 
-                      <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        className="w-full sm:w-auto"
-                      >
+                      <Button type="primary" icon={<EditOutlined />} className="w-full sm:w-auto">
                         Edit
                       </Button>
 

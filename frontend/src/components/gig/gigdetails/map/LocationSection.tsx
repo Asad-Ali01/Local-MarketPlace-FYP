@@ -1,15 +1,9 @@
-import type { LatLngExpression } from "leaflet";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMap,
-} from "react-leaflet";
-import L from "leaflet";
-import { createMarkerIcon } from "@/utils/mapUtils";
+import type { LatLngExpression } from 'leaflet';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import { createMarkerIcon } from '@/utils/mapUtils';
 
 type LocationSectionType = {
   providerLocation: {
@@ -27,19 +21,13 @@ type FitMapBoundsProps = {
   } | null;
 };
 
-function FitMapBounds({
-  providerLatLng,
-  clientLocation,
-}: FitMapBoundsProps) {
+function FitMapBounds({ providerLatLng, clientLocation }: FitMapBoundsProps) {
   const map = useMap();
 
   useEffect(() => {
     if (!clientLocation) return;
 
-    const bounds = L.latLngBounds([
-      providerLatLng,
-      [clientLocation.lat, clientLocation.lng],
-    ]);
+    const bounds = L.latLngBounds([providerLatLng, [clientLocation.lat, clientLocation.lng]]);
 
     map.fitBounds(bounds, {
       padding: [50, 50],
@@ -71,7 +59,7 @@ export default function LocationSection({
 
   const getMyLocation = () => {
     if (!navigator.geolocation) {
-      toast.error("Geolocation is not supported by your browser.");
+      toast.error('Geolocation is not supported by your browser.');
       return;
     }
 
@@ -85,39 +73,39 @@ export default function LocationSection({
         });
 
         setIsGettingLocation(false);
-        toast.success("Your location has been found.");
+        toast.success('Your location has been found.');
       },
       (error) => {
         setIsGettingLocation(false);
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            toast.error("Location permission was denied.");
+            toast.error('Location permission was denied.');
             break;
 
           case error.POSITION_UNAVAILABLE:
-            toast.error("Your location is currently unavailable.");
+            toast.error('Your location is currently unavailable.');
             break;
 
           case error.TIMEOUT:
-            toast.error("Getting your location timed out.");
+            toast.error('Getting your location timed out.');
             break;
 
           default:
-            toast.error("Unable to get your location.");
+            toast.error('Unable to get your location.');
         }
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0,
-      }
+      },
     );
   };
 
   const openGoogleMaps = () => {
     if (!clientLocation) {
-      toast.error("Please show your location first.");
+      toast.error('Please show your location first.');
       return;
     }
 
@@ -131,7 +119,7 @@ export default function LocationSection({
       `&destination=${encodeURIComponent(destination)}` +
       `&travelmode=driving`;
 
-    window.open(url, "_blank");
+    window.open(url, '_blank');
   };
 
   return (
@@ -140,8 +128,8 @@ export default function LocationSection({
         center={providerLatLng}
         zoom={13}
         style={{
-          height: "500px",
-          width: "100%",
+          height: '500px',
+          width: '100%',
         }}
       >
         <TileLayer
@@ -150,16 +138,10 @@ export default function LocationSection({
         />
 
         {/* Automatically fit both locations */}
-        <FitMapBounds
-          providerLatLng={providerLatLng}
-          clientLocation={clientLocation}
-        />
+        <FitMapBounds providerLatLng={providerLatLng} clientLocation={clientLocation} />
 
         {/* Provider location */}
-        <Marker
-          position={providerLatLng}
-          icon={createMarkerIcon("#EF4444")}
-        >
+        <Marker position={providerLatLng} icon={createMarkerIcon('#EF4444')}>
           <Popup>
             <strong>{providerName}</strong>
             <br />
@@ -169,12 +151,7 @@ export default function LocationSection({
 
         {/* Client location */}
         {clientLocation && (
-          <Marker
-            position={[
-              clientLocation.lat,
-              clientLocation.lng,
-            ]}
-          >
+          <Marker position={[clientLocation.lat, clientLocation.lng]}>
             <Popup>Your Location</Popup>
           </Marker>
         )}
@@ -187,9 +164,7 @@ export default function LocationSection({
             disabled={isGettingLocation}
             className="rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
-            {isGettingLocation
-              ? "Getting your location..."
-              : "Show My Location"}
+            {isGettingLocation ? 'Getting your location...' : 'Show My Location'}
           </button>
         ) : (
           <button

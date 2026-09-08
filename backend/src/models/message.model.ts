@@ -1,11 +1,13 @@
 import mongoose, { Schema, Types } from "mongoose";
 
-export interface IMessage {
+export interface IMessage extends Document{
   conversation: Types.ObjectId;
   sender: Types.ObjectId;
   receiver: Types.ObjectId;
   content: string;
   isRead: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const messageSchema = new Schema<IMessage>(
@@ -42,4 +44,5 @@ const messageSchema = new Schema<IMessage>(
   { timestamps: true }
 );
 
+messageSchema.index({conversation:1, createdAt:-1})
 export const Message = mongoose.model<IMessage>("Message", messageSchema);

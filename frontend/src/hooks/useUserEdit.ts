@@ -1,19 +1,14 @@
-import { useState, useEffect } from "react";
-import {
-  useAdminGetUserQuery,
-  useAdminUpdateUserMutation,
-} from "@/features/admin/adminApi";
-import { useParams } from "react-router";
-import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
-import { editUserSchema } from "@/schemas/editUserSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useEffect } from 'react';
+import { useAdminGetUserQuery, useAdminUpdateUserMutation } from '@/features/admin/adminApi';
+import { useParams } from 'react-router';
+import toast from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
+import { editUserSchema } from '@/schemas/editUserSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
 function useUserEdit() {
   const { userId } = useParams();
   const [isEdit, setIsEdit] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | undefined>(
-    undefined,
-  );
+  const [previewImage, setPreviewImage] = useState<string | undefined>(undefined);
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [frontFile, setFrontFile] = useState<File | null>(null);
@@ -50,26 +45,23 @@ function useUserEdit() {
     }
   }, [data]);
   // Function to handleFileChange for avatar cnic front and back
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: string,
-  ) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const previewURL = URL.createObjectURL(file);
 
-    if (type === "avatar") {
+    if (type === 'avatar') {
       setAvatarFile(file);
       setAvatarPreview(previewURL);
     }
 
-    if (type == "front") {
+    if (type == 'front') {
       setFrontFile(file);
       setFrontPreview(previewURL);
     }
 
-    if (type == "back") {
+    if (type == 'back') {
       setBackFile(file);
       setBackPreview(previewURL);
     }
@@ -79,25 +71,23 @@ function useUserEdit() {
     const formData = new FormData();
     const isSame =
       originalData &&
-      Object.keys(originalData).every(
-        (key) => originalData[key] === data[key],
-      ) &&
+      Object.keys(originalData).every((key) => originalData[key] === data[key]) &&
       !avatarFile &&
       !frontFile &&
       !backFile;
 
     if (isSame) {
       setIsEdit(false);
-      toast.error("Nothing to update");
+      toast.error('Nothing to update');
       return;
     }
     Object.entries(data).forEach(([key, value]) => {
       if (value == undefined || value == null) return;
       formData.append(key, value as any);
     });
-    if (avatarFile) formData.append("avatar", avatarFile);
-    if (frontFile) formData.append("front", frontFile);
-    if (backFile) formData.append("back", backFile);
+    if (avatarFile) formData.append('avatar', avatarFile);
+    if (frontFile) formData.append('front', frontFile);
+    if (backFile) formData.append('back', backFile);
     try {
       if (userId) {
         await updateUser({
@@ -107,7 +97,7 @@ function useUserEdit() {
       }
       setAvatarPreview(undefined);
       setFrontPreview(undefined);
-      setBackPreview(undefined)
+      setBackPreview(undefined);
       setIsEdit(false);
     } catch (err: any) {
       console.log(err);
@@ -117,9 +107,9 @@ function useUserEdit() {
   // Function to set edit false for user edit by admin
   const handleCancel = () => {
     setIsEdit(false);
-     setAvatarPreview(undefined);
-      setFrontPreview(undefined);
-      setBackPreview(undefined)
+    setAvatarPreview(undefined);
+    setFrontPreview(undefined);
+    setBackPreview(undefined);
     if (data?.data) {
       reset({
         name: data.data.user.name,

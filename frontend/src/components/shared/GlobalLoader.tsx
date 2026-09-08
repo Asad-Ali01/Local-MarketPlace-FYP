@@ -1,5 +1,5 @@
-import { useAppSelector } from "@/hooks/useAppDispatchSelector";
-import { Loader2 } from "lucide-react";
+import { useAppSelector } from '@/hooks/useAppDispatchSelector';
+import { Loader2 } from 'lucide-react';
 
 type QueryLikeState = {
   endpointName?: string;
@@ -7,8 +7,8 @@ type QueryLikeState = {
 };
 
 const EXCLUDED_QUERY_ENDPOINTS = [
-  "providerDashboardTopCard",
-  "getLocationSuggestions"
+  'providerDashboardTopCard',
+  'getLocationSuggestions',
   // future dashboard widgets can go here:
   // "providerRevenueChart",
   // "providerRecentOrders",
@@ -19,10 +19,10 @@ const EXCLUDED_MUTATION_ENDPOINTS: string[] = [];
 
 function hasPendingRequest(
   requests: Record<string, QueryLikeState | undefined>,
-  excludedEndpoints: string[] = []
+  excludedEndpoints: string[] = [],
 ) {
   return Object.values(requests || {}).some((request) => {
-    if (!request || request.status !== "pending") return false;
+    if (!request || request.status !== 'pending') return false;
 
     const endpointName = request.endpointName;
     if (!endpointName) return true;
@@ -66,9 +66,7 @@ export const GlobalLoader = () => {
 
           <div className="space-y-0.5">
             <p className="text-sm font-medium text-foreground">Loading</p>
-            <p className="text-xs text-muted-foreground">
-              Please wait while we prepare your data.
-            </p>
+            <p className="text-xs text-muted-foreground">Please wait while we prepare your data.</p>
           </div>
         </div>
       </div>

@@ -1,19 +1,15 @@
-import React from "react";
+import React from 'react';
 
 function ClientDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
-     
-
       {/* Main Content */}
       <main className="flex-1 p-6 md:p-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">Welcome back!</h2>
-            <p className="text-gray-500 mt-1">
-              Manage your orders and discover new services.
-            </p>
+            <p className="text-gray-500 mt-1">Manage your orders and discover new services.</p>
           </div>
 
           <button className="px-5 py-3 bg-black text-white rounded-lg hover:bg-gray-800">
@@ -51,9 +47,7 @@ function ClientDashboard() {
             <div className="flex items-center justify-between p-6 border-b">
               <h3 className="text-xl font-semibold">Recent Orders</h3>
 
-              <button className="text-sm font-medium hover:underline">
-                View All
-              </button>
+              <button className="text-sm font-medium hover:underline">View All</button>
             </div>
 
             <div className="divide-y">

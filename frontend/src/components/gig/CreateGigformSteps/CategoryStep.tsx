@@ -1,6 +1,6 @@
-import { Controller, useFormContext } from "react-hook-form";
-import type { ProviderGigSchemaInputType } from "../../../schemas/gig";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Controller, useFormContext } from 'react-hook-form';
+import type { ProviderGigSchemaInputType } from '../../../schemas/gig';
+import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -8,10 +8,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import useGetAllCategories from "@/hooks/useGetAllCategories";
-import useGetAllSubCategories from "@/hooks/useGetAllSubCategories";
-import { Error } from "@/components/shared/Error";
+} from '@/components/ui/select';
+import useGetAllCategories from '@/hooks/useGetAllCategories';
+import useGetAllSubCategories from '@/hooks/useGetAllSubCategories';
+import { Error } from '@/components/shared/Error';
 
 function CategoryStep() {
   const form = useFormContext<ProviderGigSchemaInputType>();
@@ -28,10 +28,10 @@ function CategoryStep() {
             <Select
               onValueChange={async (value) => {
                 field.onChange(value);
-                form.trigger("category");
+                form.trigger('category');
               }}
             >
-              <SelectTrigger >
+              <SelectTrigger>
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
@@ -59,7 +59,7 @@ function CategoryStep() {
             <Select
               onValueChange={async (value) => {
                 field.onChange(value);
-                form.trigger("subcategory");
+                form.trigger('subcategory');
               }}
             >
               <SelectTrigger>
@@ -88,7 +88,7 @@ function CategoryStep() {
             <Select
               onValueChange={async (value) => {
                 field.onChange(value);
-                form.trigger("status");
+                form.trigger('status');
               }}
             >
               <SelectTrigger>

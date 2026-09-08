@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 type ConfirmDialogProps = {
   trigger: React.ReactNode; // button / icon / anything
@@ -16,33 +16,27 @@ type ConfirmDialogProps = {
   description?: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: "default" | "destructive";
-  onConfirm:any
+  variant?: 'default' | 'destructive';
+  onConfirm: any;
 };
 
 export default function ConfirmDialog({
   trigger,
-  title = "Are you sure?",
-  description = "This action cannot be undone.",
-  confirmText = "Continue",
-  cancelText = "Cancel",
-  variant = "default",
-  onConfirm
+  title = 'Are you sure?',
+  description = 'This action cannot be undone.',
+  confirmText = 'Continue',
+  cancelText = 'Cancel',
+  variant = 'default',
+  onConfirm,
 }: ConfirmDialogProps) {
-
- 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        {trigger}
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
 
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {description}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
@@ -50,11 +44,7 @@ export default function ConfirmDialog({
 
           <AlertDialogAction
             onClick={onConfirm}
-            className={
-              variant === "destructive"
-                ? "bg-red-500 hover:bg-red-600"
-                : ""
-            }
+            className={variant === 'destructive' ? 'bg-red-500 hover:bg-red-600' : ''}
           >
             {confirmText}
           </AlertDialogAction>

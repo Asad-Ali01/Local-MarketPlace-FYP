@@ -1,11 +1,10 @@
-import type { IIcon } from "./admin.types";
-
+import type { IIcon } from './admin.types';
 
 export interface ISubCategoryHome {
-    _id:string;
-    name: string;
-    slug: string;
-    category: string;
+  _id: string;
+  name: string;
+  slug: string;
+  category: string;
 }
 
 export interface IGetAllCategoriesHome {
@@ -14,6 +13,6 @@ export interface IGetAllCategoriesHome {
     name: string;
     slug: string;
     icon: IIcon;
-    subCategories:ISubCategoryHome[]
+    subCategories: ISubCategoryHome[];
   }[];
 }

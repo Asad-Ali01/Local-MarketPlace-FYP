@@ -1,9 +1,9 @@
-import ImageDropzone from "@/components/shared/ImageDropZone";
-import { Label } from "@/components/ui/label";
+import ImageDropzone from '@/components/shared/ImageDropZone';
+import { Label } from '@/components/ui/label';
 
-import { Controller, type Control, type FieldErrors } from "react-hook-form";
-import type { RegisterSchemaInputType } from "../../schemas/registerSchema";
-import { Error } from "@/components/shared/Error";
+import { Controller, type Control, type FieldErrors } from 'react-hook-form';
+import type { RegisterSchemaInputType } from '../../schemas/registerSchema';
+import { Error } from '@/components/shared/Error';
 
 type Props = {
   control: Control<RegisterSchemaInputType>;
@@ -14,9 +14,7 @@ function IdentityVerificationSection({ control, errors }: Props) {
   return (
     <div>
       <div>
-        <h3 className="font-semibold text-gray-800 mb-2">
-          Identity Verification
-        </h3>
+        <h3 className="font-semibold text-gray-800 mb-2">Identity Verification</h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <section>

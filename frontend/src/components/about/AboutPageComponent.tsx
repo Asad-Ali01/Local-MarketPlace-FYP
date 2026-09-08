@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 function AboutPageComponent() {
-  const cardClass = "z-10 ";
+  const cardClass = 'z-10 ';
 
   return (
     <div className="relative  overflow-hidden bg-black text-white py-16 px-6">
@@ -16,26 +16,25 @@ function AboutPageComponent() {
         className="absolute inset-0 
     bg-[radial-gradient(circle_at_center,rgba(10,60,50,1),transparent_80%)] "
       />
-     
+
       <div id="about-us" className="max-w-6xl mx-auto">
         {/* Heading */}
         <div className="flex flex-col z-10 gap-4 max-w-3xl">
           <h1 className="text-4xl font-bold">About Us</h1>
 
           <p className="text-gray-300 leading-relaxed">
-            We are building a modern, AI-powered local marketplace designed to
-            connect buyers and sellers in a faster, smarter, and more reliable
-            way.
+            We are building a modern, AI-powered local marketplace designed to connect buyers and
+            sellers in a faster, smarter, and more reliable way.
           </p>
 
           <p className="text-gray-300 leading-relaxed">
-            Our platform simplifies discovery, enables direct communication, and
-            creates a trusted space for secure transactions.
+            Our platform simplifies discovery, enables direct communication, and creates a trusted
+            space for secure transactions.
           </p>
 
           <p className="text-gray-300 leading-relaxed">
-            Whether you want to buy, sell, or explore, we provide a seamless and
-            user-friendly experience for everyone.
+            Whether you want to buy, sell, or explore, we provide a seamless and user-friendly
+            experience for everyone.
           </p>
         </div>
 
@@ -54,36 +53,28 @@ function AboutPageComponent() {
             <CardHeader>
               <CardTitle>Direct Communication</CardTitle>
             </CardHeader>
-            <CardContent>
-              Chat directly with buyers and sellers without middlemen.
-            </CardContent>
+            <CardContent>Chat directly with buyers and sellers without middlemen.</CardContent>
           </Card>
 
           <Card className={cardClass}>
             <CardHeader>
               <CardTitle>Trusted Platform</CardTitle>
             </CardHeader>
-            <CardContent>
-              Secure and verified environment for safe transactions.
-            </CardContent>
+            <CardContent>Secure and verified environment for safe transactions.</CardContent>
           </Card>
 
           <Card className={cardClass}>
             <CardHeader>
               <CardTitle>Local Marketplace</CardTitle>
             </CardHeader>
-            <CardContent>
-              Find products and services near you easily.
-            </CardContent>
+            <CardContent>Find products and services near you easily.</CardContent>
           </Card>
 
           <Card className={cardClass}>
             <CardHeader>
               <CardTitle>AI Recommendations</CardTitle>
             </CardHeader>
-            <CardContent>
-              Personalized suggestions based on your interests.
-            </CardContent>
+            <CardContent>Personalized suggestions based on your interests.</CardContent>
           </Card>
 
           <Card className={cardClass}>

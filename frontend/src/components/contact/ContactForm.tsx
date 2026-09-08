@@ -1,20 +1,20 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
-import { Input } from "antd";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import { contactSchema, type contactSchemaType } from "../../schemas/contactSchema";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+import { Label } from '@/components/ui/label';
+import { Input } from 'antd';
+import { Button } from '@/components/ui/button';
+import toast from 'react-hot-toast';
+import { contactSchema, type contactSchemaType } from '../../schemas/contactSchema';
 
 function ContactForm() {
   const form = useForm<contactSchemaType>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
+      name: '',
+      email: '',
+      subject: '',
+      message: '',
     },
   });
 
@@ -25,10 +25,10 @@ function ContactForm() {
       // 👉 Replace with API later
       await new Promise((res) => setTimeout(res, 1000));
 
-      toast.success("Message sent successfully!");
+      toast.success('Message sent successfully!');
       form.reset();
     } catch (error: any) {
-      toast.error("Something went wrong");
+      toast.error('Something went wrong');
     }
   };
 
@@ -40,7 +40,6 @@ function ContactForm() {
 
       <CardContent>
         <form onSubmit={form.handleSubmit(handleContact)} className="space-y-4">
-          
           {/* Name */}
           <div>
             <Controller
@@ -51,9 +50,7 @@ function ContactForm() {
                   <Label htmlFor="name">Name</Label>
                   <Input id="name" {...field} />
                   {form.formState.errors.name && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.name.message}
-                    </p>
+                    <p className="text-sm text-red-500">{form.formState.errors.name.message}</p>
                   )}
                 </>
               )}
@@ -70,9 +67,7 @@ function ContactForm() {
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" {...field} />
                   {form.formState.errors.email && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.email.message}
-                    </p>
+                    <p className="text-sm text-red-500">{form.formState.errors.email.message}</p>
                   )}
                 </>
               )}
@@ -89,9 +84,7 @@ function ContactForm() {
                   <Label htmlFor="subject">Subject</Label>
                   <Input id="subject" {...field} />
                   {form.formState.errors.subject && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.subject.message}
-                    </p>
+                    <p className="text-sm text-red-500">{form.formState.errors.subject.message}</p>
                   )}
                 </>
               )}
@@ -112,9 +105,7 @@ function ContactForm() {
                     {...field}
                   />
                   {form.formState.errors.message && (
-                    <p className="text-sm text-red-500">
-                      {form.formState.errors.message.message}
-                    </p>
+                    <p className="text-sm text-red-500">{form.formState.errors.message.message}</p>
                   )}
                 </>
               )}
