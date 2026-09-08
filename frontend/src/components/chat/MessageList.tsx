@@ -1,4 +1,4 @@
-import { useGetAllMessagesByConversationIdQuery } from '@/features/chat/chatApi';
+import { chatApi, useGetAllMessagesByConversationIdQuery } from '@/features/chat/chatApi';
 
 import MessageBubble from './MessageBubble';
 
@@ -25,7 +25,6 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
   const [isActive, setIsActive] = useState(
     () => document.visibilityState === 'visible' && document.hasFocus(),
   );
-  const [messages, setMessages] = useState<IMessage[]>([]);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   // -----------------------------
@@ -33,8 +32,8 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
   // -----------------------------
   useEffect(() => {
     const handleActiveState = () => {
-      const isVisible = document.visibilityState === 'visible' && document.hasFocus();
-      setIsActive(isVisible);
+      const isActive = document.visibilityState === 'visible' && document.hasFocus();
+      setIsActive(isActive);
   
     };
     document.addEventListener('visibilitychange', handleActiveState);
@@ -46,17 +45,13 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
       window.removeEventListener('blur', handleActiveState);
     };
   }, [conversationId]);
-  useEffect(() => {
-    if (data?.data) {
-      setMessages(data.data);
-    }
-  }, [data]);
+
 
   useLayoutEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: 'instant',
     });
-  }, [messages]);
+  }, [data]);
 
   useEffect(() => {
     const unsubscribe = subscribeToWebSocket((incoming) => {
@@ -72,12 +67,7 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
             return;
           }
 
-          setMessages((previousMessages) =>
-            previousMessages.map((message) => ({
-              ...message,
-              isRead: true,
-            })),
-          );
+       
           break;
         case 'NEW_MESSAGE':
           const newMessage = incoming.payload;
@@ -90,8 +80,13 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
             return;
           }
          
-
-          setMessages((previousMessages) => [...previousMessages, newMessage]);
+          dispatch(chatApi.util.updateQueryData(
+            "getAllMessagesByConversationId",
+            messageConversationId,
+            (draft) => {
+              draft.data.push(newMessage)
+            }
+          ))
           break;
       }
     });
@@ -110,9 +105,11 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
     });
       dispatch(clearUnreadCount(conversationId));
   }, [conversationId,isActive  ]);
+
+
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">
-      {messages.map((message) => (
+      {data?.data?.map((message) => (
         <div key={message._id}>
           <MessageBubble
             senderId={message.sender._id}
