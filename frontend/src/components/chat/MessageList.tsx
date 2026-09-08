@@ -66,8 +66,17 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
           if (incoming.payload.conversationId !== conversationId) {
             return;
           }
-
-       
+         
+          dispatch(chatApi.util.updateQueryData(
+            "getAllMessagesByConversationId",
+            conversationId!,
+            (draft) => {
+             draft.data = draft.data.map((message) => ({
+              ...message,
+              isRead:true
+             }) )
+            }
+          ))
           break;
         case 'NEW_MESSAGE':
           const newMessage = incoming.payload;
@@ -92,7 +101,7 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
     });
 
     return unsubscribe;
-  }, [conversationId]);
+  }, [conversationId,dispatch]);
   useEffect(() => {
     if (!conversationId || !isActive) {
       return;
