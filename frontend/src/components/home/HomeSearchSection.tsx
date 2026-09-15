@@ -18,7 +18,7 @@ function HeroSearchSection() {
   return (
     <div id="search-provider" className="h-40">
       {/* Top heading */}
-      <div className={`text-center text-2xl font-bold  text-white dark:text-black`}>
+      <div className={`text-center text-2xl font-bold mt-10  text-black`}>
         <AnimatePresence mode="popLayout">
           <motion.div
             key={index}

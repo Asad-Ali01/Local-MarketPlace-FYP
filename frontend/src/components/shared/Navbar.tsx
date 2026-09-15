@@ -7,54 +7,89 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Link, NavLink } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router';
 
 function Navbar() {
+  const [activeSection, setActiveSection] = useState('/');
+  const location = useLocation();
+  useEffect(() => {
+    const sections = document.querySelectorAll('section[id]');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+      },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [location.pathname]);
   return (
     <header className="w-full border-b bg-white">
-      <div className="flex items-center justify-between px-4 sm:px-8 lg:px-16 py-3">
+      <div className="flex items-center justify-between px-4 py-3 sm:px-8 lg:px-16">
         {/* Logo */}
         <Link to="/" className="text-xl font-bold text-purple-700">
           HunarHub
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center gap-8">
-          <NavLink
+        <nav className="hidden items-center gap-8 md:flex">
+          <Link
             to="/"
-            className={({ isActive }) =>
-              isActive ? 'text-purple-700 font-semibold' : 'text-gray-600 hover:text-purple-700'
+              onClick={() => setActiveSection('/')}
+            className={
+              activeSection === '/'
+                ? 'font-semibold text-purple-700'
+                : 'text-gray-600 hover:text-purple-700'
             }
           >
             Home
-          </NavLink>
+          </Link>
 
-          <NavLink
-            to="/about-us"
-            className={({ isActive }) =>
-              isActive ? 'text-purple-700 font-semibold' : 'text-gray-600 hover:text-purple-700'
-            }
+          {/* Services */}
+          <Link
+            to="/#services"
+              onClick={() => setActiveSection('services')}
+            className={`${activeSection === 'services' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
+          >
+            Services
+          </Link>
+          {/* About is an anchor */}
+          <Link
+            to="/#about-us"
+              onClick={() => setActiveSection('about-us')}
+            className={`${activeSection === 'about-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
           >
             About
-          </NavLink>
-          <NavLink
-            to="/contact-us"
-            className={({ isActive }) =>
-              isActive ? 'text-purple-700 font-semibold' : 'text-gray-600 hover:text-purple-700'
-            }
+          </Link>
+
+          {/* Contact is an anchor */}
+          <Link
+            to="/#contact-us"
+              onClick={() => setActiveSection('contact-us')}
+            className={`${activeSection === 'contact-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
           >
             Contact Us
-          </NavLink>
+          </Link>
         </nav>
 
         {/* Desktop Buttons */}
-        <div className="hidden md:flex items-center gap-3">
-          <NavLink to="/login">
+        <div className="hidden items-center gap-3 md:flex">
+          <NavLink to="/login" onClick={() => setActiveSection("")}>
             <Button variant="outline">Sign in</Button>
           </NavLink>
 
-          <NavLink to="/register">
-            <Button className="bg-purple-700 hover:bg-purple-800 text-white">Sign up</Button>
+          <NavLink to="/register" onClick={() => setActiveSection("")}> 
+            <Button className="bg-purple-700 text-white hover:bg-purple-800">Sign up</Button>
           </NavLink>
         </div>
 
@@ -68,19 +103,49 @@ function Navbar() {
                 <SheetTitle className="text-xl font-bold text-purple-700">HunarHub</SheetTitle>
               </SheetHeader>
 
-              <nav className="flex flex-col  justify-between h-full py-6">
+              <nav className="flex h-full flex-col justify-between py-6">
                 {/* Links */}
-                <div className="flex flex-col pl-5  gap-5 text-lg">
+                <div className="flex flex-col gap-5 pl-5 text-lg">
                   <SheetClose asChild>
-                    <Link to="/" className="text-gray-700 hover:text-purple-700">
+                    <a
+                      href="/#home"
+                      className={
+                        activeSection === 'home'
+                          ? 'font-semibold text-purple-700'
+                          : 'text-gray-600 hover:text-purple-700'
+                      }
+                    >
                       Home
-                    </Link>
+                    </a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a
+                      href="/#services"
+                      className={`${activeSection === 'services' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
+                    >
+                      Services
+                    </a>
                   </SheetClose>
 
                   <SheetClose asChild>
-                    <Link to="/about-us" className="text-gray-700 hover:text-purple-700">
+                    <a
+                      href="/#about-us"
+                      onClick={() => setActiveSection("about-us")}
+                      className={`${activeSection === 'about-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
+                    >
                       About
-                    </Link>
+                    </a>
+                  </SheetClose>
+
+                  <SheetClose asChild>
+                    <a
+                      onClick={() => setActiveSection("contact-us")}
+
+                      href="/#contact-us"
+                      className={`${activeSection === 'contact-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
+                    >
+                      Contact Us
+                    </a>
                   </SheetClose>
                 </div>
 
@@ -96,7 +161,7 @@ function Navbar() {
 
                   <SheetClose asChild>
                     <NavLink to="/register">
-                      <Button className="w-full bg-purple-700 hover:bg-purple-800 text-white">
+                      <Button className="w-full bg-purple-700 text-white hover:bg-purple-800">
                         Sign up
                       </Button>
                     </NavLink>

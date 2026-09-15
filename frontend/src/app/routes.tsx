@@ -2,12 +2,10 @@ import { Route, Routes } from 'react-router';
 import { lazy, Suspense } from 'react';
 const HomePage = lazy(() => import('../pages/home/HomePage'));
 const MainLayout = lazy(() => import('../layouts/MainLayout'));
-const AboutPage = lazy(() => import('../pages/about/AboutPage'));
 import { Spin } from 'antd';
 import RegisterPage from '../pages/auth/RegisterPage';
 import { GlobalLoader } from '@/components/shared/GlobalLoader';
 import LoginPage from '@/pages/auth/LoginPage';
-import ContactPage from '@/pages/contact/ContactPage';
 import AdminLoginPage from '@/pages/admin/AdminLoginPage';
 import UnAuthorizedPage from '@/components/shared/UnAuthorizedPage';
 import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
@@ -50,11 +48,8 @@ function AppRoutes() {
           <Route path="*" element={<PageNotFound />} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="about" element={<AboutPage />} />
             <Route path="register" element={<RegisterPage />} />
             <Route path="login" element={<LoginPage />} />
-            <Route path="contact-us" element={<ContactPage />} />
-            <Route path="about-us" element={<AboutPage />} />
             <Route path="unauthorized" element={<UnAuthorizedPage />} />
             <Route path="forgot-password" element={<OtpSendPage />} />
             <Route path="otp/send" element={<OtpSendPage />} />

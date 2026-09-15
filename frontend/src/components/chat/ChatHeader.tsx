@@ -30,7 +30,7 @@ function ChatHeader({ conversation, currentUserId }: ChatHeaderProps) {
           <div>
             <h2 className="font-semibold">{otherUser.name}</h2>
 
-            <p className="text-sm text-green-600">● {isOnline ? 'Online' : 'Offline'}</p>
+            <p className={`text-sm  ${isOnline ? "text-green-600" : "text-red-600"}`}>● {isOnline ? 'Online' : 'Offline'}</p>
           </div>
         </>
       )}

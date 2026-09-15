@@ -9,10 +9,10 @@ function MainLayout() {
   // }
   return (
     <div>
-      <header>
+      <header className='sticky top-0 z-1000'>
         <Navbar />
       </header>
-      <main>
+      <main className='min-h-80'>
         <Outlet />
       </main>
       <footer>
