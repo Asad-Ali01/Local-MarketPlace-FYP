@@ -7,17 +7,24 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
 function Navbar() {
   const [activeSection, setActiveSection] = useState('/');
+  const isProgrammaticScroll = useRef(false);
+  const [indicatorStyle, setIndicateorStyle] = useState({
+    left: 0,
+    width: 0,
+  });
+  const navRef = useRef<HTMLElement | null>(null);
   const location = useLocation();
   useEffect(() => {
     const sections = document.querySelectorAll('section[id]');
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if(isProgrammaticScroll.current)  return;
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
@@ -25,14 +32,50 @@ function Navbar() {
         });
       },
       {
-        threshold: 0.3,
-      },
+        threshold:0.1
+      }
     );
 
     sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!navRef.current) return;
+    console.log('Actiev section: ', activeSection);
+    const activeLink = navRef.current.querySelector(
+      `[data-section="${activeSection}"]`,
+    ) as HTMLElement | null;
+
+    if (!activeLink) return;
+    setIndicateorStyle({
+      left: activeLink?.offsetLeft,
+      width: activeLink?.offsetWidth,
+    });
+  }, [activeSection]);
+
+  const handleSectionClick = (sectionId: string) => {
+  isProgrammaticScroll.current = true;
+
+  setActiveSection(sectionId);
+
+  const section = document.getElementById(sectionId);
+
+  section?.scrollIntoView({
+    behavior: "smooth",
+  });
+  let timeout: ReturnType<typeof setTimeout>;
+ const handleScroll = () => {
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    isProgrammaticScroll.current = false;
+    window.removeEventListener("scroll",handleScroll)
+  },100)
+ }
+  window.addEventListener("scroll",handleScroll)
+};
   return (
     <header className="w-full border-b bg-white">
       <div className="flex items-center justify-between px-4 py-3 sm:px-8 lg:px-16">
@@ -42,10 +85,22 @@ function Navbar() {
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-8 md:flex" ref={navRef}>
+          {
+            activeSection != "" &&
+<div
+            className="absolute bottom-[0px] h-0.5 bg-purple-700 transition-all duration-300"
+            style={{
+              left: indicatorStyle.left,
+              width: indicatorStyle.width,
+            }}
+          />
+          }
+          
           <Link
             to="/"
-              onClick={() => setActiveSection('/')}
+            data-section="/"
+            onClick={() => handleSectionClick('/')}
             className={
               activeSection === '/'
                 ? 'font-semibold text-purple-700'
@@ -58,7 +113,9 @@ function Navbar() {
           {/* Services */}
           <Link
             to="/#services"
-              onClick={() => setActiveSection('services')}
+            data-section="services"
+
+            onClick={() => handleSectionClick('services')}
             className={`${activeSection === 'services' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
           >
             Services
@@ -66,7 +123,9 @@ function Navbar() {
           {/* About is an anchor */}
           <Link
             to="/#about-us"
-              onClick={() => setActiveSection('about-us')}
+            data-section="about-us"
+
+            onClick={() => handleSectionClick('about-us')}
             className={`${activeSection === 'about-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
           >
             About
@@ -75,7 +134,9 @@ function Navbar() {
           {/* Contact is an anchor */}
           <Link
             to="/#contact-us"
-              onClick={() => setActiveSection('contact-us')}
+            data-section="contact-us"
+
+            onClick={() => handleSectionClick('contact-us')}
             className={`${activeSection === 'contact-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
           >
             Contact Us
@@ -84,11 +145,11 @@ function Navbar() {
 
         {/* Desktop Buttons */}
         <div className="hidden items-center gap-3 md:flex">
-          <NavLink to="/login" onClick={() => setActiveSection("")}>
+          <NavLink to="/login" onClick={() => setActiveSection('')}>
             <Button variant="outline">Sign in</Button>
           </NavLink>
 
-          <NavLink to="/register" onClick={() => setActiveSection("")}> 
+          <NavLink to="/register" onClick={() => setActiveSection('')}>
             <Button className="bg-purple-700 text-white hover:bg-purple-800">Sign up</Button>
           </NavLink>
         </div>
@@ -130,7 +191,7 @@ function Navbar() {
                   <SheetClose asChild>
                     <a
                       href="/#about-us"
-                      onClick={() => setActiveSection("about-us")}
+                      onClick={() => setActiveSection('about-us')}
                       className={`${activeSection === 'about-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
                     >
                       About
@@ -139,7 +200,7 @@ function Navbar() {
 
                   <SheetClose asChild>
                     <a
-                      onClick={() => setActiveSection("contact-us")}
+                      onClick={() => setActiveSection('contact-us')}
 
                       href="/#contact-us"
                       className={`${activeSection === 'contact-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}

@@ -21,18 +21,17 @@ import ProviderLayout from '@/layouts/ProviderLayout';
 import ProviderLandingPage from '@/pages/gig/ProviderLandingPage';
 import ProviderDashboardPage from '@/pages/gig/ProviderDashboardPage';
 import CategoryManagement from '@/pages/admin/CategoryManagement';
-import ProviderListing from '@/components/giglisting/ProvoiderListing';
-import ProviderListingPage from '@/pages/providerlisting/providerListingPage';
 import GetMyAllGigs from '@/components/gig/GetMyAllGigs';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
-import ViewGigDetailsById from '@/components/gig/ViewGigDetailsById';
 import GigDetailsViewPage from '@/pages/gig/GigDetailsViewPage';
 import ClientLayout from '@/layouts/ClientLayout';
 import ClientDashboard from '@/components/client/ClientDashboard';
 import LoginReminder from '@/components/shared/LoginReminder';
-import GigListings from '@/components/giglisting/ProvoiderListing';
+import GigListings from '@/components/gig/giglisting/GigListing';
 import HomeCategory from '@/components/home/HomeCategory';
 import ChatPage from '@/pages/chat/ChatPage';
+import GigListingPage from '@/pages/providerlisting/providerListingPage';
+import SearchServices from '@/components/search/SearchServices';
 function AppRoutes() {
   return (
     <>
@@ -59,8 +58,16 @@ function AppRoutes() {
             <Route
               path="giglistings/:slug"
               element={
-                <ErrorBoundary fallback={<div className="h-80">Provider Listing failed</div>}>
-                  <ProviderListingPage />{' '}
+                <ErrorBoundary fallback={<div className="h-80">Gig Listing failed</div>}>
+                  <GigListingPage />{' '}
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="search"
+              element={
+                <ErrorBoundary fallback={<div className="h-80">Gig Listing failed</div>}>
+                  <SearchServices />{' '}
                 </ErrorBoundary>
               }
             />

@@ -8,6 +8,7 @@ import otpRouter from './routes/otp.route';
 import gigRouter from './routes/gig.routes';
 import categoryRouter from './routes/category.route';
 import chatRouter from './routes/chat.route';
+import searchRouter from './routes/search.route';
 import { errorHandler } from "./middleware/error.middleware";
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/api/v1/otp',otpRouter);
 app.use('/api/v1/gig',gigRouter);
 app.use('/api/v1',categoryRouter);
 app.use('/api/v1/chats',chatRouter);
+app.use('/api/v1/search',searchRouter);
 app.use(errorHandler);
 
 export {app};

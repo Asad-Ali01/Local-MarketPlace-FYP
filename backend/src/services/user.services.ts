@@ -7,6 +7,8 @@ import { asyncHandler } from "../utils/asynHandler";
 import { Category } from "../models/category.model";
 import { ApiError } from "../utils/ApiError";
 import { User } from "../models/user.model";
+import { SubCategory } from "../models/subCategory.model";
+import { Gig } from "../models/gig.model";
 
 interface LoginUserPayload {
     email: string;
@@ -150,5 +152,4 @@ const getAllCategoriesService = async() => {
    return {allCategories}
 }
 
-
-export {registerUserService,loginUserService,getAllCategoriesService}
+export {registerUserService,loginUserService,getAllCategoriesService};

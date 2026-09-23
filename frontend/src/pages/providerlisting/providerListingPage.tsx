@@ -1,10 +1,10 @@
-import ProviderListing from '../../components/giglisting/ProvoiderListing';
-function ProviderListingPage() {
+import GigListings from '../../components/gig/giglisting/GigListing';
+function GigListingPage() {
   return (
     <div>
-      <ProviderListing />
+      <GigListings />
     </div>
   );
 }
 
-export default ProviderListingPage;
+export default GigListingPage;

@@ -4,8 +4,6 @@ import { asyncHandler } from "../utils/asynHandler";
 import { cookieOptions } from "../utils/cookieOptions";
 
 
-
-
 const registerUser = asyncHandler(async(req,res) => {
   
     await registerUserService(req.body,req.files);

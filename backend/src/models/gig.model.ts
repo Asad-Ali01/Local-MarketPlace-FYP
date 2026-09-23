@@ -1,5 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import { IAvatar } from "./user.model";
+import { title } from "node:process";
 
 
 export interface IImage{
@@ -37,7 +38,8 @@ export interface IGig{
    category:Types.ObjectId;
    subCategory:Types.ObjectId;
     startingPrice?:number;
-    tags:[string] 
+    tags:[string];
+    createdAt:Date
 }
 const gigAvatarSchema = new mongoose.Schema({
     url:{
@@ -159,4 +161,24 @@ gigSchema.index({
 gigSchema.index({
     location:"2dsphere"
 })
+
+gigSchema.index({
+    createdAt:-1,
+    _id:-1
+})
+
+gigSchema.index(
+    {
+    title:"text",
+    description:"text",
+    tags:"text"
+   },
+   {
+    weights:{
+        title:10,
+        tags:5,
+        description:1
+    }
+   }
+)
 export const Gig = mongoose.model<IGig>("Gig",gigSchema);

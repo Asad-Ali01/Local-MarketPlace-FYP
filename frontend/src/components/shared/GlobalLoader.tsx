@@ -9,7 +9,7 @@ type QueryLikeState = {
 const EXCLUDED_QUERY_ENDPOINTS = [
   'providerDashboardTopCard',
   'getLocationSuggestions',
-  
+  'getAllGigsByCategory'
   // future dashboard widgets can go here:
   // "providerRevenueChart",
   // "providerRecentOrders",

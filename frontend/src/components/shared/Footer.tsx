@@ -1,46 +1,77 @@
+
 import { Link } from 'react-router';
 
 function Footer() {
   return (
-    <footer className="bg-linear-to-tr  from-blue-800 to-blue-900 text-white py-10 px-6">
-      <div className="grid md:grid-cols-3 gap-8">
+    <footer className="bg-purple-700 px-6 py-10 text-white">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
         {/* About */}
         <div>
-          <h2 className="text-xl font-bold mb-3">Our Platform</h2>
-          <p className="text-sm text-gray-200">
-            AI-powered local marketplace connecting buyers and sellers with smart search, trusted
-            profiles, and direct communication.
+          <h2 className="mb-3 text-xl font-bold">Our Platform</h2>
+
+          <p className="text-sm leading-6 text-purple-200">
+            AI-powered local marketplace connecting buyers and sellers with
+            smart search, trusted profiles, and direct communication.
           </p>
         </div>
 
         {/* Quick Links */}
         <div>
-          <h2 className="text-xl font-bold mb-3">Quick Links</h2>
-          <ul className="space-y-2 text-sm text-gray-200 inline">
+          <h2 className="mb-3 text-xl font-bold">Quick Links</h2>
+
+          <ul className="space-y-2 text-sm text-purple-200">
             <li>
-              <Link to="/">Home</Link>
+              <Link
+                to="/"
+                className="transition-colors hover:text-white"
+              >
+                Home
+              </Link>
             </li>
+
             <li>
-              <Link to="/about-us">About Us</Link>
+              <Link
+                to="/#services"
+                className="transition-colors hover:text-white"
+              >
+                Services
+              </Link>
             </li>
+
             <li>
-              <Link to="/#search-provider">Browse Providers</Link>
+              <Link
+                to="/#about-us"
+                className="transition-colors hover:text-white"
+              >
+                About Us
+              </Link>
             </li>
+
             <li>
-              <Link to="/#categories">Categories</Link>
+              <Link
+                to="/#search-provider"
+                className="transition-colors hover:text-white"
+              >
+                Browse Providers
+              </Link>
             </li>
+
             <li>
-              <Link to="/contact-us" className="w-fit">
+              <Link
+                to="/#contact-us"
+                className="transition-colors hover:text-white"
+              >
                 Contact
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Features / Contact */}
+        {/* Features */}
         <div>
-          <h2 className="text-xl font-bold mb-3">Features</h2>
-          <ul className="space-y-2 text-sm text-gray-200">
+          <h2 className="mb-3 text-xl font-bold">Features</h2>
+
+          <ul className="space-y-2 text-sm text-purple-200">
             <li>Smart AI Search</li>
             <li>Direct Communication</li>
             <li>Trusted Users</li>
@@ -50,7 +81,7 @@ function Footer() {
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-blue-700 mt-8 pt-4 text-center text-sm text-gray-300">
+      <div className="mx-auto mt-8 max-w-7xl border-t border-purple-800 pt-4 text-center text-sm text-purple-300">
         © {new Date().getFullYear()} HunarHub. All rights reserved.
       </div>
     </footer>
@@ -58,3 +89,4 @@ function Footer() {
 }
 
 export default Footer;
+

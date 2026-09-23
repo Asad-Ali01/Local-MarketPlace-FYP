@@ -2,6 +2,7 @@ import { Navigate, Outlet } from 'react-router';
 import { useAppSelector } from '../hooks/useAppDispatchSelector';
 import Navbar from '../components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 function MainLayout() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   // if(!isAuthenticated){
@@ -10,7 +11,10 @@ function MainLayout() {
   return (
     <div>
       <header className='sticky top-0 z-1000'>
+        <ErrorBoundary fallback={<h1>Navbar failed</h1>}>
+          
         <Navbar />
+        </ErrorBoundary>
       </header>
       <main className='min-h-80'>
         <Outlet />
