@@ -5,13 +5,30 @@ import {
   AuthenticatedWebSocket,
   ClientMessage,
 } from "../types/websocket.types";
-import { Conversation } from "../models/conversation.model";
+import { Conversation, IConversation } from "../models/conversation.model";
 import { Message } from "../models/message.model";
-import { addUser, getUserSockets, notifyUserPresence, removeUser, sendInitialPresence } from "./websocket.manager";
+import {
+  addUser,
+  getUserSockets,
+  notifyUserPresence,
+  removeSocket,
+  sendInitialPresence,
+} from "./websocket.manager";
 const WS_CLOSE_CODES = {
   UNAUTHORIZED: 1008,
   TOKEN_EXPIRED: 4001,
 } as const;
+
+const sendWebSocketError = (socket: WebSocket, message: string) => {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(
+      JSON.stringify({
+        type: "ERROR",
+        payload: { message },
+      }),
+    );
+  }
+};
 const getAccessTokenFromCookie = (request: IncomingMessage) => {
   const cookieHeader = request.headers.cookie;
   if (!cookieHeader) {
@@ -53,10 +70,10 @@ export const initializeWebSocket = (server: Server) => {
       authenticatedSocket.user = user;
       const becameOnline = addUser(user._id.toString(), authenticatedSocket);
       // Send already connected userIds to user that is connected right now.
-      await sendInitialPresence(user._id.toString(),authenticatedSocket);
+      await sendInitialPresence(user._id.toString(), authenticatedSocket);
       // Sending online status to frontend
       if (becameOnline) {
-       notifyUserPresence(user._id.toString(),"USER_ONLINE")
+        notifyUserPresence(user._id.toString(), "USER_ONLINE");
       }
       console.log("WebSocket authenticated: ", user._id.toString());
       console.log("Websocket client successfully");
@@ -71,10 +88,73 @@ export const initializeWebSocket = (server: Server) => {
         });
 
         if (!conversation) {
-          console.log("Conversation not found or user is not a member");
+          if (message.type == "SEND_MESSAGE") {
+            console.trace("Conversation creation starts here");
+            try {
+              const { providerId, gigId, text } = message.payload;
+              if (!providerId || !gigId) {
+                sendWebSocketError(
+                  authenticatedSocket,
+                  "providerId and gigId are required",
+                );
+                return;
+              }
+              let newCreatedConversation: IConversation =
+                await Conversation.create({
+                  members: [
+                    {
+                      user: providerId,
+                    },
+                    {
+                      user: currentUserId,
+                    },
+                  ],
+                  gig: gigId,
+                });
+
+              if (newCreatedConversation) {
+                const newMessage = await Message.create({
+                  conversation: newCreatedConversation._id,
+                  sender: currentUserId,
+                  receiver: providerId,
+                  content: text,
+                });
+
+                let newConversation = await Conversation.findOneAndUpdate(
+                  {
+                    _id: newCreatedConversation._id,
+                  },
+                  {
+                    lastMessage: newMessage._id,
+                    lastMessageAt: newMessage.createdAt,
+                  },
+                )
+                  .populate("members.user", "name avatar role")
+                  .populate("gig", "title startingPrice");
+
+                if (authenticatedSocket.readyState === WebSocket.OPEN) {
+                  authenticatedSocket.send(
+                    JSON.stringify({
+                      type: "NEW_CONVERSATION",
+                      payload: {
+                        newCreatedConversation: newConversation,
+                      },
+                    }),
+                  );
+                }
+              }
+            } catch (error) {
+              console.error("Failed to create conversation", error);
+              sendWebSocketError(
+                authenticatedSocket,
+                "Message could not be sent",
+              );
+            }
+          }
+
           return;
         }
-        const receiverMember = conversation.members.find(
+        const receiverMember = conversation?.members.find(
           (member) => member.user.toString() !== currentUserId.toString(),
         );
         const receiverId = receiverMember?.user;
@@ -82,7 +162,7 @@ export const initializeWebSocket = (server: Server) => {
           return;
         }
         const receiverSockets = getUserSockets(receiverId.toString());
-      //  notifyUserPresence(user._id.toString(),"USER_ONLINE")
+        //  notifyUserPresence(user._id.toString(),"USER_ONLINE")
 
         switch (message.type) {
           case "TYPING":
@@ -111,25 +191,27 @@ export const initializeWebSocket = (server: Server) => {
                 receiverSocket &&
                 receiverSocket.readyState === WebSocket.OPEN
               ) {
-                if (
-                  receiverSocket &&
-                  receiverSocket.readyState == WebSocket.OPEN
-                ) {
-                  receiverSocket.send(
-                    JSON.stringify({
-                      type: "USER_STOP_TYPING",
-                      payload: {
-                        conversationId,
-                      },
-                    }),
-                  );
-                }
+                receiverSocket.send(
+                  JSON.stringify({
+                    type: "USER_STOP_TYPING",
+                    payload: {
+                      conversationId,
+                    },
+                  }),
+                );
               }
             });
             break;
           // Mark read messages
           case "MARK_MESSAGES_READ":
-            console.log("MARK_MESSAGE_READ: ",conversationId," currentUser: ",currentUserId," RecieverID: ",receiverId);
+            console.log(
+              "MARK_MESSAGE_READ: ",
+              conversationId,
+              " currentUser: ",
+              currentUserId,
+              " RecieverID: ",
+              receiverId,
+            );
             // update isRead to true if current user read the messages
             const updatedRead = await Message.updateMany(
               {
@@ -144,36 +226,38 @@ export const initializeWebSocket = (server: Server) => {
               },
             );
             const lastMessage = await Message.findOne({
-              conversation:conversationId,
-              receiver:currentUserId,
-              isRead:true
-            }).sort({createdAt: -1}).select("_id createdAt").lean();
-            if(lastMessage){
-
+              conversation: conversationId,
+              receiver: currentUserId,
+              isRead: true,
+            })
+              .sort({ createdAt: -1 })
+              .select("_id createdAt")
+              .lean();
+            if (lastMessage) {
               await Conversation.findOneAndUpdate(
                 {
-                  _id:conversationId,
-                  "members.user":currentUserId
+                  _id: conversationId,
+                  "members.user": currentUserId,
                 },
                 {
-                  $set:{
-                    "members.$.lastReadMessage":lastMessage._id,
-                    "members.$.lastReadAt":lastMessage.createdAt
-                }
-              }
-            )
-          }
+                  $set: {
+                    "members.$.lastReadMessage": lastMessage._id,
+                    "members.$.lastReadAt": lastMessage.createdAt,
+                  },
+                },
+              );
+            }
             if (updatedRead.modifiedCount > 0) {
-            //     if (authenticatedSocket.readyState === WebSocket.OPEN) {
-            //   authenticatedSocket.send(
-            //     JSON.stringify({
-            //       type: "MESSAGES_READ",
-            //       payload: {
-            //         conversationId
-            //       },
-            //     }),
-            //   );
-            // }
+              //     if (authenticatedSocket.readyState === WebSocket.OPEN) {
+              //   authenticatedSocket.send(
+              //     JSON.stringify({
+              //       type: "MESSAGES_READ",
+              //       payload: {
+              //         conversationId
+              //       },
+              //     }),
+              //   );
+              // }
               receiverSockets?.forEach((receiverSocket) => {
                 if (
                   receiverSocket &&
@@ -216,17 +300,18 @@ export const initializeWebSocket = (server: Server) => {
             await savedMessage.populate("sender", "avatar name");
             // Sending the Incremenr unread messaeg event
             receiverSockets?.forEach((receiverSocket) => {
-              if(receiverSocket &&
+              if (
+                receiverSocket &&
                 receiverSocket.readyState === WebSocket.OPEN
-              ){
+              ) {
                 receiverSocket.send(
                   JSON.stringify({
-                    type:"INCREMENT_UNREAD_COUNT",
-                    payload: conversationId
-                  })
-                )
+                    type: "INCREMENT_UNREAD_COUNT",
+                    payload: conversationId,
+                  }),
+                );
               }
-            })
+            });
             receiverSockets?.forEach((receiverSocket) => {
               if (
                 receiverSocket &&
@@ -258,21 +343,20 @@ export const initializeWebSocket = (server: Server) => {
         }
       });
 
-      authenticatedSocket.on("close", async (code,reason) => {
+      authenticatedSocket.on("close", async (code, reason) => {
         console.log("Websocket client disconnected");
-        console.log("Reason: ",reason.toString());
-        console.log("Code: ",code);
-        const becomeOffline = removeUser(
+        console.log("Reason: ", reason.toString());
+        console.log("Code: ", code);
+        const becomeOffline = removeSocket(
           user._id.toString(),
           authenticatedSocket,
         );
         if (becomeOffline) {
-       notifyUserPresence(user._id.toString(),"USER_OFFLINE")
-
+          notifyUserPresence(user._id.toString(), "USER_OFFLINE");
         }
       });
     } catch (error) {
-      console.log("WebSocket authentication failed",error);
+      console.log("WebSocket authentication failed", error);
       socket.close(1008, "Unauthorized");
     }
   });

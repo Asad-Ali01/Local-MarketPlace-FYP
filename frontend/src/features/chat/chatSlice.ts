@@ -1,8 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { INewConversationContext } from '@/types/chat.types';
 
 const initialState = {
   onlineUsersIds: [] as string[],
   unreadCounts: {} as Record<string, number>,
+  pendingNewConversation: undefined as INewConversationContext | undefined,
 };
 
 const chatSlice = createSlice({
@@ -33,6 +35,15 @@ const chatSlice = createSlice({
 
       state.unreadCounts[conversationId] = 0;
     },
+    setPendingNewConversation: (
+      state,
+      action: PayloadAction<INewConversationContext>,
+    ) => {
+      state.pendingNewConversation = action.payload;
+    },
+    clearPendingNewConversation: (state) => {
+      state.pendingNewConversation = undefined;
+    },
   },
 });
 
@@ -43,6 +54,8 @@ export const {
   setUnreadCounts,
   incrementUnreadCount,
   clearUnreadCount,
+  setPendingNewConversation,
+  clearPendingNewConversation,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

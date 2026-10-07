@@ -23,9 +23,9 @@ const searchServicesService = async(q:string) => {
 
   const [subCategories,gigs] =  await Promise.all([
         SubCategory.find({
-            name:regex
+            name:regex,
+            
         })
-       
         .limit(5)
         .lean(),
 
@@ -33,7 +33,6 @@ const searchServicesService = async(q:string) => {
             status:"published",
             title:regex
         })
-       
         .limit(5)
         .lean()
     ]);

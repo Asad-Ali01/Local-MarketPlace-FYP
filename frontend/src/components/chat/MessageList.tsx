@@ -7,9 +7,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { IMessage } from '@/types/chat.types';
 import { sendWebSocketMessage, subscribeToWebSocket } from '@/services/websocket/websocket';
 import { useAppDispatch } from '@/hooks/useAppDispatchSelector';
-import {
-  clearUnreadCount,
-} from '@/features/chat/chatSlice';
+import { clearUnreadCount } from '@/features/chat/chatSlice';
 
 interface MessageListProps {
   conversationId?: string;
@@ -27,6 +25,7 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
   );
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // -----------------------------
   // Initial messages from HTTP
   // -----------------------------
@@ -34,7 +33,6 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
     const handleActiveState = () => {
       const isActive = document.visibilityState === 'visible' && document.hasFocus();
       setIsActive(isActive);
-  
     };
     document.addEventListener('visibilitychange', handleActiveState);
     window.addEventListener('focus', handleActiveState);
@@ -46,7 +44,6 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
     };
   }, [conversationId]);
 
-
   useLayoutEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: 'instant',
@@ -57,26 +54,53 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
     const unsubscribe = subscribeToWebSocket((incoming) => {
       switch (incoming.type) {
         case 'USER_TYPING':
+          if (incoming.payload.conversationId !== conversationId) {
+            return;
+          }
+
           setIsTyping(true);
+
+          if (typingTimer.current) {
+            clearTimeout(typingTimer.current);
+          }
+
+          typingTimer.current = setTimeout(() => {
+            setIsTyping(false);
+            typingTimer.current = null;
+          }, 3000);
           break;
         case 'USER_STOP_TYPING':
+          if (incoming.payload.conversationId !== conversationId) {
+            return;
+          }
+
           setIsTyping(false);
+          if (typingTimer.current) {
+            clearTimeout(typingTimer.current);
+            typingTimer.current = null;
+          }
           break;
         case 'MESSAGES_READ':
           if (incoming.payload.conversationId !== conversationId) {
             return;
           }
-         
-          dispatch(chatApi.util.updateQueryData(
-            "getAllMessagesByConversationId",
-            conversationId!,
-            (draft) => {
-             draft.data = draft.data.map((message) => ({
-              ...message,
-              isRead:true
-             }) )
-            }
-          ))
+
+          dispatch(
+            chatApi.util.updateQueryData(
+              'getAllMessagesByConversationId',
+              conversationId!,
+              (draft) => {
+                draft.data = draft.data.map((message) => ({
+                  ...message,
+                  isRead: true,
+                }));
+              },
+            ),
+          );
+          break;
+        case 'ERROR':
+          const errorMessage = incoming.payload.message;
+          console.error(errorMessage);
           break;
         case 'NEW_MESSAGE':
           const newMessage = incoming.payload;
@@ -88,20 +112,28 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
           if (messageConversationId !== conversationId) {
             return;
           }
-         
-          dispatch(chatApi.util.updateQueryData(
-            "getAllMessagesByConversationId",
-            messageConversationId,
-            (draft) => {
-              draft.data.push(newMessage)
-            }
-          ))
+
+          dispatch(
+            chatApi.util.updateQueryData(
+              'getAllMessagesByConversationId',
+              messageConversationId,
+              (draft) => {
+                draft.data.push(newMessage);
+              },
+            ),
+          );
           break;
       }
     });
 
-    return unsubscribe;
-  }, [conversationId,dispatch]);
+    return () => {
+      unsubscribe();
+      if (typingTimer.current) {
+        clearTimeout(typingTimer.current);
+        typingTimer.current = null;
+      }
+    };
+  }, [conversationId, dispatch]);
   useEffect(() => {
     if (!conversationId || !isActive) {
       return;
@@ -112,9 +144,8 @@ function MessageList({ conversationId, receiverName }: MessageListProps) {
         conversationId,
       },
     });
-      dispatch(clearUnreadCount(conversationId));
-  }, [conversationId,isActive  ]);
-
+    dispatch(clearUnreadCount(conversationId));
+  }, [conversationId, isActive]);
 
   return (
     <div className="flex-1 space-y-4 overflow-y-auto p-4 md:p-6">

@@ -16,9 +16,11 @@ import {
   userOffline,
   userOnline,
 } from './features/chat/chatSlice';
+import { useNavigate } from 'react-router';
 function App() {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     let unsubscribe: null | ReturnType<typeof subscribeToWebSocket> = null;
     if (isAuthenticated) {
@@ -41,6 +43,8 @@ function App() {
 
             dispatch(userOffline(incoming.payload.userId));
             break;
+          
+         
         }
       });
 

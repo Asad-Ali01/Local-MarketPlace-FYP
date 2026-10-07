@@ -17,7 +17,7 @@ export const addUser = (userId: string, socket: AuthenticatedWebSocket) => {
   return wasOffline;
 };
 
-export const removeUser = (userId: string, socket: AuthenticatedWebSocket) => {
+export const removeSocket = (userId: string, socket: AuthenticatedWebSocket) => {
   const sockets = users.get(userId);
   if (!sockets) {
     return;

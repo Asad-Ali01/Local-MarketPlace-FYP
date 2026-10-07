@@ -135,7 +135,7 @@ function SearchServices() {
         <div className="my-8 border-t" />
 
         <GigList gigs={gigs} />
-   <div ref={loadMoreRef} className=" h-100 "/>
+   <div ref={loadMoreRef} className="  "/>
       </div>
     </main>
   );

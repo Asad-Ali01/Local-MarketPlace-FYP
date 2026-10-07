@@ -7,6 +7,8 @@ type Listener = (message: any) => void;
 let listeners = new Set<Listener>();
 let intentionalDisconnect = false;
 const RECONNECT_DELAY = 2000;
+const totalRetries = 3;
+let currentRetry = 1;
 export const connectWebSocket = (): WebSocket => {
   intentionalDisconnect = false;
   if (
@@ -23,6 +25,8 @@ export const connectWebSocket = (): WebSocket => {
       clearTimeout(reconnectTimer);
       reconnectTimer = null;
     }
+  currentRetry = 1;
+
     console.log('WebSocket connected');
   };
 
@@ -47,9 +51,12 @@ export const connectWebSocket = (): WebSocket => {
         return;
       }
     }
-    reconnectTimer = setTimeout(() => {
-      connectWebSocket();
-    }, RECONNECT_DELAY);
+    if(currentRetry <= totalRetries){
+      currentRetry++;
+      reconnectTimer = setTimeout(() => {
+        connectWebSocket();
+      }, RECONNECT_DELAY);
+    }
   };
 
   socket.onerror = (error) => {

@@ -5,16 +5,19 @@ import { User } from "../models/user.model";
 import { Gig } from "../models/gig.model";
 import { ApiError } from "../utils/ApiError";
 
-
+interface IGetMessageParams{
+  conversationId:string;
+  limit?:number;
+  cursor?:string;
+}
 const createConversationService = async (
   providerId: Types.ObjectId,
   gigId: Types.ObjectId,
-  clientId: Types.ObjectId
+  clientId: Types.ObjectId,
 ) => {
-
   let conversation = await Conversation.findOne({
     "members.user": { $all: [providerId, clientId] },
-    gig: gigId
+    gig: gigId,
   })
     .populate("members", "name avatar role")
     .populate("gig", "title startingPrice");
@@ -24,15 +27,15 @@ const createConversationService = async (
   }
 
   conversation = await Conversation.create({
-    members:[
+    members: [
       {
-        user:providerId
+        user: providerId,
       },
       {
-        user:clientId
-      }
+        user: clientId,
+      },
     ],
-    gig: gigId
+    gig: gigId,
   });
 
   await conversation.populate("members", "name avatar role");
@@ -41,62 +44,80 @@ const createConversationService = async (
   return { conversation };
 };
 
-
-const getAllMyConversationsService = async (
-  userId: Types.ObjectId
-) => {
-
+const getAllMyConversationsService = async (userId: Types.ObjectId) => {
   const conversations = await Conversation.find({
-    "members.user": userId
+    "members.user": userId,
   })
     .populate("members.user", "name avatar role")
     .populate("gig", "title startingPrice")
     .sort({ lastMessageAt: -1 });
-  console.log("Here is conversations: ",conversations);
+  console.log("Here is conversations: ", conversations);
   return { conversations };
 };
 
-const getAllMessagesByConversationIdService = async(
-    conversationId:string
+const getAllMessagesByConversationIdService = async (
+  conversationId: string,
 ) => {
-     if (!Types.ObjectId.isValid(conversationId)) {
+  if (!Types.ObjectId.isValid(conversationId)) {
     throw new Error("Invalid conversation ID");
   }
-   const messages = await Message.find({conversation:conversationId}).populate("sender","name avatar").sort({createdAt: 1});
+  const messages = await Message.find({ conversation: conversationId })
+    .populate("sender", "name avatar")
+    .sort({ createdAt: 1 });
 
-   return {messages};
-}
-
-const getConversationContextService = async(providerId:string,clientId:string,gigId:string) => {
+  return { messages };
+};
 
 
-   const conversation = await Conversation.findOne({
-    gig:gigId,
-    members:{
-      $all:[
-        { $elemMatch: { user:providerId }},
-        { $elemMatch: { user:clientId }},
-      ]
-    }
-  }).populate("members.user", "name avatar role")
-  .populate("members.lastReadMessage")
-    .populate("gig", "title startingPrice").lean();
+const getConversationContextService = async (
+  providerId: string,
+  clientId: string,
+  gigId: string,
+) => {
+  const conversation = await Conversation.findOne({
+    gig: gigId,
+    members: {
+      $all: [ 
+        { $elemMatch: { user: providerId } },
+        { $elemMatch: { user: clientId } },
+      ],
+    },
+  })
+    .populate("members.user", "name avatar role")
+    .populate("members.lastReadMessage")
+    .populate("gig", "title startingPrice")
+    .lean();
 
-  if(conversation){
-    return {conversation};
+  if (conversation) {
+    return { conversation };
   }
 
- const provider = await User.findById(providerId).select("_id name avatar").lean();
- if (!provider) {
+  const provider = await User.findById(providerId)
+    .select("_id name avatar")
+    .lean();
+  if (!provider) {
     throw new ApiError(404, "Provider not found");
   }
- 
 
-
- const gig = await Gig.findById(gigId).select("_id title startingPrice").lean();
+  const gig = await Gig.findById(gigId)
+    .select("_id title startingPrice")
+    .lean();
   if (!gig) {
     throw new ApiError(404, "Gig not found");
   }
-  return {provider,gig};
+  return { provider, gig };
+};
+
+
+const getMessagesByConversation = async({conversationId,limit = 50,cursor}:IGetMessageParams) => {
+  const safeLimit = Math.min(Math.max(limit,1),50);
+  // const filter: Record<string,number> = {
+  //   conversat
+  // }
 }
-export {createConversationService,getAllMyConversationsService,getAllMessagesByConversationIdService,getConversationContextService};
+export {
+  createConversationService,
+  getAllMyConversationsService,
+  getAllMessagesByConversationIdService,
+  getConversationContextService,
+};

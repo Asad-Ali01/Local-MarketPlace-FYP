@@ -167,18 +167,5 @@ gigSchema.index({
     _id:-1
 })
 
-gigSchema.index(
-    {
-    title:"text",
-    description:"text",
-    tags:"text"
-   },
-   {
-    weights:{
-        title:10,
-        tags:5,
-        description:1
-    }
-   }
-)
+
 export const Gig = mongoose.model<IGig>("Gig",gigSchema);

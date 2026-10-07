@@ -18,6 +18,7 @@ export default React.memo(function ConversationItem({
   const otherUser = conversation.members.find(
     (member: IConversationMember) => member.user._id !== currentUserId,
   )?.user;
+  console.log("Conversation: ",conversation," Other user: ",otherUser);
   const unreadCount = unreadCounts[conversation._id];
   return (
     <button

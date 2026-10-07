@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useCreateConversationApiMutation } from '@/features/chat/chatApi';
+import { useLazyGetConversationContextQuery } from '@/features/chat/chatApi';
 import type { IGig } from '@/types/gig.types';
 import { Breadcrumb, Image, Rate } from 'antd';
 import { BadgeCheck, Mail, MapPin, User } from 'lucide-react';
@@ -12,19 +12,34 @@ type GigHeaderProps = {
 };
 
 export default function GigHeader({ gig }: GigHeaderProps) {
-  const [createConversationApi] = useCreateConversationApiMutation();
-  const createConversation = async () => {
-    // const data = {
-    //   providerId:gig.provider._id,
-    //   gigId:gig._id
-    // }
-    const providerId = gig.provider._id;
-    const gigId = gig._id;
-    //  const conversation =  await  createConversationApi(data).unwrap()
-    // navigate(`/client/messages/${conversation.data._id}`)
-    navigate(`/client/messages/new?providerId=${providerId}&gigId=${gigId}`);
-  };
+  const [checkContextConversation,{data:contextConversation}] = useLazyGetConversationContextQuery();
   const navigate = useNavigate();
+
+ const createConversation = async () => {
+  const providerId = gig.provider._id;
+  const gigId = gig._id;
+
+  const result = await checkContextConversation({
+    providerId,
+    gigId,
+  }).unwrap();
+
+  const context = result?.data;
+
+  const hasNewConversation =
+    !!context?.provider &&
+    !!context?.gig;
+
+  if (hasNewConversation) {
+    navigate(
+      `/client/messages/new?providerId=${providerId}&gigId=${gigId}`
+    );
+  } else {
+    const conversationId = context?.conversation?._id;
+
+    navigate(`/client/messages/${conversationId}`);
+  }
+};
   return (
     <section className="space-y-6">
       <Breadcrumb

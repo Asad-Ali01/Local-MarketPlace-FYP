@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Send } from 'lucide-react';
-import { connectWebSocket, sendWebSocketMessage } from '@/services/websocket/websocket';
+import { sendWebSocketMessage } from '@/services/websocket/websocket';
+import { useSearchParams } from 'react-router';
 
 interface MessageInputProps {
   conversationId?: string;
@@ -16,7 +17,37 @@ function MessageInput({ conversationId }: MessageInputProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isTyping = useRef(false);
+  const [searchParams] = useSearchParams();
+  const providerId = searchParams.get('providerId');
+  const gigId = searchParams.get('gigId');
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+  useEffect(() => {
+    if (typingTimer.current) {
+      clearTimeout(typingTimer.current);
+    }
+    typingTimer.current = null;
+    isTyping.current = false;
+    setMessage('');
+  }, [conversationId]);
+  useEffect(() => {
+    return () => {
+      if (isTyping.current && conversationId) {
+        sendWebSocketMessage({
+          type: 'STOP_TYPING',
+          payload: { conversationId },
+        });
+      }
 
+      if (typingTimer.current) {
+        clearTimeout(typingTimer.current);
+      }
+
+      typingTimer.current = null;
+      isTyping.current = false;
+    };
+  }, [conversationId]);
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setMessage(value);
@@ -49,48 +80,57 @@ function MessageInput({ conversationId }: MessageInputProps) {
           conversationId,
         },
       });
-      // socket.send(
-      //   JSON.stringify({
-      //     type: "STOP_TYPING",
-      //     payload: {
-      //       conversationId,
-      //     },
-      //   }),
-      // );
     }, 1000);
+  };
+  const stopTyping = () => {
+    if (typingTimer.current) {
+      clearTimeout(typingTimer.current);
+      typingTimer.current = null;
+    }
+
+    if (isTyping.current && conversationId) {
+      sendWebSocketMessage({
+        type: 'STOP_TYPING',
+        payload: { conversationId },
+      });
+    }
+
+    isTyping.current = false;
   };
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter') {
       handleSend();
     }
   };
+
   const handleSend = () => {
     if (!message.trim()) return;
-    if (!conversationId) {
-      console.log('No conversation id exists');
-      return;
+   
+    if (conversationId) {
+      stopTyping();
+      sendWebSocketMessage({
+        type: 'SEND_MESSAGE',
+        payload: {
+          conversationId,
+
+          text: message,
+        },
+      });
+    } else if (providerId && gigId) {
+      sendWebSocketMessage({
+        type: 'SEND_MESSAGE',
+        payload: {
+          conversationId: null,
+          providerId,
+          gigId,
+          text: message,
+        },
+      });
     }
-    sendWebSocketMessage({
-      type: 'STOP_TYPING',
-      payload: {
-        conversationId,
-      },
-    });
-    sendWebSocketMessage({
-      type: 'SEND_MESSAGE',
-      payload: {
-        conversationId,
-        text: message,
-      },
-    });
+
     setMessage('');
   };
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-  useEffect(() => {
-    setMessage('');
-  }, [conversationId]);
+
   return (
     <div className="border-t bg-white p-4">
       <div className="flex items-center gap-2">

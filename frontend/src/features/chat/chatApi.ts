@@ -53,5 +53,6 @@ export const {
   useCreateConversationApiMutation,
   useGetAllConversationApiQuery,
   useGetAllMessagesByConversationIdQuery,
-  useGetConversationContextQuery,
+  useLazyGetConversationContextQuery,
+  useGetConversationContextQuery
 } = chatApi;

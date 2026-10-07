@@ -7,8 +7,10 @@ export type ClientMessage =
   | {
       type: "SEND_MESSAGE";
       payload: {
-        conversationId: string;
+        conversationId: string | null;
         text: string;
+        providerId:string ;
+        gigId:string;
       };
     }
   | {

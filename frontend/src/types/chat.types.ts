@@ -53,6 +53,22 @@ export interface IConversationContext {
 export interface ICreateConversation {
   data: IConversation;
 }
+
+export interface INewConversationContext {
+  type: string;
+  provider: {
+    _id: string;
+    name: string;
+    avatar: IAvatar;
+  };
+  gig: {
+    _id: string;
+    title: string;
+    startingPrice: number | null;
+  };
+}
+
+
 export interface IGetAllCoversations {
   data: IConversation[];
 }
@@ -73,23 +89,23 @@ export interface IMessages {
   data: IMessage[];
 }
 
-export type ClientMessage =
-  | {
-      type: 'TYPING';
-      payload: {
-        conversationId: string;
-      };
-    }
-  | {
-      type: 'STOP_TYPING';
-      payload: {
-        conversationId: string;
-      };
-    }
-  | {
-      type: 'SEND_MESSAGE';
-      payload: {
-        conversationId: string;
-        text: string;
-      };
-    };
+// export type ClientMessage =
+//   | {
+//       type: 'TYPING';
+//       payload: {
+//         conversationId: string;
+//       };
+//     }
+//   | {
+//       type: 'STOP_TYPING';
+//       payload: {
+//         conversationId: string;
+//       };
+//     }
+//   | {
+//       type: 'SEND_MESSAGE';
+//       payload: {
+//         conversationId: string;
+//         text: string;
+//       };
+//     };
