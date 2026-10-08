@@ -49,6 +49,10 @@ const conversationSchema = new Schema<IConversation>(
 
     lastMessage: {
       type: String,
+       validate: {
+    validator: (value: unknown) => typeof value === "string",
+    message: "lastMessage must be a string",
+  },
       default: ""
     },
 

@@ -10,6 +10,7 @@ import { Message } from "../models/message.model";
 import {
   addUser,
   getUserSockets,
+  isOnline,
   notifyUserPresence,
   removeSocket,
   sendInitialPresence,
@@ -99,6 +100,27 @@ export const initializeWebSocket = (server: Server) => {
                 );
                 return;
               }
+              let isExistedConversation: IConversation | null =
+                await Conversation.findOne({
+                  $and: [
+                    {
+                      "members.user": currentUserId,
+                    },
+                    {
+                      "members.user": providerId,
+                    },
+                    {
+                      gig: gigId,
+                    },
+                  ],
+                });
+              if (isExistedConversation) {
+                sendWebSocketError(
+                  authenticatedSocket,
+                  "Conversation already exists",
+                );
+                return;
+              }
               let newCreatedConversation: IConversation =
                 await Conversation.create({
                   members: [
@@ -125,12 +147,14 @@ export const initializeWebSocket = (server: Server) => {
                     _id: newCreatedConversation._id,
                   },
                   {
-                    lastMessage: newMessage._id,
+                    lastMessage: newMessage.content,
                     lastMessageAt: newMessage.createdAt,
                   },
                 )
                   .populate("members.user", "name avatar role")
-                  .populate("gig", "title startingPrice");
+                  .populate("gig", "title startingPrice")
+                  .populate("lastMessage", "");
+                // .populate("members.");
 
                 if (authenticatedSocket.readyState === WebSocket.OPEN) {
                   authenticatedSocket.send(
@@ -138,10 +162,51 @@ export const initializeWebSocket = (server: Server) => {
                       type: "NEW_CONVERSATION",
                       payload: {
                         newCreatedConversation: newConversation,
+                        clientId: currentUserId,
                       },
                     }),
                   );
+
+                  authenticatedSocket.send(
+                    JSON.stringify({
+                      type: "NEW_MESSAGE",
+                      payload: newMessage,
+                    }),
+                  );
+                  isOnline(currentUserId.toString(),providerId?.toString(),authenticatedSocket)
                 }
+
+                const receiverSockets = getUserSockets(providerId.toString());
+                receiverSockets?.forEach((receiverSocket) => {
+                  if (
+                    receiverSocket &&
+                    receiverSocket.readyState === WebSocket.OPEN
+                  ) {
+                    receiverSocket.send(
+                      JSON.stringify({
+                        type: "NEW_CONVERSATION",
+                        payload: {
+                          newCreatedConversation: newConversation,
+                          clientId: currentUserId,
+                        },
+                      }),
+                    );
+
+                    receiverSocket.send(
+                      JSON.stringify({
+                        type: "NEW_MESSAGE",
+                        payload: newMessage,
+                      }),
+                    );
+
+                    receiverSocket.send(
+                      JSON.stringify({
+                        type: "INCREMENT_UNREAD_COUNT",
+                        payload: newConversation?._id,
+                      }),
+                    );
+                  }
+                });
               }
             } catch (error) {
               console.error("Failed to create conversation", error);
@@ -248,16 +313,6 @@ export const initializeWebSocket = (server: Server) => {
               );
             }
             if (updatedRead.modifiedCount > 0) {
-              //     if (authenticatedSocket.readyState === WebSocket.OPEN) {
-              //   authenticatedSocket.send(
-              //     JSON.stringify({
-              //       type: "MESSAGES_READ",
-              //       payload: {
-              //         conversationId
-              //       },
-              //     }),
-              //   );
-              // }
               receiverSockets?.forEach((receiverSocket) => {
                 if (
                   receiverSocket &&

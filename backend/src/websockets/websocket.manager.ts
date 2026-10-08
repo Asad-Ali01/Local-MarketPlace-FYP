@@ -112,3 +112,37 @@ Converting the Set into an Array using the spread operator ([...onlineUserIds]) 
     })
   )
 }
+
+export const isOnline = (currentUserId:string,receiverId:string,currentUserSocket:AuthenticatedWebSocket) => {
+ const isOnline =  users.has(receiverId);
+
+ if(isOnline)
+ {
+  if(currentUserSocket && currentUserSocket.readyState == WebSocket.OPEN)
+  {
+    currentUserSocket.send(
+      JSON.stringify({
+        type:"USER_ONLINE",
+        payload:{
+          userId:receiverId
+        }
+      })
+    )
+  }
+  const reciverSocket = getUserSockets(receiverId);
+
+  reciverSocket?.forEach((receiverSocket) => {
+    if(reciverSocket && receiverSocket.readyState === WebSocket.OPEN)
+    {
+      receiverSocket.send(
+      JSON.stringify({
+        type:"USER_ONLINE",
+        payload:{
+          userId:currentUserId
+        }
+      })
+    )
+    }
+  })
+ }
+}

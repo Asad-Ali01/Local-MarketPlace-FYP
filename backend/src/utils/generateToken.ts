@@ -14,8 +14,10 @@ export const generateAccessAndRefreshToken = async(userId: string | Types.Object
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
         const hashedRefreshToken = await bcrypt.hash(refreshToken,10);
-        user.refreshToken = hashedRefreshToken;
-        await user.save();
+        await User.updateOne(
+            { _id: user._id },
+            { $set: { refreshToken: hashedRefreshToken } },
+        );
         
         return {accessToken,refreshToken};
     } catch (error) {

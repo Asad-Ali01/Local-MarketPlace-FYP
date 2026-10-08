@@ -70,7 +70,7 @@ function ChatPage() {
   useEffect(() => {
     const unsubscribe = subscribeToWebSocket((incoming) => {
       if (incoming.type === 'NEW_CONVERSATION') {
-        const { newCreatedConversation } = incoming.payload;
+        const { newCreatedConversation,clientId } = incoming.payload;
 
         dispatch(clearPendingNewConversation());
 
@@ -85,8 +85,12 @@ function ChatPage() {
             }
           }),
         );
+        const isClient = currentUser?._id === clientId;
+        if(isClient)
+        {
 
-        navigate(`/client/messages/${newCreatedConversation._id}`, { replace: true });
+          navigate(`/client/messages/${newCreatedConversation._id}`, { replace: true });
+        }
       }
     });
 

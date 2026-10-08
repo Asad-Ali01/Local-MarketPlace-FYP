@@ -35,7 +35,7 @@ function ChatHeader({ conversation,newConversation, currentUserId,isMobile }: Ch
         <ArrowLeft onClick={handleBack}/>
         }
           <Avatar className="h-11 w-11">
-            <AvatarImage src={newConversation.provider?.avatar.url} alt={newConversation?.provider?.name} />
+            <AvatarImage src={newConversation.provider?.avatar?.url} alt={newConversation?.provider?.name} />
 
             <AvatarFallback>{newConversation?.provider?.name?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
