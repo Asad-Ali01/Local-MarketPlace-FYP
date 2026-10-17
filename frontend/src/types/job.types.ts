@@ -28,7 +28,10 @@ export interface IJob {
   createdAt: string;
   updatedAt: string;
 }
-
+export type ServerValidationError = {
+  path: (string | number)[];
+  message: string;
+};
 export interface ICreateJobRequest {
   title: string;
   description: string;

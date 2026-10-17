@@ -14,16 +14,22 @@ import {
 
 import { asyncHandler } from '../utils/asynHandler';
 import { createJobSchema, updateJobSchema } from '../schema/job.schema';
+import { CreateJobInput } from '../types/job.types';
 
 
 
 // Create a new job
 export const createJobController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request<{},{},CreateJobInput>, res: Response) => {
     const jobData = createJobSchema.parse(req.body);
 
     const clientId = req.user._id.toString();
-
+console.log("Skills received:", req.body.skills);
+console.log("Is array:", Array.isArray(req.body.skills));
+console.log("Element types:", Array.isArray(req.body.skills)
+  ? req.body.skills.map(skill => typeof skill)
+  : typeof req.body.skills
+);
     const job = await createJob(clientId, jobData);
 
     res.status(201).json({

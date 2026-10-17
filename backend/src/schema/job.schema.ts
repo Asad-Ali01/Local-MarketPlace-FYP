@@ -5,7 +5,18 @@ const jobFields = {
   title: z.string().trim().min(10).max(150),
   description: z.string().trim().min(30).max(10000),
   category: z.string().trim().min(1),
-  skills: z.array(z.string().trim().min(1)).min(1),
+ skills: z
+  .array(
+    z
+      .string()
+      .trim()
+      .min(1, "Skill cannot be empty")
+      .regex(
+        /.*[a-zA-Z].*/,
+        "Skill must contain at least one letter"
+      )
+  )
+  .min(1, "Add at least one skill"),
   budgetType: z.enum(['fixed', 'range']),
   budgetMin: z.coerce.number().positive(),
   budgetMax: z.coerce.number().positive(),
@@ -18,8 +29,8 @@ const jobFields = {
 export const createJobSchema = z
   .object(jobFields)
   .strict()
-  .refine((data) => data.budgetMin <= data.budgetMax, {
-    message: 'Maximum budget must be at least the minimum budget',
+  .refine((data) => data.budgetMin < data.budgetMax, {
+    message: 'Maximum budget must be greater the minimum budget',
     path: ['budgetMax'],
   })
   .refine(
@@ -48,9 +59,9 @@ export const updateJobSchema = z
     (data) =>
       data.budgetMin === undefined ||
       data.budgetMax === undefined ||
-      data.budgetMin <= data.budgetMax,
+      data.budgetMin < data.budgetMax,
     {
-      message: 'Maximum budget must be at least the minimum budget',
+      message: 'Maximum budget must be greater the minimum budget',
       path: ['budgetMax'],
     },
   )

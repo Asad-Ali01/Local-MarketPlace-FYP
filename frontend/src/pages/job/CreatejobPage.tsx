@@ -5,8 +5,9 @@ import { BriefcaseBusiness } from 'lucide-react';
 import { useGetAllCategoriesForHomePageQuery } from '@/features/home/homeApi';
 import { useCreateJob } from '@/hooks/useCreateJob';
 import type { CreateJobFormValues } from '@/schemas/jobSchema';
-import CreateJobForm from '@/components/job/CreateJob';
-import type { IJob } from '@/types/job.types';
+
+import type { ServerValidationError } from '@/types/job.types';
+import CreateJob from '@/components/job/CreateJobForm';
 
 
 
@@ -41,30 +42,40 @@ export default function CreateJobPage() {
     }
   };
 
-  const getServerErrorMessage = (error: unknown): string | undefined => {
-  if (!error || typeof error !== 'object') {
-    return undefined;
-  }
-
-  if (!('data' in error)) {
-    return 'Unable to publish your job. Please try again.';
+  const getServerValidationErrors = (
+  error: unknown
+): ServerValidationError[] => {
+  if (
+    !error ||
+    typeof error !== "object" ||
+    !("data" in error)
+  ) {
+    return [];
   }
 
   const data = error.data;
 
   if (
-    data !== null &&
-    typeof data === 'object' &&
-    'message' in data &&
-    typeof data.message === 'string'
+    !data ||
+    typeof data !== "object" ||
+    !("errors" in data) ||
+    !Array.isArray(data.errors)
   ) {
-    return data.message;
+    return [];
   }
 
-  return 'Unable to publish your job. Please try again.';
+  return data.errors.filter(
+    (item): item is ServerValidationError =>
+      typeof item === "object" &&
+      item !== null &&
+      "path" in item &&
+      Array.isArray(item.path) &&
+      "message" in item &&
+      typeof item.message === "string"
+  );
 };
 
-const serverError = getServerErrorMessage(error);
+const serverError = getServerValidationErrors(error);
 
   return (
     <main className="min-h-screen bg-muted/30 px-4 py-8 sm:px-6">
@@ -104,11 +115,11 @@ const serverError = getServerErrorMessage(error);
             <Spin size="large" />
           </div>
         ) : (
-          <CreateJobForm
-            categories={categoryOptions}
+          <CreateJob
+            categoryOptions={categoryOptions}
             onSubmit={handleSubmit}
             isSubmitting={isLoading}
-            serverError={serverError}
+            serverValidationErrors={serverError}
           />
         )}
       </div>

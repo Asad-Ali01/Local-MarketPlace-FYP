@@ -1,20 +1,36 @@
 import { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 import { ApiError } from "../utils/ApiError";
 
 const errorHandler = (
-    err:ApiError,
-    req:Request,
-    res:Response,
-    next:NextFunction
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
 ) => {
-    const statusCode = err.statusCode || 500;
+  console.error("Full Error:", err);
+  console.error(err.stack);
 
-    res.status(statusCode).json({
-        success:false,
-        message:err.message || "Internal Server Error"
-    })
-    console.log("Full Error: ",err);
-    console.log(err.stack);
-}
+  // Handle Zod validation errors
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: err.issues.map((issue) => ({
+        path: issue.path,
+        message: issue.message,
+      })),
+    });
+  }
 
-export {errorHandler};
+  // Handle your custom API errors
+  const apiError = err as ApiError;
+  const statusCode = apiError.statusCode || 500;
+
+  return res.status(statusCode).json({
+    success: false,
+    message: apiError.message || "Internal Server Error",
+  });
+};
+
+export { errorHandler };

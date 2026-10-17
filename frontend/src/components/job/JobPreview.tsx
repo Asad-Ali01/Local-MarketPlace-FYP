@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type { CreateJobFormInput, CreateJobFormValues } from '@/schemas/jobSchema';
+import type { CreateJobFormInput } from '@/schemas/jobSchema';
 
 
 

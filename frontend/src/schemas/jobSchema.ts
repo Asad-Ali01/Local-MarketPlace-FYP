@@ -19,11 +19,17 @@ export const createJobSchema = z
       .string()
       .trim()
       .min(1, 'Please select a category'),
-
-    skills: z
-      .string()
-      .trim()
-      .min(1, 'Add at least one required skill'),
+skills: z
+  .string()
+  .trim()
+  .min(1, "Add at least one skill")
+  .refine(
+    (value) =>
+      value
+        .split(",")
+        .every((skill) => /[a-zA-Z]/.test(skill.trim())),
+    "Every skill must contain at least one letter"
+  ),
 
     budgetType: z.enum(['fixed', 'range']),
 
@@ -47,14 +53,14 @@ export const createJobSchema = z
       ),
   })
   .superRefine((data, ctx) => {
-    if (data.budgetMin > data.budgetMax) {
+    if (data.budgetMin >= data.budgetMax) {
       ctx.addIssue({
         code: 'custom',
         path: ['budgetMax'],
-        message: 'Maximum budget must be at least the minimum budget',
+        message: 'Maximum budget must be greater the minimum budget',
       });
     }
-
+    
     if (
       data.budgetType === 'fixed' &&
       data.budgetMin !== data.budgetMax
