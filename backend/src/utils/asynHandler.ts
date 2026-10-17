@@ -1,15 +1,26 @@
-import { Response,Request,NextFunction,RequestHandler } from "express"
-const asyncHandler = (
-   responseHandler: (
-     req:Request,
-    res:Response,
-    next:NextFunction
-   ) => Promise<any>
-): RequestHandler => {
-    return (req,res,next) => {
-        responseHandler(req,res,next).catch((err) => next(err));
-    }
-}
 
+import {
+  Request,
+  Response,
+  NextFunction,
+  RequestHandler,
+} from "express";
 
-export {asyncHandler}
+const asyncHandler = <
+  P = {},
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = any
+>(
+  responseHandler: (
+    req: Request<P, ResBody, ReqBody, ReqQuery>,
+    res: Response<ResBody>,
+    next: NextFunction
+  ) => Promise<any>
+): RequestHandler<P, ResBody, ReqBody, ReqQuery> => {
+  return (req, res, next) => {
+    responseHandler(req, res, next).catch(next);
+  };
+};
+
+export { asyncHandler };

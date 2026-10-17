@@ -9,6 +9,7 @@ import gigRouter from './routes/gig.routes';
 import categoryRouter from './routes/category.route';
 import chatRouter from './routes/chat.route';
 import searchRouter from './routes/search.route';
+import jobRouter from './routes/job.route';
 import { errorHandler } from "./middleware/error.middleware";
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/v1/gig',gigRouter);
 app.use('/api/v1',categoryRouter);
 app.use('/api/v1/chats',chatRouter);
 app.use('/api/v1/search',searchRouter);
+app.use('/api/v1/jobs',jobRouter);
 app.use(errorHandler);
 
 export {app};

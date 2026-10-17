@@ -32,6 +32,7 @@ import HomeCategory from '@/components/home/HomeCategory';
 import ChatPage from '@/pages/chat/ChatPage';
 import GigListingPage from '@/pages/providerlisting/providerListingPage';
 import SearchServices from '@/components/search/SearchServices';
+import CreateJobPage from '@/pages/job/CreatejobPage';
 function AppRoutes() {
   return (
     <>
@@ -133,6 +134,7 @@ function AppRoutes() {
               />
             </Route>
             <Route path="categories" element={<HomeCategory isClientLogin={true} />} />
+            <Route path="/client/jobs/create" element={<CreateJobPage />} />
             <Route
               path="giglistings/:slug"
               element={

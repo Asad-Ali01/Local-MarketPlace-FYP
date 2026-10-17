@@ -18,6 +18,7 @@ import { homeApi } from '@/features/home/homeApi';
 import { chatApi } from '@/features/chat/chatApi';
 import chatReducer from '@/features/chat/chatSlice';
 import { searchApi } from '@/features/search/searchApi';
+import { jobApi } from '@/features/job/jobApi';
 const storage = {
   getItem: (key: string) => {
     return Promise.resolve(localStorage.getItem(key));
@@ -45,7 +46,8 @@ const rootReducer = combineReducers({
   [gigApi.reducerPath]: gigApi.reducer,
   [homeApi.reducerPath]: homeApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
-  [searchApi.reducerPath]:searchApi.reducer
+  [searchApi.reducerPath]:searchApi.reducer,
+    [jobApi.reducerPath]: jobApi.reducer,
 });
 
 export const store = configureStore({
@@ -63,7 +65,8 @@ export const store = configureStore({
       .concat(homeApi.middleware)
       .concat(chatApi.middleware)
       .concat(searchApi.middleware)
-      ,
+      .concat(jobApi.middleware)
+      
 });
 
 export const persistor = persistStore(store);

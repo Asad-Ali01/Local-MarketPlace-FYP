@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asynHandler";
 import { ApiError } from "../utils/ApiError";
 import { cookieOptions } from "../utils/cookieOptions";
 import { adminAllUsersDetailsService, adminDeleteUserService, adminEditUserService, adminGetStatsService, adminLoginService, adminUserDetailService } from "../services/admin.services";
-
+import { Request } from "express";
 const adminLogin = asyncHandler(async(req,res) => {
     const {safeUser,accessToken,refreshToken} = await adminLoginService(req.body);
 
@@ -29,7 +29,7 @@ const adminAllUsers = asyncHandler(async(req,res) => {
   res.status(200).json(new ApiResponse(200,{users,totalUsers},"User fetched successfully"));
 })
 
-const adminDeleteUser = asyncHandler(async(req,res) => {
+const adminDeleteUser = asyncHandler(async(req:Request<{userId:string;}>,res) => {
   const {userId} = req.params;
  
   if(!userId || typeof userId !== "string" ){
@@ -39,7 +39,7 @@ const adminDeleteUser = asyncHandler(async(req,res) => {
   return res.status(200).json( new ApiResponse(200,{},"User deleted successfully"));
 })
 
-const adminUserDetails = asyncHandler(async(req,res) => {
+const adminUserDetails = asyncHandler(async(req:Request<{userId:string;}>,res) => {
   const {userId} = req.params
     if(!userId || typeof userId !== "string" ){
     throw new ApiError(400,"User id is requried to delete user");
@@ -50,7 +50,7 @@ const adminUserDetails = asyncHandler(async(req,res) => {
 })
 
 // USer edit
-const adminEditUser = asyncHandler(async(req,res) => {
+const adminEditUser = asyncHandler(async(req:Request<{userId:string;}>,res) => {
   const {userId} = req.params;
   console.log("Body: ",req.body);
   if(!userId  || typeof userId !== "string"){

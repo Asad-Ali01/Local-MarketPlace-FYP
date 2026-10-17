@@ -20,7 +20,7 @@ function ClientLayout() {
     {
       title: 'Create job',
       icon: ShoppingBag,
-      url: '/client/jobs',
+      url: '/client/jobs/create',
     },
     {
       title: 'Gigs Listing',

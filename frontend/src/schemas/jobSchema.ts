@@ -1,0 +1,70 @@
+
+import { z } from 'zod';
+
+export const createJobSchema = z
+  .object({
+    title: z
+      .string()
+      .trim()
+      .min(10, 'Title must contain at least 10 characters')
+      .max(150, 'Title cannot exceed 150 characters'),
+
+    description: z
+      .string()
+      .trim()
+      .min(30, 'Description must contain at least 30 characters')
+      .max(10000, 'Description cannot exceed 10,000 characters'),
+
+    category: z
+      .string()
+      .trim()
+      .min(1, 'Please select a category'),
+
+    skills: z
+      .string()
+      .trim()
+      .min(1, 'Add at least one required skill'),
+
+    budgetType: z.enum(['fixed', 'range']),
+
+    budgetMin: z
+      .number()
+      .positive('Budget must be greater than zero'),
+
+    budgetMax: z
+      .number()
+      .positive('Budget must be greater than zero'),
+
+    deadline: z
+      .string()
+      .min(1, 'Please select a deadline')
+      .refine(
+        (value) => {
+          const date = new Date(`${value}T23:59:59`);
+          return !Number.isNaN(date.getTime()) && date > new Date();
+        },
+        'Deadline must be in the future',
+      ),
+  })
+  .superRefine((data, ctx) => {
+    if (data.budgetMin > data.budgetMax) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['budgetMax'],
+        message: 'Maximum budget must be at least the minimum budget',
+      });
+    }
+
+    if (
+      data.budgetType === 'fixed' &&
+      data.budgetMin !== data.budgetMax
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['budgetMax'],
+        message: 'Fixed budget must have equal minimum and maximum values',
+      });
+    }
+  });
+export type CreateJobFormInput =  z.input<typeof createJobSchema>
+export type CreateJobFormValues = z.output<typeof createJobSchema>;

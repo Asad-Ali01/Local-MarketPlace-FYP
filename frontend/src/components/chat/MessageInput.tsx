@@ -105,7 +105,7 @@ function MessageInput({ conversationId }: MessageInputProps) {
 
   const handleSend = () => {
     if (!message.trim()) return;
-   
+
     if (conversationId) {
       stopTyping();
       sendWebSocketMessage({

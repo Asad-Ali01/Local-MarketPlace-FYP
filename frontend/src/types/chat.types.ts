@@ -89,6 +89,14 @@ export interface IMessages {
   data: IMessage[];
 }
 
+export interface IGetMessagesByConversation{
+  data:{
+    messages:IMessage[];
+    hasMore:boolean;
+    nextCursor:string | null;
+  }
+}
+
 // export type ClientMessage =
 //   | {
 //       type: 'TYPING';

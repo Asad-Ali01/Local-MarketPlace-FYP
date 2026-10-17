@@ -70,14 +70,7 @@ function HeroSearchSection() {
   ) => {
     setSearchValue(option.text);
 
-    // if (option.type === "subCategory") {
-    //   navigate(`/giglistings/${option.slug}`);
-    //   return;
-    // }
-
-    // if (option.type === "gig") {
-    //   navigate(`/search/${option.gigId}`);
-    // }
+ 
   };
 
   const handleSearch = (value: string) => {

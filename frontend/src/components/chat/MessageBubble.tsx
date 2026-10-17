@@ -9,6 +9,7 @@ interface MessageBubbleProps {
   avatarUrl?: string;
   senderName?: string;
   senderId: string;
+  message:any
 }
 
 function MessageBubble({
@@ -18,13 +19,16 @@ function MessageBubble({
   time,
   avatarUrl,
   senderName,
+  message
 }: MessageBubbleProps) {
   const isReceived = type === 'received';
   const currentUserId = useAppSelector((state) => state.auth.user?._id);
 
   return (
     <div className={`flex  gap-2 ${currentUserId === senderId ? 'justify-end' : 'justify-start'}`}>
-      {/* <Avatar className="h-8 w-8 shrink-0">
+      {
+        senderId !== currentUserId &&
+            <Avatar className="h-8 w-8 shrink-0">
           <AvatarImage
             src={avatarUrl}
             alt={senderName}
@@ -33,7 +37,9 @@ function MessageBubble({
           <AvatarFallback>
             {senderName?.charAt(0).toUpperCase()}
           </AvatarFallback>
-        </Avatar> */}
+        </Avatar>
+      }
+  
 
       <div
         className={`max-w-[75%] rounded-2xl px-4 py-3 ${

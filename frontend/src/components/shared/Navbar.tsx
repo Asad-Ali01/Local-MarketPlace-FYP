@@ -7,6 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { useAppSelector } from '@/hooks/useAppDispatchSelector';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
@@ -19,12 +20,17 @@ function Navbar() {
   });
   const navRef = useRef<HTMLElement | null>(null);
   const location = useLocation();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const userRole = useAppSelector((state) => state.auth.user?.role);
+
+  const dashboard = userRole == "client" ? "/client/dashboard" : userRole == "provider" ? "/provider/dashboard" : userRole == 'admin' ? "/admin/dashbaord" : ""
+
   useEffect(() => {
     const sections = document.querySelectorAll('section[id]');
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if(isProgrammaticScroll.current)  return;
+        if (isProgrammaticScroll.current) return;
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
@@ -32,8 +38,8 @@ function Navbar() {
         });
       },
       {
-        threshold:0.1
-      }
+        threshold: 0.1,
+      },
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -56,29 +62,29 @@ function Navbar() {
   }, [activeSection]);
 
   const handleSectionClick = (sectionId: string) => {
-  isProgrammaticScroll.current = true;
+    isProgrammaticScroll.current = true;
 
-  setActiveSection(sectionId);
+    setActiveSection(sectionId);
 
-  const section = document.getElementById(sectionId);
+    const section = document.getElementById(sectionId);
 
-  section?.scrollIntoView({
-    behavior: "smooth",
-  });
-  let timeout: ReturnType<typeof setTimeout>;
- const handleScroll = () => {
-  clearTimeout(timeout);
+    section?.scrollIntoView({
+      behavior: 'smooth',
+    });
+    let timeout: ReturnType<typeof setTimeout>;
+    const handleScroll = () => {
+      clearTimeout(timeout);
 
-  timeout = setTimeout(() => {
-    isProgrammaticScroll.current = false;
-    window.removeEventListener("scroll",handleScroll)
-  },100)
- }
-  window.addEventListener("scroll",handleScroll)
-};
+      timeout = setTimeout(() => {
+        isProgrammaticScroll.current = false;
+        window.removeEventListener('scroll', handleScroll);
+      }, 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+  };
   return (
     <header className="w-full border-b bg-white">
-      <div className="flex items-center justify-between px-4 py-3 sm:px-8 lg:px-16">
+      <div className="grid grid-cols-[1fr_auto_1fr]  items-center px-4 py-3 sm:px-8 lg:px-16">
         {/* Logo */}
         <Link to="/" className="text-xl font-bold text-purple-700">
           HunarHub
@@ -86,27 +92,41 @@ function Navbar() {
 
         {/* Desktop Menu */}
         <nav className="hidden items-center gap-8 md:flex" ref={navRef}>
-          {
-            activeSection != "" &&
-<div
-            className="absolute bottom-[0px] h-0.5 bg-purple-700 transition-all duration-300"
-            style={{
-              left: indicatorStyle.left,
-              width: indicatorStyle.width,
-            }}
-          />
-          }
-          
-          <Link
+          {activeSection != '' && (
+            <div
+              className="absolute bottom-[0px] h-0.5 bg-purple-700 transition-all duration-300"
+              style={{
+                left: indicatorStyle.left,
+                width: indicatorStyle.width,
+              }}
+            />
+          )}
+  {
+    isAuthenticated ? 
+    <Link
+            to={dashboard}
+            data-section={dashboard}
+            onClick={() => handleSectionClick('/')}
+            className={
+              activeSection === ''
+                ? 'font-semibold text-purple-700'
+                : 'text-gray-600 hover:text-purple-700'
+            }
+          >
+            Dashboard
+          </Link>
+          :
+          <>
+           <Link
             to="/"
             data-section="/"
             onClick={() => handleSectionClick('/')}
             className={
               activeSection === '/'
-                ? 'font-semibold text-purple-700'
-                : 'text-gray-600 hover:text-purple-700'
+              ? 'font-semibold text-purple-700'
+              : 'text-gray-600 hover:text-purple-700'
             }
-          >
+            >
             Home
           </Link>
 
@@ -114,45 +134,54 @@ function Navbar() {
           <Link
             to="/#services"
             data-section="services"
-
+            
             onClick={() => handleSectionClick('services')}
             className={`${activeSection === 'services' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
-          >
+            >
             Services
           </Link>
           {/* About is an anchor */}
           <Link
             to="/#about-us"
             data-section="about-us"
-
+            
             onClick={() => handleSectionClick('about-us')}
             className={`${activeSection === 'about-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
-          >
+            >
             About
           </Link>
 
-          {/* Contact is an anchor */}
+           {/* Contact is an anchor */}
           <Link
             to="/#contact-us"
             data-section="contact-us"
-
+            
             onClick={() => handleSectionClick('contact-us')}
             className={`${activeSection === 'contact-us' ? 'font-semibold text-purple-700' : 'text-gray-600 transition-colors hover:text-purple-700'} `}
-          >
+            >
             Contact Us
           </Link>
+            </>
+
+  }
+         
         </nav>
 
-        {/* Desktop Buttons */}
-        <div className="hidden items-center gap-3 md:flex">
-          <NavLink to="/login" onClick={() => setActiveSection('')}>
-            <Button variant="outline">Sign in</Button>
-          </NavLink>
+        {
+          // {/* Desktop Buttons */}
 
-          <NavLink to="/register" onClick={() => setActiveSection('')}>
-            <Button className="bg-purple-700 text-white hover:bg-purple-800">Sign up</Button>
-          </NavLink>
-        </div>
+          !isAuthenticated && (
+            <div className="hidden justify-end  gap-3 md:flex">
+              <NavLink to="/login" onClick={() => setActiveSection('')}>
+                <Button variant="outline">Sign in</Button>
+              </NavLink>
+
+              <NavLink to="/register" onClick={() => setActiveSection('')}>
+                <Button className="bg-purple-700 text-white hover:bg-purple-800">Sign up</Button>
+              </NavLink>
+            </div>
+          )
+        }
 
         {/* Mobile Menu */}
         <div className="md:hidden">
@@ -209,25 +238,26 @@ function Navbar() {
                     </a>
                   </SheetClose>
                 </div>
+                {!isAuthenticated && (
+                  // {/* Buttons */}
+                  <div className="flex flex-col gap-3">
+                    <SheetClose asChild>
+                      <NavLink to="/login">
+                        <Button variant="outline" className="w-full">
+                          Sign in
+                        </Button>
+                      </NavLink>
+                    </SheetClose>
 
-                {/* Buttons */}
-                <div className="flex flex-col gap-3">
-                  <SheetClose asChild>
-                    <NavLink to="/login">
-                      <Button variant="outline" className="w-full">
-                        Sign in
-                      </Button>
-                    </NavLink>
-                  </SheetClose>
-
-                  <SheetClose asChild>
-                    <NavLink to="/register">
-                      <Button className="w-full bg-purple-700 text-white hover:bg-purple-800">
-                        Sign up
-                      </Button>
-                    </NavLink>
-                  </SheetClose>
-                </div>
+                    <SheetClose asChild>
+                      <NavLink to="/register">
+                        <Button className="w-full bg-purple-700 text-white hover:bg-purple-800">
+                          Sign up
+                        </Button>
+                      </NavLink>
+                    </SheetClose>
+                  </div>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

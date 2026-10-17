@@ -5,7 +5,7 @@ import { getAllCategoriesService } from "../services/user.services";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiRespose";
 import { asyncHandler } from "../utils/asynHandler";
-
+import { Request } from "express";
 const createCategory = asyncHandler(async(req,res) => {
   const userId = req.user._id.toString();
   if(!userId){
@@ -36,8 +36,8 @@ const getAllSubCategories = asyncHandler(async(req,res) => {
   return res.status(200).json( new ApiResponse(200,subcategories,"SubCategories fetched successfully"));
 })
 
-const deleteCategory = asyncHandler(async(req,res) => {
-  const categoryId = req.params.categoryId as string;
+const deleteCategory = asyncHandler(async(req:Request<{categoryId:string;}>,res) => {
+  const categoryId = req.params.categoryId ;
   if(!categoryId)
   {
     throw new ApiError(400,"Category Id is required");
@@ -47,8 +47,8 @@ const deleteCategory = asyncHandler(async(req,res) => {
   return res.status(200).json(new ApiResponse(200,{},"Category deleted successfully."));
 })
 
-const deleteSubCategory = asyncHandler(async(req,res) => {
-  const subCategoryId = req.params.subCategoryId as string;
+const deleteSubCategory = asyncHandler(async(req:Request<{subCategoryId:string;}>,res) => {
+  const subCategoryId = req.params.subCategoryId;
   if(!subCategoryId)
   {
     throw new ApiError(400,"Sub Category Id is required");

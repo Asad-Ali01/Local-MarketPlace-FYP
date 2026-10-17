@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiRespose";
 import { asyncHandler } from "../utils/asynHandler"
 import { searchLocations } from "../utils/searchLocation";
-
+import { Request } from "express";
 
 const createGig = asyncHandler(async(req,res) => {
     const files = req.files as {
@@ -18,7 +18,7 @@ const createGig = asyncHandler(async(req,res) => {
   return res.status(200).json(new ApiResponse(200,gig,"Gig created successfully"));
 })
 
-const updateGig = asyncHandler(async(req,res) => {
+const updateGig = asyncHandler(async(req:Request<{providerId:string;}>,res) => {
     const providerId = req.params.providerId as string;
     const userId = req.user._id;
 
@@ -36,7 +36,7 @@ const getGigsDetails = asyncHandler(async(req,res) => {
 })
 
 
-const providerDashBoardStats = asyncHandler(async(req,res) => {
+const providerDashBoardStats = asyncHandler(async(req:Request<{providerId:string;}>,res) => {
     const providerId = req.params.providerId as string
     if(!providerId){
       throw new ApiError(400,"ProviderId is missing !. Need providerId to fetched dashboard stats");
@@ -61,7 +61,7 @@ const providerDashBoardStats = asyncHandler(async(req,res) => {
 })
 
 
-const getAllGigsByCategory = asyncHandler(async(req,res) => {
+const getAllGigsByCategory = asyncHandler(async(req:Request<{slug:string;}>,res) => {
   const {slug} = req.params
 
   if(!slug || typeof(slug) !== "string")
@@ -73,7 +73,7 @@ const getAllGigsByCategory = asyncHandler(async(req,res) => {
   return res.status(200).json(new ApiResponse(200,gigs,"All gigs fetched successfully"));
 })
 
-const getAllMyGigs = asyncHandler(async(req,res) => {
+const getAllMyGigs = asyncHandler(async(req:Request<{providerId:string;}>,res) => {
   const providerId = req.params.providerId as  string;
   if(!providerId)
   {
@@ -85,8 +85,8 @@ const getAllMyGigs = asyncHandler(async(req,res) => {
 })
 
 
-const deleteGig = asyncHandler(async(req,res) => {
-  const gigId = req.params.gigId as string;
+const deleteGig = asyncHandler(async(req:Request<{gigId:string;}>,res) => {
+  const gigId = req.params.gigId;
   console.log("Here is gidID: ",gigId);
   if(!gigId){
     throw new ApiError(400,"Gig id is missing");
@@ -95,8 +95,8 @@ const deleteGig = asyncHandler(async(req,res) => {
   return res.status(200).json(new ApiResponse(200,{},"Gig deleted successfully"));
 })
 
-const getGigDetailsByGigId = asyncHandler(async(req,res) => {
-  const gigId = req.params.gigId as string;
+const getGigDetailsByGigId = asyncHandler(async(req:Request<{gigId:string;}>,res) => {
+  const gigId = req.params.gigId;
   if(!gigId)
   {
     throw new ApiError(400,"Gig id is required");

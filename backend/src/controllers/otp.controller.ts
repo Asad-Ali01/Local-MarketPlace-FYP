@@ -6,11 +6,11 @@ import { User } from '../models/user.model';
 import { OTP } from '../models/otp.model';
 import { transporter } from '../utils/emailSend';
 import { ApiResponse } from '../utils/ApiRespose';
-
+import { Request } from 'express';
 interface OtpTokenPayload extends JwtPayload{
     email: string;
 }
-const otpSend = asyncHandler(async(req,res) => {
+const otpSend = asyncHandler(async(req:Request<{email:string;}>,res) => {
     const email = req.params.email as string;
     if(!email){
         throw new ApiError(400,"Email is required");

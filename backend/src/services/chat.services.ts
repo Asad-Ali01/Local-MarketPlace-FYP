@@ -1,14 +1,21 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { Conversation } from "../models/conversation.model";
 import { Message } from "../models/message.model";
 import { User } from "../models/user.model";
 import { Gig } from "../models/gig.model";
 import { ApiError } from "../utils/ApiError";
+import { buffer } from "node:stream/consumers";
+import { buildCursorFilter, getPaginationLimit, getPaginationResult, parseCursor } from "../utils/sharedUtil";
 
-interface IGetMessageParams{
-  conversationId:string;
-  limit?:number;
-  cursor?:string;
+interface IGetMessageParams {
+  userId: string;
+  conversationId: string;
+  limit?: number;
+  cursor?: string;
+}
+interface ICursor {
+  createdAt: string;
+  _id: string;
 }
 const createConversationService = async (
   providerId: Types.ObjectId,
@@ -68,7 +75,6 @@ const getAllMessagesByConversationIdService = async (
   return { messages };
 };
 
-
 const getConversationContextService = async (
   providerId: string,
   clientId: string,
@@ -77,7 +83,7 @@ const getConversationContextService = async (
   const conversation = await Conversation.findOne({
     gig: gigId,
     members: {
-      $all: [ 
+      $all: [
         { $elemMatch: { user: providerId } },
         { $elemMatch: { user: clientId } },
       ],
@@ -109,15 +115,54 @@ const getConversationContextService = async (
 };
 
 
-const getMessagesByConversation = async({conversationId,limit = 50,cursor}:IGetMessageParams) => {
-  const safeLimit = Math.min(Math.max(limit,1),50);
-  // const filter: Record<string,number> = {
-  //   conversat
-  // }
-}
+const getMessagesByConversationService = async ({
+  userId,
+  conversationId,
+  limit,
+  cursor,
+}: IGetMessageParams) => {
+  const safeLimit = getPaginationLimit(limit);
+  const decodedCursor = parseCursor(cursor);
+
+  const filter: Record<string, any> = {
+    conversation: conversationId,
+    $or: [
+      { sender: new mongoose.Types.ObjectId(userId) },
+      { receiver: new mongoose.Types.ObjectId(userId) },
+    ],
+  };
+
+  if (decodedCursor) {
+    filter.$and = [
+      buildCursorFilter(decodedCursor),
+    ];
+  }
+
+  const documents = await Message.find(filter)
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(safeLimit + 1)
+    .populate("sender", "name avatar");
+
+  const {
+    results,
+    hasMore,
+    nextCursor,
+  } = getPaginationResult(documents, safeLimit);
+
+  // Database results are newest-first.
+  // The chat UI needs oldest-first within each fetched page.
+  results.reverse();
+
+  return {
+    messages: results,
+    hasMore,
+    nextCursor,
+  };
+};
 export {
   createConversationService,
   getAllMyConversationsService,
   getAllMessagesByConversationIdService,
   getConversationContextService,
+  getMessagesByConversationService,
 };
