@@ -3,6 +3,7 @@ import { BriefcaseBusiness, CalendarDays, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { IJob } from '@/types/job.types';
 import { useNavigate } from 'react-router';
+import RichTextDisplay from '../shared/RickTextDisplay';
 
 interface Props {
   job: IJob;
@@ -67,9 +68,12 @@ export default function JobCard({ job }: Props) {
         </div>
 
         {/* Description */}
-        <p className="line-clamp-3 min-h-[4.5rem] min-w-0 break-words text-sm leading-6 text-gray-600 [overflow-wrap:anywhere]">
-          {job.description}
-        </p>
+        <div>
+          <h1 ><b>Description</b></h1>
+        <div className="line-clamp-3 min-h-[4.5rem] min-w-0 break-words text-sm leading-6 text-gray-600 [overflow-wrap:anywhere]">
+         <RichTextDisplay content= {job.description}/>
+        </div>
+        </div>
 
         {/* Required skills */}
         {job.skills?.length > 0 && (

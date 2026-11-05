@@ -61,7 +61,7 @@ function ClientLayout() {
           <GlobalSidebar role="Client" items={items} onLogout={clientLogoutApi} />
 
           <section className="flex-1 min-w-0">
-            <header className="h-14 border-b flex items-center px-4">
+            <header className="h-14 border-b  flex items-center px-4">
               <SidebarTrigger />
             </header>
             <main className="p-4">

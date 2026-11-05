@@ -82,7 +82,7 @@ skills: z
   budgetMax: z.number().min(1, 'Budget must be greater than zero'),
   deadline: z.string().min(1, 'Please select a deadline'),
 }).refine(
-  (values) => values.budgetMax >= values.budgetMin,
+  (values) => values.budgetMax > values.budgetMin,
   {
     message: 'Maximum budget must be greater than the minimum budget',
     path: ['budgetMax'],

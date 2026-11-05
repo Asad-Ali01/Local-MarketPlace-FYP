@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useGetJobByIdApiQuery } from '@/features/job/jobApi';
 import { useNavigate, useParams } from 'react-router';
 import { useAppSelector } from '@/hooks/useAppDispatchSelector';
+import RichTextDisplay from '../shared/RickTextDisplay';
 
 export default function JobDetails() {
   const { jobId } = useParams<{ jobId: string }>();
@@ -118,9 +119,9 @@ export default function JobDetails() {
               <section>
                 <h2 className="mb-3 text-lg font-semibold text-gray-900">Project Description</h2>
 
-                <p className="whitespace-pre-wrap break-words text-sm leading-7 text-gray-600 [overflow-wrap:anywhere]">
-                  {job.description}
-                </p>
+                <div className="whitespace-pre-wrap break-words text-sm leading-7 text-gray-600 [overflow-wrap:anywhere]">
+                  <RichTextDisplay content={job.description} />
+                </div>
               </section>
 
               {/* Skills */}
@@ -138,20 +139,16 @@ export default function JobDetails() {
 
               <div className="border-t border-gray-100 pt-5">
                 {IsJobPostedByMe ? (
-                
-                    <Button
+                  <Button
                     variant="secondary"
-                      className="w-full px-4 sm:w-auto"
-                      onClick={() => {
-                        navigate(`/client/jobs/update/${jobId}`)
-                        // Proposal functionality will be added later.
-                      }}
-                      
-                    >
-                      Edit
-                    </Button>
-              
-                 
+                    className="w-full px-4 sm:w-auto"
+                    onClick={() => {
+                      navigate(`/client/jobs/update/${jobId}`);
+                      // Proposal functionality will be added later.
+                    }}
+                  >
+                    Edit
+                  </Button>
                 ) : (
                   <Button
                     className="w-full sm:w-auto"

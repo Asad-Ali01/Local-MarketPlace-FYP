@@ -1,16 +1,9 @@
-
-import {
-  Controller,
-  type Control,
-  type FieldErrors,
-} from 'react-hook-form';
+import { Controller, type Control, type FieldErrors } from 'react-hook-form';
 
 import { Input, Select } from 'antd';
 
-import type {
-  CreateJobFormInput,
-  CreateJobFormValues,
-} from '@/schemas/jobSchema';
+import type { CreateJobFormInput, CreateJobFormValues } from '@/schemas/jobSchema';
+import RichTextEditor from '../shared/RickTextEditor';
 
 const { TextArea } = Input;
 
@@ -20,23 +13,17 @@ interface Props {
   categoryOptions: { label: string; value: string }[];
 }
 
-export default function JobDetailsFields({
-  control,
-  errors,
-  categoryOptions,
-}: Props) {
+export default function JobDetailsFields({ control, errors, categoryOptions }: Props) {
   return (
     <div className="space-y-5">
       {/* Job title */}
       <div>
-        <label className="mb-2 block text-sm font-medium">
-          Job title
-        </label>
+        <label className="mb-2 block text-sm font-medium">Job title</label>
 
         <Controller
           name="title"
           control={control}
-          render={({ field }) => (  
+          render={({ field }) => (
             <Input
               {...field}
               size="large"
@@ -48,17 +35,13 @@ export default function JobDetailsFields({
         />
 
         {errors.title?.message && (
-          <p className="mt-1 text-xs text-destructive">
-            {errors.title.message}
-          </p>
+          <p className="mt-1 text-xs text-destructive">{errors.title.message}</p>
         )}
       </div>
 
       {/* Category */}
       <div>
-        <label className="mb-2 block text-sm font-medium">
-          Category
-        </label>
+        <label className="mb-2 block text-sm font-medium">Category</label>
 
         <Controller
           name="category"
@@ -71,8 +54,7 @@ export default function JobDetailsFields({
               onBlur={field.onBlur}
               size="large"
               showSearch={{
-              optionFilterProp:"label"
-                              
+                optionFilterProp: 'label',
               }}
               placeholder="Select a category"
               options={categoryOptions}
@@ -83,52 +65,41 @@ export default function JobDetailsFields({
         />
 
         {errors.category?.message && (
-          <p className="mt-1 text-xs text-destructive">
-            {errors.category.message}
-          </p>
+          <p className="mt-1 text-xs text-destructive">{errors.category.message}</p>
         )}
       </div>
 
       {/* Description */}
       <div>
-        <label className="mb-2 block text-sm font-medium">
-          Project description
-        </label>
+        <label className="mb-2 block text-sm font-medium">Project description</label>
 
         <Controller
           name="description"
           control={control}
           render={({ field }) => (
-            <TextArea
-              {...field}
-              rows={6}
-              maxLength={10000}
-              showCount
+            <RichTextEditor
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
               placeholder="Explain the work, requirements, and expected deliverables..."
-              status={errors.description ? 'error' : undefined}
             />
           )}
         />
 
         {errors.description?.message && (
-          <p className="mt-1 text-xs text-destructive">
-            {errors.description.message}
-          </p>
+          <p className="mt-1 text-xs text-destructive">{errors.description.message}</p>
         )}
       </div>
 
       {/* Skills */}
       <div>
-        <label className="mb-2 block text-sm font-medium">
-          Required skills
-        </label>
+        <label className="mb-2 block text-sm font-medium">Required skills</label>
 
         <Controller
           name="skills"
           control={control}
           render={({ field }) => (
             <Input
-            
               {...field}
               size="large"
               placeholder="React, TypeScript, Node.js"
@@ -137,14 +108,10 @@ export default function JobDetailsFields({
           )}
         />
 
-        <p className="mt-1 text-xs text-muted-foreground">
-          Separate skills with commas.
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground">Separate skills with commas.</p>
 
         {errors.skills?.message && (
-          <p className="mt-1 text-xs text-destructive">
-            {errors.skills.message}
-          </p>
+          <p className="mt-1 text-xs text-destructive">{errors.skills.message}</p>
         )}
       </div>
     </div>

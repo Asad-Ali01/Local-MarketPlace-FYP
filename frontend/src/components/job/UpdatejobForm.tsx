@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,12 +5,7 @@ import { motion } from 'framer-motion';
 import { message } from 'antd';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import JobDetailsFields from './JobDetailsFields';
 import JobBudgetFields from './JobBudgetFields';
@@ -23,18 +17,10 @@ import type {
 } from '@/types/job.types';
 
 import useUpdateJob from '@/hooks/useUpdatejob';
-import {
-  updateJobSchema,
-  type UpdateJobFormValues,
-} from '@/schemas/jobSchema';
+import { updateJobSchema, type UpdateJobFormValues } from '@/schemas/jobSchema';
 
-export default function UpdateJobForm({
-  job,
-  onCancel,
-  onUpdated,
-
-}: UpdateJobFormProps) {
-  const { updateJob,error, isLoading } = useUpdateJob();
+export default function UpdateJobForm({ job, onCancel, onUpdated }: UpdateJobFormProps) {
+  const { updateJob, error, isLoading } = useUpdateJob();
 
   const {
     handleSubmit,
@@ -55,73 +41,59 @@ export default function UpdateJobForm({
       budgetType: job.budgetType,
       budgetMin: job.budgetMin,
       budgetMax: job.budgetMax,
-      deadline: (job.deadline),
+      deadline: job.deadline,
     },
   });
-  const getServerValidationErrors = (
-  error: unknown
-): ServerValidationError[] => {
-  console.log("tyep", error)
-  if (
-    !error ||
-    typeof error !== "object" ||
-    !("data" in error)
-  ) {
-    return [];
-  }
+  const getServerValidationErrors = (error: unknown): ServerValidationError[] => {
 
-  const data = error.data;
-
-  if (
-    !data ||
-    typeof data !== "object" ||
-    !("errors" in data) ||
-    !Array.isArray(data.errors)
-  ) {
-    return [];
-  }
-
-  return data.errors.filter(
-    (item): item is ServerValidationError =>
-      typeof item === "object" &&
-      item !== null &&
-      "path" in item &&
-      Array.isArray(item.path) &&
-      "message" in item &&
-      typeof item.message === "string"
-  );
-};
-const serverError = useMemo(
-  () => getServerValidationErrors(error),
-  [error]
-);
-useEffect(() => {
-  const validFields = [
-    "title",
-    "description",
-    "category",
-    "skills",
-    "budgetType",
-    "budgetMin",
-    "budgetMax",
-    "deadline",
-  ] as const;
-  for (const issue of serverError) {
-    const field = issue.path[0];
-
-    if (
-      typeof field === "string" &&
-      validFields.includes(
-        field as (typeof validFields)[number]
-      )
-    ) {
-      setError(field as (typeof validFields)[number], {
-        type: "server",
-        message: issue.message,
-      });
+    if (!error || typeof error !== 'object' || !('data' in error)) {
+      return [];
     }
-  }
-}, [serverError, setError]);
+
+    const data = error.data;
+
+    if (!data || typeof data !== 'object' || !('errors' in data) || !Array.isArray(data.errors)) {
+      return [];
+    }
+
+    return data.errors.filter(
+      (item): item is ServerValidationError =>
+        typeof item === 'object' &&
+        item !== null &&
+        'path' in item &&
+        Array.isArray(item.path) &&
+        'message' in item &&
+        typeof item.message === 'string',
+    );
+  };
+
+  const serverError = useMemo(() => getServerValidationErrors(error), [error]);
+  useEffect(() => {
+    const validFields = [
+      'title',
+      'description',
+      'category',
+      'skills',
+      'budgetType',
+      'budgetMin',
+      'budgetMax',
+      'deadline',
+    ] as const;
+    for (const issue of serverError) {
+      const field = issue.path[0];
+   
+      if (
+        typeof field === 'string' &&
+        validFields.includes(field as (typeof validFields)[number])
+      ) {
+        setError(field as (typeof validFields)[number], {
+          type: 'server',
+          message: issue.message,
+        });
+  
+      }
+    }
+  }, [serverError, setError]);
 
   const budgetType = watch('budgetType');
   const budgetMin = watch('budgetMin');
@@ -132,18 +104,12 @@ useEffect(() => {
       return;
     }
 
-    if (
-      values.budgetType === 'range' &&
-      values.budgetMin > values.budgetMax
-    ) {
+    if (values.budgetType === 'range' && values.budgetMin > values.budgetMax) {
       message.error('Minimum budget cannot be greater than maximum budget');
       return;
     }
 
-    if (
-      values.budgetType === 'fixed' &&
-      values.budgetMin !== values.budgetMax
-    ) {
+    if (values.budgetType === 'fixed' && values.budgetMin !== values.budgetMax) {
       message.error('For a fixed budget, minimum and maximum must be equal');
       return;
     }
@@ -163,10 +129,7 @@ useEffect(() => {
         .filter(Boolean);
     }
 
-    const budgetChanged =
-      dirtyFields.budgetType ||
-      dirtyFields.budgetMin ||
-      dirtyFields.budgetMax;
+    const budgetChanged = dirtyFields.budgetType || dirtyFields.budgetMin || dirtyFields.budgetMax;
 
     if (budgetChanged) {
       if (values.budgetType === 'fixed') {
@@ -218,11 +181,7 @@ useEffect(() => {
           </CardHeader>
 
           <CardContent>
-            <JobDetailsFields
-              control={control}
-              errors={errors}
-              categoryOptions={[]}
-            />
+            <JobDetailsFields control={control} errors={errors} categoryOptions={[]} />
           </CardContent>
         </Card>
 
@@ -244,11 +203,7 @@ useEffect(() => {
         </Card>
 
         <div className="flex justify-end gap-3 border-t pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-          >
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
 

@@ -39,8 +39,7 @@ function ProviderLayout() {
     },
   ];
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-  console.log(location.pathname);
-  console.log('Has gigs', data?.data.hasGigs);
+
   const hasGigs = data?.data.hasGigs;
   if (isLoading && !data && isFetching) {
     return null; // later replace with skeleton/spinner
