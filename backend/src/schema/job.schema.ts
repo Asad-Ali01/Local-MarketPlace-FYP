@@ -43,6 +43,7 @@ export const createJobSchema = z
     },
   );
 
+
 export const updateJobSchema = z
   .object({
     title: jobFields.title.optional(),
@@ -55,16 +56,19 @@ export const updateJobSchema = z
     deadline: jobFields.deadline.optional(),
   })
   .strict()
+  // Range budget validation
   .refine(
     (data) =>
+      data.budgetType !== 'range' ||
       data.budgetMin === undefined ||
       data.budgetMax === undefined ||
       data.budgetMin < data.budgetMax,
     {
-      message: 'Maximum budget must be greater the minimum budget',
+      message: 'Maximum budget must be greater than the minimum budget',
       path: ['budgetMax'],
-    },
+    }
   )
+  // Fixed budget validation
   .refine(
     (data) =>
       data.budgetType !== 'fixed' ||
@@ -74,9 +78,22 @@ export const updateJobSchema = z
     {
       message: 'Fixed budgets require equal minimum and maximum values',
       path: ['budgetMax'],
-    },
+    }
   )
+  // Require budgetType when both budget values are provided
+.refine(
+  (data) =>
+    data.budgetMin === undefined ||
+    data.budgetMax === undefined ||
+    data.budgetType !== undefined,
+  {
+    message: 'Budget type is required when updating both budget values',
+    path: ['budgetType'],
+  }
+)
   .refine(
     (data) => Object.keys(data).length > 0,
-    'Provide at least one field to update',
+    {
+      message: 'Provide at least one field to update',
+    }
   );

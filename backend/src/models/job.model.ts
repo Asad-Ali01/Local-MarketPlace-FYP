@@ -49,7 +49,10 @@ const jobSchema = new Schema<IJob>(
         message: 'At least one valid skill is required',
       },
     },
-
+    applicationsCount:{
+      type:Number,
+      default:0
+    },
     budgetType: {
       type: String,
       enum: ['fixed', 'range'],

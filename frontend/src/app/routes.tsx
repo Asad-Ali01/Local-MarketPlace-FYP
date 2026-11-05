@@ -33,6 +33,10 @@ import ChatPage from '@/pages/chat/ChatPage';
 import GigListingPage from '@/pages/providerlisting/providerListingPage';
 import SearchServices from '@/components/search/SearchServices';
 import CreateJobPage from '@/pages/job/CreatejobPage';
+import OpenJobsPage from '@/pages/job/OpenJobsPage';
+import JobDetailspage from '@/pages/job/JobDetailspage';
+import UpdateJobPage from '@/pages/job/UpdateJobPage';
+import MyJobsPage from '@/pages/job/MyJobsPage';
 function AppRoutes() {
   return (
     <>
@@ -100,11 +104,25 @@ function AppRoutes() {
                 </ErrorBoundary>
               }
             />
+            <Route path="jobs/:jobId" element={<JobDetailspage />} />
+            <Route path="jobs/:jobId/edit" element={<UpdateJobPage />} />
+
+            <Route
+              path="jobs"
+              element={
+                <ErrorBoundary fallback={<div className="h-80">Jobs Listing failed</div>}>
+                  <OpenJobsPage />
+                </ErrorBoundary>
+              }
+            />
           </Route>
 
           {/* CLient */}
           <Route path="client" element={<ClientLayout />}>
             <Route index element={<ClientDashboard />} />
+            <Route path="jobs" element={<MyJobsPage />} />
+            <Route path="jobs/:jobId" element={<JobDetailspage />} />
+
             <Route path="messages">
               <Route
                 index
@@ -134,7 +152,9 @@ function AppRoutes() {
               />
             </Route>
             <Route path="categories" element={<HomeCategory isClientLogin={true} />} />
-            <Route path="/client/jobs/create" element={<CreateJobPage />} />
+            <Route path="jobs/create" element={<CreateJobPage />} />
+            <Route path="jobs/update/:jobId" element={<UpdateJobPage />} />
+
             <Route
               path="giglistings/:slug"
               element={

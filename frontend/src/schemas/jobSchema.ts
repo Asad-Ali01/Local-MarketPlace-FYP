@@ -1,6 +1,4 @@
-
 import { z } from 'zod';
-
 export const createJobSchema = z
   .object({
     title: z
@@ -72,5 +70,32 @@ skills: z
       });
     }
   });
-export type CreateJobFormInput =  z.input<typeof createJobSchema>
+
+
+  export const updateJobSchema = z.object({
+  title: z.string().trim().min(10, 'Title must be at least 10 characters').max(150),
+  description: z.string().trim().min(30, 'Description must be at least 30 characters').max(10000),
+  category: z.string().min(1, 'Please select a category'),
+  skills: z.string().trim().min(1, 'Enter at least one skill'),
+  budgetType: z.enum(['fixed', 'range']),
+  budgetMin: z.number().min(1, 'Budget must be greater than zero'),
+  budgetMax: z.number().min(1, 'Budget must be greater than zero'),
+  deadline: z.string().min(1, 'Please select a deadline'),
+}).refine(
+  (values) => values.budgetMax >= values.budgetMin,
+  {
+    message: 'Maximum budget must be greater than the minimum budget',
+    path: ['budgetMax'],
+  },
+).refine(
+  (values) =>
+    values.budgetType !== 'fixed' ||
+    values.budgetMin === values.budgetMax,
+  {
+    message: 'For a fixed budget, minimum and maximum must be equal',
+    path: ['budgetMax'],
+  },
+);
+export type CreateJobFormInput =  z.input<typeof createJobSchema>;
 export type CreateJobFormValues = z.output<typeof createJobSchema>;
+export type UpdateJobFormValues  = z.infer<typeof updateJobSchema>

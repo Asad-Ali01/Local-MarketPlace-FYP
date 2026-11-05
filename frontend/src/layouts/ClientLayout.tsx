@@ -4,7 +4,7 @@ import { useLogoutApiMutation } from '@/features/auth/authApi';
 import { useGetMyGigsApiQuery } from '@/features/gig/gigApi';
 import { useAppSelector } from '@/hooks/useAppDispatchSelector';
 import ProviderLandingPage from '@/pages/gig/ProviderLandingPage';
-import { LayoutDashboard, MessageCircleMoreIcon, ShoppingBag } from 'lucide-react';
+import { BriefcaseBusinessIcon, LayoutDashboard, MessageCircleMoreIcon, ShoppingBag } from 'lucide-react';
 
 import { Navigate, Outlet, useLocation } from 'react-router';
 
@@ -19,19 +19,25 @@ function ClientLayout() {
     },
     {
       title: 'Create job',
-      icon: ShoppingBag,
+      icon: BriefcaseBusinessIcon,
       url: '/client/jobs/create',
+    },
+       {
+      title: 'My Jobs',
+      icon: BriefcaseBusinessIcon,
+      url: '/client/jobs',
+    },
+     {
+      title: 'Chat',
+      icon: MessageCircleMoreIcon,
+      url: '/client/messages',
     },
     {
       title: 'Gigs Listing',
       icon: ShoppingBag,
       url: '/client/categories',
     },
-    {
-      title: 'Chat',
-      icon: MessageCircleMoreIcon,
-      url: '/client/messages',
-    },
+ 
   ];
 
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);

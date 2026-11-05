@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 
 import {
@@ -14,17 +13,16 @@ import { verifyJWT } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Public route: providers can browse open jobs
+// Public routes
 router.get('/open', getOpenJobsController);
 
-// Public route: fetch one job
-router.get('/:jobId', getJobByIdController);
-
-// Client-only routes: verifyJWT should require authentication.
-
+// Client-only routes
 router.post('/', verifyJWT, createJobController);
 router.get('/mine', verifyJWT, getMyJobsController);
-router.patch('/:jobId', verifyJWT, updateJobController);
+
+// Dynamic routes — keep these after specific routes
 router.patch('/:jobId/cancel', verifyJWT, cancelJobController);
+router.patch('/update-job/:jobId', verifyJWT, updateJobController);
+router.get('/:jobId', getJobByIdController);
 
 export default router;

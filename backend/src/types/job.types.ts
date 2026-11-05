@@ -30,6 +30,7 @@ export interface IJob extends Document {
   budgetMax: number;
   deadline: Date;
   status: JobStatus;
+  applicationsCount:number;
   createdAt: Date;
   updatedAt: Date;
 }

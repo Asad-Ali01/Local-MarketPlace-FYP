@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Alert, Spin } from 'antd';
+import { Alert, message, Spin } from 'antd';
 import { BriefcaseBusiness } from 'lucide-react';
 import { useGetAllCategoriesForHomePageQuery } from '@/features/home/homeApi';
 import { useCreateJob } from '@/hooks/useCreateJob';
@@ -38,7 +38,7 @@ export default function CreateJobPage() {
       setSuccessMessage('Your job was published successfully.');
      
     } catch {
-      // RTK Query retains the mutation error for display.
+     message.error("Failed to create job")
     }
   };
 

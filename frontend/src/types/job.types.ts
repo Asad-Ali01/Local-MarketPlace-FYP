@@ -10,12 +10,11 @@ export type JobStatus =
 export interface IJobClient {
   _id: string;
   name: string;
-  avatar?: string;
 }
 
 export interface IJob {
   _id: string;
-  client: string | IJobClient;
+  client: IJobClient;
   title: string;
   description: string;
   category: string;
@@ -25,6 +24,7 @@ export interface IJob {
   budgetMax: number;
   deadline: string;
   status: JobStatus;
+ applicationsCount:number;
   createdAt: string;
   updatedAt: string;
 }
@@ -42,9 +42,26 @@ export interface ICreateJobRequest {
   budgetMax: number;
   deadline: string;
 }
-
+export interface IUpdateJobRequest extends Partial<ICreateJobRequest> {}
 export interface IApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
+}
+
+export interface IJobbApiResponseWithCursor<T> {
+  success: boolean;
+  message: string;
+  data: {
+    results:T,
+    hasMore:boolean;
+    nextCursor:string | null;
+  };
+}
+
+export interface UpdateJobFormProps {
+  job: IJob;
+   
+  onCancel: () => void;
+  onUpdated?: () => void;
 }
