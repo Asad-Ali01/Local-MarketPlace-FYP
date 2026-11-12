@@ -1,19 +1,16 @@
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import JobDetailsFields from './JobDetailsFields';
 import JobBudgetFields from './JobBudgetFields';
-import { createJobSchema, type CreateJobFormInput, type CreateJobFormValues } from '@/schemas/jobSchema';
+import {
+  createJobSchema,
+  type CreateJobFormInput,
+  type CreateJobFormValues,
+} from '@/schemas/jobSchema';
 import type { ServerValidationError } from '@/types/job.types';
 import { useEffect } from 'react';
 
@@ -21,7 +18,7 @@ interface Props {
   categoryOptions: { label: string; value: string }[];
   onSubmit: (values: CreateJobFormValues) => Promise<void>;
   isSubmitting: boolean;
-    serverValidationErrors: ServerValidationError[];
+  serverValidationErrors: ServerValidationError[];
 }
 
 export default function CreateJob({
@@ -29,7 +26,7 @@ export default function CreateJob({
   onSubmit,
   isSubmitting,
 
-  serverValidationErrors
+  serverValidationErrors,
 }: Props) {
   const {
     register,
@@ -38,9 +35,9 @@ export default function CreateJob({
     setValue,
     handleSubmit,
     setError,
-  
+
     formState: { errors },
-  } = useForm<CreateJobFormInput,unknown,CreateJobFormValues>({
+  } = useForm<CreateJobFormInput, unknown, CreateJobFormValues>({
     resolver: zodResolver(createJobSchema),
     defaultValues: {
       title: '',
@@ -53,33 +50,32 @@ export default function CreateJob({
       deadline: '',
     },
   });
-useEffect(() => {
-  const validFields = [
-    "title",
-    "description",
-    "category",
-    "skills",
-    "budgetType",
-    "budgetMin",
-    "budgetMax",
-    "deadline",
-  ] as const;
-  for (const issue of serverValidationErrors) {
-    const field = issue.path[0];
+  useEffect(() => {
+    const validFields = [
+      'title',
+      'description',
+      'category',
+      'skills',
+      'budgetType',
+      'budgetMin',
+      'budgetMax',
+      'deadline',
+    ] as const;
+    console.log("Servervalidation: ",serverValidationErrors)
+    for (const issue of serverValidationErrors) {
+      const field = issue.path[0];
 
-    if (
-      typeof field === "string" &&
-      validFields.includes(
-        field as (typeof validFields)[number]
-      )
-    ) {
-      setError(field as (typeof validFields)[number], {
-        type: "server",
-        message: issue.message,
-      });
+      if (
+        typeof field === 'string' &&
+        validFields.includes(field as (typeof validFields)[number])
+      ) {
+        setError(field as (typeof validFields)[number], {
+          type: 'server',
+          message: issue.message,
+        });
+      }
     }
-  }
-}, [serverValidationErrors, setError]);
+  }, [serverValidationErrors, setError]);
 
   const budgetType = watch('budgetType');
   const budgetMin = watch('budgetMin');
@@ -98,7 +94,6 @@ useEffect(() => {
           <CardContent>
             <JobDetailsFields
               control={control}
-     
               errors={errors}
               categoryOptions={categoryOptions}
             />
@@ -111,7 +106,7 @@ useEffect(() => {
           </CardHeader>
           <CardContent>
             <JobBudgetFields
-            register={register}
+              register={register}
               control={control}
               setValue={setValue}
               errors={errors}
@@ -120,8 +115,6 @@ useEffect(() => {
             />
           </CardContent>
         </Card>
-
-    
 
         <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting} size="lg">

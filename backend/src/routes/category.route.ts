@@ -8,7 +8,7 @@ const router = Router();
 // Categories
 router.route('/admin/category').post(verifyJWT,authorrizeRoles("admin"),upload.single("icon"),createCategory);
 router.route('/admin/sub-category').post(verifyJWT,authorrizeRoles("admin"),upload.single("icon"),createSubCategory);
-router.route('/admin/category').get(verifyJWT,authorrizeRoles("admin","provider"),getAllCategories);
+router.route('/admin/category').get(verifyJWT,authorrizeRoles("admin","provider","client"),getAllCategories);
 router.route('/admin/sub-category').get(verifyJWT,authorrizeRoles("admin","provider"),getAllSubCategories);
 router.route('/admin/category/:categoryId').delete(verifyJWT,authorrizeRoles("admin"),deleteCategory);
 router.route('/admin/sub-category/:subCategoryId').delete(verifyJWT,authorrizeRoles("admin"),deleteSubCategory);

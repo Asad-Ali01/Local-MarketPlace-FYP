@@ -4,7 +4,7 @@ import { useLogoutApiMutation } from '@/features/auth/authApi';
 import { useGetMyGigsApiQuery } from '@/features/gig/gigApi';
 import { useAppSelector } from '@/hooks/useAppDispatchSelector';
 import ProviderLandingPage from '@/pages/gig/ProviderLandingPage';
-import { BriefcaseBusiness, LayoutDashboard, MessageCircleMoreIcon, ShoppingBag } from 'lucide-react';
+import { BriefcaseBusiness, FileText, LayoutDashboard, MessageCircleMoreIcon, ShoppingBag } from 'lucide-react';
 
 import { Navigate, Outlet, useLocation } from 'react-router';
 
@@ -36,6 +36,11 @@ function ProviderLayout() {
       title: 'Jobs',
       icon: BriefcaseBusiness,
       url: '/provider/jobs',
+    },
+     {
+      title: 'Proposals',
+      icon: FileText ,
+      url: '/provider/proposals',
     },
   ];
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);

@@ -18,6 +18,9 @@ import type {
 
 import useUpdateJob from '@/hooks/useUpdatejob';
 import { updateJobSchema, type UpdateJobFormValues } from '@/schemas/jobSchema';
+import { getServerValidationErrors } from '@/utils/getServerValidatorErrors';
+import useGetAllCategories from '@/hooks/useGetAllCategories';
+import { useAdminGetAllCategoriesQuery } from '@/features/admin/adminApi';
 
 export default function UpdateJobForm({ job, onCancel, onUpdated }: UpdateJobFormProps) {
   const { updateJob, error, isLoading } = useUpdateJob();
@@ -44,31 +47,19 @@ export default function UpdateJobForm({ job, onCancel, onUpdated }: UpdateJobFor
       deadline: job.deadline,
     },
   });
-  const getServerValidationErrors = (error: unknown): ServerValidationError[] => {
+  const {data} = useAdminGetAllCategoriesQuery()
+   const categoryOptions =
+    data?.data?.map((category) => ({
+      value: category._id,
+      label: category.name,
+    })) ?? [];
 
-    if (!error || typeof error !== 'object' || !('data' in error)) {
-      return [];
-    }
-
-    const data = error.data;
-
-    if (!data || typeof data !== 'object' || !('errors' in data) || !Array.isArray(data.errors)) {
-      return [];
-    }
-
-    return data.errors.filter(
-      (item): item is ServerValidationError =>
-        typeof item === 'object' &&
-        item !== null &&
-        'path' in item &&
-        Array.isArray(item.path) &&
-        'message' in item &&
-        typeof item.message === 'string',
-    );
-  };
-
-  const serverError = useMemo(() => getServerValidationErrors(error), [error]);
+  const serverError = useMemo(() => {
+    console.log("Error: ",error)
+  return  getServerValidationErrors(error)
+  }, [error]);
   useEffect(() => {
+    console.log("USE EFFECT",error)
     const validFields = [
       'title',
       'description',
@@ -79,9 +70,9 @@ export default function UpdateJobForm({ job, onCancel, onUpdated }: UpdateJobFor
       'budgetMax',
       'deadline',
     ] as const;
+    console.log("Filed: ",serverError)
     for (const issue of serverError) {
       const field = issue.path[0];
-   
       if (
         typeof field === 'string' &&
         validFields.includes(field as (typeof validFields)[number])
@@ -163,8 +154,12 @@ export default function UpdateJobForm({ job, onCancel, onUpdated }: UpdateJobFor
       await updateJob(job._id, jobData);
       message.success('Job updated successfully');
       onUpdated?.();
-    } catch (error) {
-      message.error('Failed to update job. Please try again.');
+    } catch (error:any) {
+      console.log(error)
+      // setError(error.data.errors)
+      console.log("Server error:" ,serverError)
+      const errorMessage = error.data.message || 'Failed to update job. Please try again.'
+      message.error(errorMessage);
     }
   };
 
@@ -181,7 +176,7 @@ export default function UpdateJobForm({ job, onCancel, onUpdated }: UpdateJobFor
           </CardHeader>
 
           <CardContent>
-            <JobDetailsFields control={control} errors={errors} categoryOptions={[]} />
+            <JobDetailsFields control={control} errors={errors} categoryOptions={categoryOptions} />
           </CardContent>
         </Card>
 

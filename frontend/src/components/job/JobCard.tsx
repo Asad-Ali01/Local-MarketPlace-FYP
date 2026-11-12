@@ -128,7 +128,7 @@ export default function JobCard({ job }: Props) {
             type="button"
             className="w-full"
             onClick={() => {
-              // Proposal functionality will be added later.
+             navigate(`/provider/jobs/${job._id}/proposal`);
             }}
           >
             Send Proposal

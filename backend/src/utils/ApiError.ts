@@ -1,9 +1,13 @@
+type ApiErrorDetail = {
+  path: (string | number)[];
+  message: string;
+};
 class ApiError extends Error{
     statusCode: number;
     data:any = null;
     success:boolean = false;
-    errors:[] = [];
-    constructor(statusCode:number,message:string="Something went wrong",errors:[]=[],stack?:string){
+    errors:any[] = [];
+    constructor(statusCode:number,message:string="Something went wrong",errors:any[]=[],stack?:string){
         super(message);
         this.statusCode = statusCode;
         this.message = message;

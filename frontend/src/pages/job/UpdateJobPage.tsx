@@ -83,8 +83,7 @@ export default function UpdateJobPage() {
         
             onCancel={() => navigate(-1)}
             onUpdated={() => {
-              message.success('Your changes have been saved');
-              // navigate(`/jobs/${job._id}`);
+              navigate(-1);
             }}
           />
         </Card>

@@ -32,3 +32,4 @@ export interface IUser {
   avatar?: IAvatar;
   location?: ILocation;
 }
+

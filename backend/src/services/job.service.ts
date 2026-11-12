@@ -125,7 +125,7 @@ export const updateJob = async (
     }
   }
 
-  await job.save();
+await job.save({ validateModifiedOnly: true });
 
   return job;
 };

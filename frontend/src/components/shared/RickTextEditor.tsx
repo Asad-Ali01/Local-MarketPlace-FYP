@@ -39,23 +39,23 @@ export default function RichTextEditor({ value, onChange, onBlur, placeholder }:
     <div className="rounded-lg border border-input rich-text-content">
       {/* Toolbar */}
       <div className="flex flex-wrap gap-2 border-b p-2">
-    <button
-  type="button"
-//   onMouseDown={(e) => e.preventDefault()}
-  onClick={() => editor.chain().focus().toggleBold().run()}
-  className={`rounded border px-3 py-1 ${
-    editorState?.isBold
-      ? "bg-black text-white"
-      : "bg-white text-black hover:bg-gray-100"
-  }`}
->
-  Bold
-</button>
+        <button
+          type="button"
+
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={`rounded border px-3 py-1 ${
+            editorState?.isBold ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'
+          }`}
+        >
+          Bold
+        </button>
 
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className="rounded border px-3 py-1"
+          className={`rounded border px-3 py-1 ${
+            editorState?.isItalic ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'
+          }`}
         >
           Italic
         </button>
@@ -63,7 +63,11 @@ export default function RichTextEditor({ value, onChange, onBlur, placeholder }:
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className="rounded border px-3 py-1"
+          className={`rounded border px-3 py-1 ${
+            editorState?.isUnderline
+              ? 'bg-black text-white'
+              : 'bg-white text-black hover:bg-gray-100'
+          }`}
         >
           Underline
         </button>
@@ -71,7 +75,11 @@ export default function RichTextEditor({ value, onChange, onBlur, placeholder }:
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className="rounded border px-3 py-1"
+          className={`rounded border px-3 py-1 ${
+            editorState?.isBulletList
+              ? 'bg-black text-white'
+              : 'bg-white text-black hover:bg-gray-100'
+          }`}
         >
           Bullet List
         </button>
@@ -79,7 +87,11 @@ export default function RichTextEditor({ value, onChange, onBlur, placeholder }:
 
       {/* Editable area */}
       <div className="p-3">
-        <EditorContent editor={editor} className="min-h-[180px]" />
+        <EditorContent
+          editor={editor}
+          className="min-h-[180px] cursor-text"
+          onClick={() => editor.commands.focus()}
+        />
       </div>
     </div>
   );

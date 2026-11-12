@@ -103,9 +103,9 @@ export const updateJobController = asyncHandler(
     if (!jobId) {
       throw new ApiError(400, 'Job ID is required');
     }
-    console.log("req.body: ",req.body)
+    // console.log("req.body: ",req.body)
     const updates = updateJobSchema.parse(req.body);
-
+   
     const job = await updateJob(clientId, jobId, updates);
 
     return res

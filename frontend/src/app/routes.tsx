@@ -37,6 +37,9 @@ import OpenJobsPage from '@/pages/job/OpenJobsPage';
 import JobDetailspage from '@/pages/job/JobDetailspage';
 import UpdateJobPage from '@/pages/job/UpdateJobPage';
 import MyJobsPage from '@/pages/job/MyJobsPage';
+import SubmitProposalPage from '@/pages/proposal/SubmitProposalPage';
+import ProviderProposalsPage from '@/pages/proposal/ProviderProposalsPage';
+import ProviderProposalDetailsPage from '@/pages/proposal/ProviderProposalDetailsPage';
 function AppRoutes() {
   return (
     <>
@@ -106,6 +109,7 @@ function AppRoutes() {
             />
             <Route path="jobs/:jobId" element={<JobDetailspage />} />
             <Route path="jobs/:jobId/edit" element={<UpdateJobPage />} />
+            <Route path="jobs/:jobId/proposal" element={<SubmitProposalPage />} />
 
             <Route
               path="jobs"
@@ -115,6 +119,8 @@ function AppRoutes() {
                 </ErrorBoundary>
               }
             />
+            <Route path="proposals" element={<ProviderProposalsPage />} />
+            <Route path="proposals/:proposalId" element={<ProviderProposalDetailsPage />} />
           </Route>
 
           {/* CLient */}
